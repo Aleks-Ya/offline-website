@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.impl.storage;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadedResource;
 import ru.yaal.offlinewebsite.api.resource.DownloadingResource;
@@ -18,7 +19,8 @@ import java.util.Map;
 /**
  * @author Aleksey Yablokov
  */
-public class SynchronizedInMemoryStorageImpl implements Storage {
+@Slf4j
+public class SyncInMemoryStorageImpl implements Storage {
     private final Map<Resource.ResourceId, Resource> data = new HashMap<>();
     private final Map<DownloadingResource.Id, ByteArrayOutputStream> dingRess = new HashMap<>();
 
@@ -28,37 +30,40 @@ public class SynchronizedInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized NewResource.NewResourceId createNewResource(SiteUrl url) {
-        NewResource.NewResourceId newResId = new NewResource.NewResourceId(url.getUrl());
+    public synchronized NewResource.Id createNewResource(SiteUrl url) {
+        NewResource.Id newResId = new NewResource.Id(url.getUrl());
         checkAlreadyExists(newResId);
         NewResource newRes = new NewResource<>(newResId, url);
         data.put(newRes.getId(), newRes);
-        return newRes.getId();
+        log.debug("NewResource is created: " + newResId);
+        return newResId;
     }
 
     @Override
-    public synchronized DownloadingResourceImpl.Id createDownloadingResource(NewResource.NewResourceId newResId) {
+    public synchronized DownloadingResource.Id createDownloadingResource(NewResource.Id newResId) {
         NewResource newRes = (NewResource) data.get(newResId);
-        DownloadingResource.Id id = new DownloadingResource.Id(newResId.getId());
-        checkAlreadyExists(id);
+        DownloadingResource.Id dingResId = new DownloadingResource.Id(newResId.getId());
+        checkAlreadyExists(dingResId);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
-        dingRess.put(id, os);
-        DownloadingResource dingResource = new DownloadingResourceImpl<>(id, newRes.getUrl(), os);
+        dingRess.put(dingResId, os);
+        DownloadingResource dingRes = new DownloadingResourceImpl<>(dingResId, newRes.getUrl(), os);
         data.remove(newResId);
-        data.put(dingResource.getId(), dingResource);
-        return dingResource.getId();
+        data.put(dingRes.getId(), dingRes);
+        log.debug("DownloadingResource is created: " + dingResId);
+        return dingResId;
     }
 
     @Override
     @SneakyThrows
     public synchronized BytesDownloadedResource.Id createDownloadedResource(DownloadingResourceImpl.Id dingResId) {
-        BytesDownloadedResource.Id id = new BytesDownloadedResource.Id(dingResId.getId());
-        checkAlreadyExists(id);
+        BytesDownloadedResource.Id dedResId = new BytesDownloadedResource.Id(dingResId.getId());
+        checkAlreadyExists(dedResId);
         byte[] bytes = dingRess.get(dingResId).toByteArray();
-        DownloadedResource dedResource = new BytesDownloadedResource<>(id, bytes);
+        DownloadedResource dedResource = new BytesDownloadedResource<>(dedResId, bytes);
         data.remove(dingResId);
-        data.put(id, dedResource);
-        return id;
+        data.put(dedResId, dedResource);
+        log.debug("BytesDownloadedResource is created: " + dedResId);
+        return dedResId;
     }
 
     private void checkAlreadyExists(Resource.ResourceId id) {

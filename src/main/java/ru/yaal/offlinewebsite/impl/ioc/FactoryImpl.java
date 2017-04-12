@@ -4,7 +4,7 @@ import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.ioc.Factory;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
-import ru.yaal.offlinewebsite.impl.storage.SynchronizedInMemoryStorageImpl;
+import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 
 /**
  * @author Aleksey Yablokov
@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.impl.storage.SynchronizedInMemoryStorageImpl;
 public class FactoryImpl implements Factory {
     private static Factory INSTANCE = new FactoryImpl();
     private final Downloader downloader = new DownloaderImpl(null);
-    private final Storage storage = new SynchronizedInMemoryStorageImpl();
+    private final Storage storage = new SyncInMemoryStorageImpl();
 
     private FactoryImpl() {
     }

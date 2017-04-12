@@ -1,0 +1,22 @@
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <appender name="stdout_long" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="stdout_short" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="ru.yaal.offlinewebsite" level="DEBUG" additivity="false">
+        <appender-ref ref="stdout_short"/>
+    </logger>
+
+    <root level="INFO">
+        <appender-ref ref="stdout_short"/>
+    </root>
+</configuration>

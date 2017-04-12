@@ -29,7 +29,7 @@ public class JobImpl implements Job {
     @Override
     @SneakyThrows
     public void process() {
-        NewResource.NewResourceId newResourceId = storage.createNewResource(url);
+        NewResource.Id newResourceId = storage.createNewResource(url);
         DownloadingResourceImpl.Id downloadingResourceId = storage.createDownloadingResource(newResourceId);
         Future<BytesDownloadedResource.Id> future = downloader.download(downloadingResourceId);
         future.get();

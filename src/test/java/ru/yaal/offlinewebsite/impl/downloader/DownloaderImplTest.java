@@ -15,7 +15,7 @@ import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
 import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;
-import ru.yaal.offlinewebsite.impl.storage.SynchronizedInMemoryStorageImpl;
+import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
@@ -33,7 +33,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DownloaderImplTest {
     @Test
     public void download() throws ExecutionException, InterruptedException, IOException {
-        Storage storage = new SynchronizedInMemoryStorageImpl();
+        Storage storage = new SyncInMemoryStorageImpl();
         String content = "how are you";
         Network network = new BytesNetwork(content.getBytes());
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(1);
@@ -42,7 +42,7 @@ public class DownloaderImplTest {
         Downloader downloader = new DownloaderImpl(params);
         String urlStr = "abc";
         SiteUrl url = new SiteUrlImpl(urlStr);
-        NewResource.NewResourceId newResource = storage.createNewResource(url);
+        NewResource.Id newResource = storage.createNewResource(url);
         DownloadingResourceImpl.Id downloadingResource = storage.createDownloadingResource(newResource);
         Future<BytesDownloadedResource.Id> future = downloader.download(downloadingResource);
         BytesDownloadedResource.Id id = future.get();

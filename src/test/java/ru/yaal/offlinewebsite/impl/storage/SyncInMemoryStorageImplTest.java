@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
  * @author Aleksey Yablokov
  */
 public class SyncInMemoryStorageImplTest {
-    private final Storage storage = new SynchronizedInMemoryStorageImpl();
+    private final Storage storage = new SyncInMemoryStorageImpl();
     private final String urlStr = "abc";
     private final SiteUrl url = new SiteUrlImpl(urlStr);
 
@@ -30,20 +30,20 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createNewResource() {
-        NewResource.NewResourceId newResourceId = storage.createNewResource(url);
+        NewResource.Id newResourceId = storage.createNewResource(url);
         assertThat(newResourceId.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createDownloadingResource() {
-        NewResource.NewResourceId newResId = storage.createNewResource(url);
+        NewResource.Id newResId = storage.createNewResource(url);
         DownloadingResourceImpl.Id dingRes = storage.createDownloadingResource(newResId);
         assertThat(dingRes.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createDownloadedResource() {
-        NewResource.NewResourceId newResId = storage.createNewResource(url);
+        NewResource.Id newResId = storage.createNewResource(url);
         DownloadingResourceImpl.Id dingResId = storage.createDownloadingResource(newResId);
         BytesDownloadedResource.Id dedResId = storage.createDownloadedResource(dingResId);
         assertThat(dedResId.getId(), equalTo(urlStr));
@@ -51,8 +51,8 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void getResource() {
-        NewResource.NewResourceId newResId = storage.createNewResource(url);
-        Resource<NewResource.NewResourceId> res = storage.getResource(newResId);
+        NewResource.Id newResId = storage.createNewResource(url);
+        Resource<NewResource.Id> res = storage.getResource(newResId);
         assertNotNull(res);
         assertThat(res.getId().getId(), equalTo(urlStr));
     }
@@ -66,7 +66,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsDownloading() {
-        NewResource.NewResourceId newResId = storage.createNewResource(url);
+        NewResource.Id newResId = storage.createNewResource(url);
         storage.createDownloadingResource(newResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createDownloadingResource(newResId);
@@ -74,7 +74,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsDownloaded() {
-        NewResource.NewResourceId newResId = storage.createNewResource(url);
+        NewResource.Id newResId = storage.createNewResource(url);
         DownloadingResource.Id dingResId = storage.createDownloadingResource(newResId);
         storage.createDownloadedResource(dingResId);
         exception.expect(ResourceAlreadyExistsException.class);

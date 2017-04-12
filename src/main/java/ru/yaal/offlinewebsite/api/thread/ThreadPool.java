@@ -7,5 +7,5 @@ import java.util.concurrent.Future;
  * @author Aleksey Yablokov
  */
 public interface ThreadPool {
-    <V> Future<V> execute(Callable<V> callable);
+    <V> Future<V> submit(Callable<V> callable);
 }

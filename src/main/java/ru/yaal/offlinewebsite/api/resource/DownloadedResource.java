@@ -3,6 +3,7 @@ package ru.yaal.offlinewebsite.api.resource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 import java.io.InputStream;
 
@@ -17,6 +18,7 @@ public interface DownloadedResource<R extends DownloadedResource.Id> extends Res
     @RequiredArgsConstructor
     @Getter
     @EqualsAndHashCode
+    @ToString
     class Id implements ResourceId {
         private final String id;
     }
