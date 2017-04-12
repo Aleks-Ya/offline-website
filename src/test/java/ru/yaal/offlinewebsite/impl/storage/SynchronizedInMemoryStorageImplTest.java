@@ -2,12 +2,11 @@ package ru.yaal.offlinewebsite.impl.storage;
 
 import org.junit.Test;
 import ru.yaal.offlinewebsite.api.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.DownloadedResource;
-import ru.yaal.offlinewebsite.api.resource.DownloadingResource;
-import ru.yaal.offlinewebsite.api.resource.NewResource;
-import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
+import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
@@ -30,15 +29,15 @@ public class SynchronizedInMemoryStorageImplTest {
     @Test
     public void createDownloadingResource() {
         NewResource.NewResourceId newResourceId = storage.createNewResource(url);
-        DownloadingResource.Id downloadingResource = storage.createDownloadingResource(newResourceId);
+        DownloadingResourceImpl.Id downloadingResource = storage.createDownloadingResource(newResourceId);
         assertThat(downloadingResource.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createDownloadedResource() {
         NewResource.NewResourceId newResourceId = storage.createNewResource(url);
-        DownloadingResource.Id downloadingResource = storage.createDownloadingResource(newResourceId);
-        DownloadedResource.Id downloadedResourceId = storage.createDownloadedResource(downloadingResource);
+        DownloadingResourceImpl.Id downloadingResource = storage.createDownloadingResource(newResourceId);
+        BytesDownloadedResource.Id downloadedResourceId = storage.createDownloadedResource(downloadingResource);
         assertThat(downloadedResourceId.getId(), equalTo(urlStr));
     }
 

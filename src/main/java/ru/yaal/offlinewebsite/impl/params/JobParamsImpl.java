@@ -1,17 +1,22 @@
 package ru.yaal.offlinewebsite.impl.params;
 
 import ru.yaal.offlinewebsite.api.SiteUrl;
-import ru.yaal.offlinewebsite.api.ioc.Factory;
+import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.params.JobParams;
+import ru.yaal.offlinewebsite.api.storage.Storage;
 
 /**
  * @author Aleksey Yablokov
  */
 public class JobParamsImpl implements JobParams {
-    private SiteUrl url;
+    private final SiteUrl url;
+    private final Downloader downloader;
+    private final Storage storage;
 
-    public JobParamsImpl(SiteUrl url) {
+    public JobParamsImpl(SiteUrl url, Downloader downloader, Storage storage) {
         this.url = url;
+        this.downloader = downloader;
+        this.storage = storage;
     }
 
     @Override
@@ -20,7 +25,12 @@ public class JobParamsImpl implements JobParams {
     }
 
     @Override
-    public Factory getFactory() {
-        return null;
+    public Downloader getDownloader() {
+        return downloader;
+    }
+
+    @Override
+    public Storage getStorage() {
+        return storage;
     }
 }

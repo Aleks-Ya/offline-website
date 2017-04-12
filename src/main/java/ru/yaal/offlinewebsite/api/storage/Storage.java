@@ -1,10 +1,9 @@
 package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.DownloadedResource;
-import ru.yaal.offlinewebsite.api.resource.DownloadingResource;
-import ru.yaal.offlinewebsite.api.resource.NewResource;
-import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.*;
+import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
+import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;
 
 /**
  * @author Aleksey Yablokov
@@ -14,9 +13,8 @@ public interface Storage {
 
     NewResource.NewResourceId createNewResource(SiteUrl url);
 
-    DownloadedResource.Id createDownloadedResource(
-            DownloadingResource.Id downloadingResourceId);
+    BytesDownloadedResource.Id createDownloadedResource(
+            DownloadingResourceImpl.Id downloadingResourceId);
 
-    DownloadingResource.Id createDownloadingResource(
-            NewResource.NewResourceId newResourceId);
+    DownloadingResourceImpl.Id createDownloadingResource(NewResource.NewResourceId newResId);
 }

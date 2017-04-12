@@ -3,17 +3,19 @@ package ru.yaal.offlinewebsite.api.resource;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.io.InputStream;
+
 /**
  * @author Aleksey Yablokov
  */
-@RequiredArgsConstructor
-@Getter
-public class DownloadedResource<R extends DownloadedResource.Id> implements Resource<R> {
-    private final R id;
+public interface DownloadedResource<R extends DownloadedResource.Id> extends Resource<R> {
+    R getId();
+
+    InputStream getContent();
 
     @RequiredArgsConstructor
     @Getter
-    public static class Id implements ResourceId {
+    class Id implements ResourceId {
         private final String id;
     }
 }
