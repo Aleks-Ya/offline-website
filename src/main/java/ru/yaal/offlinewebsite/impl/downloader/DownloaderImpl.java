@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.downloader;
 
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
-import ru.yaal.offlinewebsite.api.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;

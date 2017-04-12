@@ -1,5 +1,6 @@
 package ru.yaal.offlinewebsite.api.resource;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -15,6 +16,7 @@ public interface DownloadedResource<R extends DownloadedResource.Id> extends Res
 
     @RequiredArgsConstructor
     @Getter
+    @EqualsAndHashCode
     class Id implements ResourceId {
         private final String id;
     }

@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.api.storage;
 
-import ru.yaal.offlinewebsite.api.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
 import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;

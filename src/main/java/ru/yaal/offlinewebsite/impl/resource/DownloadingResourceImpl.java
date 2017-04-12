@@ -1,8 +1,9 @@
 package ru.yaal.offlinewebsite.impl.resource;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.yaal.offlinewebsite.api.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadingResource;
 
 import java.io.OutputStream;
@@ -12,6 +13,7 @@ import java.io.OutputStream;
  */
 @RequiredArgsConstructor
 @Getter
+@EqualsAndHashCode
 public class DownloadingResourceImpl<R extends DownloadingResourceImpl.Id> implements DownloadingResource<R> {
     private final R id;
     private final SiteUrl url;

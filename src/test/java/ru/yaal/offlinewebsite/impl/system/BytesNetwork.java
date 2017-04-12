@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.impl.system;
 
-import ru.yaal.offlinewebsite.api.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.system.Network;
 
 import java.io.ByteArrayInputStream;

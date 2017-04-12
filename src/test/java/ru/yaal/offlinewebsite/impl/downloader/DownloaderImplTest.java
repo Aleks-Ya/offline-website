@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.downloader;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
-import ru.yaal.offlinewebsite.api.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.resource.DownloadedResource;
@@ -10,7 +10,7 @@ import ru.yaal.offlinewebsite.api.resource.NewResource;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
-import ru.yaal.offlinewebsite.impl.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
