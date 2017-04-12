@@ -23,7 +23,7 @@ public class ThreadPoolImpl implements ThreadPool {
     }
 
     @Override
-    public <V> Future<V> submit(Callable<V> callable) {
+    public synchronized <V> Future<V> submit(Callable<V> callable) {
         log.debug("Submit callable");
         if (pool == null) {
             pool = Executors.newFixedThreadPool(size);
