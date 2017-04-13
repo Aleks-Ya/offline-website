@@ -7,10 +7,8 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 /**
  * @author Aleksey Yablokov
  */
-public interface DownloaderParams extends Params {
+public interface HeadRequestParams extends Params {
     Storage getStorage();
 
     Network getNetwork();
-
-    ThreadPool getThreadPool();
 }

@@ -6,17 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 
-import java.io.OutputStream;
-
 /**
  * @author Aleksey Yablokov
  */
-public interface DownloadingResource<R extends DownloadingResource.Id> extends Resource<R> {
+public interface HttpHeadingResource<R extends HttpHeadingResource.Id> extends Resource<R> {
     R getId();
 
     SiteUrl getUrl();
-
-    OutputStream getOutputStream();
 
     @RequiredArgsConstructor
     @Getter
