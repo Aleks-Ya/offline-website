@@ -23,7 +23,6 @@ public class TaskImpl implements Task {
     private final Downloader downloader;
     private final Storage storage;
     private final boolean onlySameDomain;
-    private final SiteUrl rootUrl;
     private final Filter<NewRes> onlySameDomainFilter;
     private final Filter<HeadedRes> sizeFilter;
     private final HeadRequest headRequest;
@@ -34,10 +33,9 @@ public class TaskImpl implements Task {
         url = params.getSiteUrl();
         downloader = params.getDownloader();
         storage = params.getStorage();
-        onlySameDomain = params.onlySameDomain();
-        rootUrl = params.getRootUrl();
-        maxSize = params.maxSize();
-        onlySameDomainFilter = new SameDomainFilter(rootUrl);
+        onlySameDomain = params.isOnlySameDomain();
+        maxSize = params.getMaxSize();
+        onlySameDomainFilter = new SameDomainFilter(params.getRootUrl());
         sizeFilter = new SizeFilter(maxSize);
         headRequest = params.getHeadRequest();
         parser = params.getParser();
@@ -72,8 +70,8 @@ public class TaskImpl implements Task {
 
         DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
         DownloadedRes.Id dedResId = downloader.download(dingResId);
-        ParsingResource.Id pingResId = storage.createParsingRes(dedResId);
-        ParsedResource.Id pedRes = parser.parse(pingResId);
+        ParsingRes.Id pingResId = storage.createParsingRes(dedResId);
+        parser.parse(pingResId);
         return null;
     }
 }

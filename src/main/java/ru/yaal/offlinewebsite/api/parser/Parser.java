@@ -1,12 +1,12 @@
 package ru.yaal.offlinewebsite.api.parser;
 
-import ru.yaal.offlinewebsite.api.resource.ParsedResource;
-import ru.yaal.offlinewebsite.api.resource.ParsingResource;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 
 /**
  * @author Aleksey Yablokov
  */
 public interface Parser {
-    ParsedResource.Id parse(ParsingResource.Id pingResId);
+    ParsedRes.Id parse(ParsingRes.Id pingResId);
 
 }

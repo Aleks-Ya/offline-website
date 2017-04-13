@@ -12,7 +12,7 @@ import java.io.OutputStream;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsingResource<R extends ParsingResource.Id> extends Resource<R> {
+public interface ParsingRes<R extends ParsingRes.Id> extends Resource<R> {
     R getId();
 
     SiteUrl getUrl();

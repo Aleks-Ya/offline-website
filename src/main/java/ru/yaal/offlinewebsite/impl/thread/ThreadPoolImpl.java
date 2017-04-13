@@ -30,4 +30,9 @@ public class ThreadPoolImpl implements ThreadPool {
         }
         return pool.submit(callable);
     }
+
+    @Override
+    public void shutdown() {
+        pool.shutdown();
+    }
 }

@@ -2,24 +2,23 @@ package ru.yaal.offlinewebsite;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.job.Job;
-import ru.yaal.offlinewebsite.api.params.DownloaderParams;
-import ru.yaal.offlinewebsite.api.params.JobParams;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
+import ru.yaal.offlinewebsite.api.params.*;
+import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
+import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.job.JobImpl;
-import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.JobParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
-import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.*;
+import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -38,9 +37,19 @@ public class OfflineWebsite {
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         Downloader downloader = new DownloaderImpl(downloaderParams);
-        JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage);
+        HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
+        HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
+        ParserParams parserParams = new ParserParamsImpl(storage);
+        Parser parser = new ParserImpl(parserParams);
+        JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage, threadPool,
+                headRequest, parser);
         Job job = new JobImpl(jobParams);
         job.process();
+        threadPool.shutdown();
         log.info("Downloading finished: " + url);
+    }
+
+    public static void main(String[] args) throws MalformedURLException {
+        download(new URL("https://logback.qos.ch/documentation.html"));
     }
 }

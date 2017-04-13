@@ -10,7 +10,7 @@ import java.io.InputStream;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsedResource<R extends ParsedResource.Id> extends Resource<R> {
+public interface ParsedRes<R extends ParsedRes.Id> extends Resource<R> {
     R getId();
 
     InputStream getContent();

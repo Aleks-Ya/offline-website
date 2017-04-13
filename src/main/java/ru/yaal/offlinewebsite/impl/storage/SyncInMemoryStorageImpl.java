@@ -2,6 +2,7 @@ package ru.yaal.offlinewebsite.impl.storage;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.*;
@@ -10,8 +11,12 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.resource.*;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksey Yablokov
@@ -85,13 +90,27 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized ParsingResource.Id createParsingRes(DownloadedRes.Id dedResId) {
-        return null;
+    public synchronized ParsingRes.Id createParsingRes(DownloadedRes.Id dedResId) {
+        ParsingRes.Id pingResId = new ParsingRes.Id(dedResId.getId());
+        DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
+        OutputStream os = new ByteArrayOutputStream();
+        ParsingRes pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent(), os);
+        data.remove(dedResId);
+        data.put(pingResId, pingRes);
+        return pingResId;
     }
 
     @Override
-    public synchronized ParsedResource.Id createParsedRes(ParsingResource.Id dedResId) {
-        return null;
+    @SneakyThrows
+    public synchronized ParsedRes.Id createParsedRes(ParsingRes.Id dedResId) {
+        ParsedRes.Id pedResId = new ParsedRes.Id(dedResId.getId());
+        ParsingRes pingRes = (ParsingRes) data.get(dedResId);
+        InputStream is = pingRes.getDownloadedContent();
+        byte[] bytes = IOUtils.toByteArray(is);
+        ParsedRes pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), bytes);
+        data.remove(dedResId);
+        data.put(pedResId, pedRes);
+        return pedResId;
     }
 
     @Override
@@ -101,6 +120,15 @@ public class SyncInMemoryStorageImpl implements Storage {
         RejectedRes<RejectedRes.Id> rejRes = new RejectedResImpl<>(rejResId, res.getUrl());
         log.debug("RejectedRes is created: " + rejRes.getId());
         return rejResId;
+    }
+
+    @Override
+    public synchronized List<NewRes.Id> getNewResourceIds() {
+        return data.values().stream()
+                .filter(res -> res instanceof NewRes)
+                .map(res -> (NewRes) res)
+                .map(NewRes::getId)
+                .collect(Collectors.toList());
     }
 
     private void checkAlreadyExists(Resource.ResourceId id) {

@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.ParsingResource;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,7 +15,7 @@ import java.io.OutputStream;
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class ParsingResImpl<R extends ParsingResource.Id> implements ParsingResource<R> {
+public class ParsingResImpl<R extends ParsingRes.Id> implements ParsingRes<R> {
     private final R id;
     private final SiteUrl url;
     private final InputStream downloadedContent;

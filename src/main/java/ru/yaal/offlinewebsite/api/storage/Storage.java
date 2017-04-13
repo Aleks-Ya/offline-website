@@ -4,6 +4,8 @@ import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.*;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -20,9 +22,11 @@ public interface Storage {
 
     DownloadedRes.Id createDownloadedResource(DownloadingRes.Id dingResId);
 
-    ParsingResource.Id createParsingRes(DownloadedRes.Id dedResId);
+    ParsingRes.Id createParsingRes(DownloadedRes.Id dedResId);
 
-    ParsedResource.Id createParsedRes(ParsingResource.Id dedResId);
+    ParsedRes.Id createParsedRes(ParsingRes.Id dedResId);
 
     RejectedRes.Id createRejectedRes(Resource.ResourceId resId);
+
+    List<NewRes.Id> getNewResourceIds();
 }

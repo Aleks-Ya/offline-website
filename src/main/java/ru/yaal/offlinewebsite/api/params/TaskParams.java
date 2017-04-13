@@ -17,10 +17,10 @@ public interface TaskParams extends Params {
 
     Storage getStorage();
 
-    boolean onlySameDomain();
+    boolean isOnlySameDomain();
 
     HeadRequest getHeadRequest();
 
-    long maxSize();
+    long getMaxSize();
     Parser getParser();
 }

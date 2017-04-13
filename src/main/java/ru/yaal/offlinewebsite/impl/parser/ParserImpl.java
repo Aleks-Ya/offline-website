@@ -7,8 +7,8 @@ import org.htmlcleaner.SimpleHtmlSerializer;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
-import ru.yaal.offlinewebsite.api.resource.ParsedResource;
-import ru.yaal.offlinewebsite.api.resource.ParsingResource;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 import java.io.InputStream;
@@ -29,13 +29,13 @@ public class ParserImpl implements Parser {
 
     @Override
     @SneakyThrows
-    public ParsedResource.Id parse(ParsingResource.Id pingResId) {
-        ParsingResource<ParsingResource.Id> pingRes = storage.getResource(pingResId);
+    public ParsedRes.Id parse(ParsingRes.Id pingResId) {
+        ParsingRes<ParsingRes.Id> pingRes = storage.getResource(pingResId);
         InputStream is = pingRes.getDownloadedContent();
         TagNode node = cleaner.clean(is);
         OutputStream os = pingRes.getParsedContentOutputStream();
 
-        ParsedResource.Id pedRes = storage.createParsedRes(pingResId);
+        ParsedRes.Id pedRes = storage.createParsedRes(pingResId);
         return pedRes;
     }
 }
