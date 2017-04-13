@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.resource;
 
 import lombok.EqualsAndHashCode;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.DownloadedResource;
+import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -11,12 +11,12 @@ import java.io.InputStream;
  * @author Aleksey Yablokov
  */
 @EqualsAndHashCode(callSuper = true)
-public class BytesDownloadedResource<R extends BytesDownloadedResource.Id>
+public class BytesDownloadedRes<R extends BytesDownloadedRes.Id>
         extends AbstractResource<R>
-        implements DownloadedResource<R> {
+        implements DownloadedRes<R> {
     private final byte[] bytes;
 
-    public BytesDownloadedResource(R id, SiteUrl url, byte[] bytes) {
+    public BytesDownloadedRes(R id, SiteUrl url, byte[] bytes) {
         super(id, url);
         this.bytes = bytes;
     }

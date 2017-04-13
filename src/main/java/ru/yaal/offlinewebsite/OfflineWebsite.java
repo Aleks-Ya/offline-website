@@ -36,7 +36,7 @@ public class OfflineWebsite {
         int poolSize = 10;
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(poolSize);
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
-        DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network, threadPool);
+        DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         Downloader downloader = new DownloaderImpl(downloaderParams);
         JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage);
         Job job = new JobImpl(jobParams);

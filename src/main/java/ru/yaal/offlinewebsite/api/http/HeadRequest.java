@@ -1,11 +1,11 @@
 package ru.yaal.offlinewebsite.api.http;
 
-import ru.yaal.offlinewebsite.api.resource.HttpHeadedResource;
-import ru.yaal.offlinewebsite.api.resource.HttpHeadingResource;
+import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 
 /**
  * @author Aleksey Yablokov
  */
 public interface HeadRequest {
-    HttpHeadedResource.Id requestHead(HttpHeadingResource.Id hingResId);
+    HeadedRes.Id requestHead(HeadingRes.Id hingResId);
 }

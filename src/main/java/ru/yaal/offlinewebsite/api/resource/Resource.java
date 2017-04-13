@@ -10,5 +10,6 @@ public interface Resource<R extends Resource.ResourceId> {
     SiteUrl getUrl();
 
     interface ResourceId {
+        String getId();
     }
 }

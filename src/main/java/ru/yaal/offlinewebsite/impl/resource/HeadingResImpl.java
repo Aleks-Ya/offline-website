@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.HttpHeadingResource;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 
 /**
  * @author Aleksey Yablokov
@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.api.resource.HttpHeadingResource;
 @RequiredArgsConstructor
 @Getter
 @EqualsAndHashCode
-public class HeadingResImpl<R extends HttpHeadingResource.Id> implements HttpHeadingResource<R> {
+public class HeadingResImpl<R extends HeadingRes.Id> implements HeadingRes<R> {
     private final R id;
     private final SiteUrl url;
 }

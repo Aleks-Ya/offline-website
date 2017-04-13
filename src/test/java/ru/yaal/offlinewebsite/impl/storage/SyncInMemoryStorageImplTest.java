@@ -4,14 +4,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.DownloadingResource;
-import ru.yaal.offlinewebsite.api.resource.NewResource;
-import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
+import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
-import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
-import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;
+import ru.yaal.offlinewebsite.impl.resource.DownloadingResImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
@@ -30,29 +28,39 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createNewResource() {
-        NewResource.Id newResourceId = storage.createNewResource(url);
+        NewRes.Id newResourceId = storage.createNewResource(url);
         assertThat(newResourceId.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createDownloadingResource() {
-        NewResource.Id newResId = storage.createNewResource(url);
-        DownloadingResourceImpl.Id dingRes = storage.createDownloadingResource(newResId);
-        assertThat(dingRes.getId(), equalTo(urlStr));
+        DownloadingRes.Id dingResId = makeDownloadingResId();
+        assertThat(dingResId.getId(), equalTo(urlStr));
+    }
+
+    private DownloadingRes.Id makeDownloadingResId() {
+        HeadedRes.Id hedResId = makeHeadedResId();
+        return storage.createDownloadingResource(hedResId);
+    }
+
+    private HeadedRes.Id makeHeadedResId() {
+        NewRes.Id newResId = storage.createNewResource(url);
+        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
+        HttpInfoImpl httpInfo = new HttpInfoImpl(200, 1000, 1);
+        return storage.createHeadedResource(hingResId, httpInfo);
     }
 
     @Test
     public void createDownloadedResource() {
-        NewResource.Id newResId = storage.createNewResource(url);
-        DownloadingResourceImpl.Id dingResId = storage.createDownloadingResource(newResId);
-        BytesDownloadedResource.Id dedResId = storage.createDownloadedResource(dingResId);
+        DownloadingResImpl.Id dingResId = makeDownloadingResId();
+        DownloadedRes.Id dedResId = storage.createDownloadedResource(dingResId);
         assertThat(dedResId.getId(), equalTo(urlStr));
     }
 
     @Test
     public void getResource() {
-        NewResource.Id newResId = storage.createNewResource(url);
-        Resource<NewResource.Id> res = storage.getResource(newResId);
+        NewRes.Id newResId = storage.createNewResource(url);
+        Resource<NewRes.Id> res = storage.getResource(newResId);
         assertNotNull(res);
         assertThat(res.getId().getId(), equalTo(urlStr));
     }
@@ -66,16 +74,16 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsDownloading() {
-        NewResource.Id newResId = storage.createNewResource(url);
-        storage.createDownloadingResource(newResId);
+        HeadedRes.Id hedResId = makeHeadedResId();
+        storage.createDownloadingResource(hedResId);
         exception.expect(ResourceAlreadyExistsException.class);
-        storage.createDownloadingResource(newResId);
+        storage.createDownloadingResource(hedResId);
     }
 
     @Test
     public void alreadyExistsDownloaded() {
-        NewResource.Id newResId = storage.createNewResource(url);
-        DownloadingResource.Id dingResId = storage.createDownloadingResource(newResId);
+        HeadedRes.Id hedResId = makeHeadedResId();
+        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
         storage.createDownloadedResource(dingResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createDownloadedResource(dingResId);

@@ -10,17 +10,19 @@ import ru.yaal.offlinewebsite.api.resource.*;
 public interface Storage {
     <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id);
 
-    NewResource.Id createNewResource(SiteUrl url);
+    NewRes.Id createNewResource(SiteUrl url);
 
-    HttpHeadingResource.Id createHeadingResource(NewResource.Id newResId);
+    HeadingRes.Id createHeadingResource(NewRes.Id newResId);
 
-    HttpHeadedResource.Id createHeadedResource(HttpHeadingResource.Id hingResId, HttpInfo httpInfo);
+    HeadedRes.Id createHeadedResource(HeadingRes.Id hingResId, HttpInfo httpInfo);
 
-    DownloadingResource.Id createDownloadingResource(NewResource.Id newResId);
+    DownloadingRes.Id createDownloadingResource(HeadedRes.Id newResId);
 
-    DownloadedResource.Id createDownloadedResource(DownloadingResource.Id dingResId);
+    DownloadedRes.Id createDownloadedResource(DownloadingRes.Id dingResId);
 
-    ParsingResource.Id createParsingRes(DownloadedResource.Id dedResId);
+    ParsingResource.Id createParsingRes(DownloadedRes.Id dedResId);
 
     ParsedResource.Id createParsedRes(ParsingResource.Id dedResId);
+
+    RejectedRes.Id createRejectedRes(Resource.ResourceId resId);
 }

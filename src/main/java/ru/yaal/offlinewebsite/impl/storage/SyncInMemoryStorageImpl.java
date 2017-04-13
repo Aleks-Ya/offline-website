@@ -7,8 +7,7 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedResource;
-import ru.yaal.offlinewebsite.impl.resource.DownloadingResourceImpl;
+import ru.yaal.offlinewebsite.impl.resource.*;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -20,69 +19,88 @@ import java.util.Map;
 @Slf4j
 public class SyncInMemoryStorageImpl implements Storage {
     private final Map<Resource.ResourceId, Resource> data = new HashMap<>();
-    private final Map<DownloadingResource.Id, ByteArrayOutputStream> dingRess = new HashMap<>();
+    private final Map<DownloadingRes.Id, ByteArrayOutputStream> dingRess = new HashMap<>();
 
     @Override
-    public <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id) {
+    public synchronized <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id) {
         return (R) data.get(id);
     }
 
     @Override
-    public synchronized NewResource.Id createNewResource(SiteUrl url) {
-        NewResource.Id newResId = new NewResource.Id(url.getUrl());
+    public synchronized NewRes.Id createNewResource(SiteUrl url) {
+        NewRes.Id newResId = new NewRes.Id(url.getUrl());
         checkAlreadyExists(newResId);
-        NewResource newRes = new NewResource<>(newResId, url);
+        NewRes newRes = new NewRes<>(newResId, url);
         data.put(newRes.getId(), newRes);
-        log.debug("NewResource is created: " + newResId);
+        log.debug("NewRes is created: " + newResId);
         return newResId;
     }
 
     @Override
-    public HttpHeadingResource.Id createHeadingResource(NewResource.Id newResId) {
-        return null;
+    public synchronized HeadingRes.Id createHeadingResource(NewRes.Id newResId) {
+        HeadingRes.Id hingResId = new HeadingRes.Id(newResId.getId());
+        NewRes newRes = (NewRes) data.get(newResId);
+        HeadingRes hingRes = new HeadingResImpl<>(hingResId, newRes.getUrl());
+        data.remove(newResId);
+        data.put(hingResId, hingRes);
+        return hingResId;
     }
 
     @Override
-    public HttpHeadedResource.Id createHeadedResource(HttpHeadingResource.Id hingResId, HttpInfo httpInfo) {
-        return null;
+    public synchronized HeadedRes.Id createHeadedResource(HeadingRes.Id hingResId, HttpInfo httpInfo) {
+        HeadedRes.Id hedResId = new HeadedRes.Id(hingResId.getId());
+        HeadingRes hingRes = (HeadingRes) data.get(hingResId);
+        HeadedRes hedRes = new HeadedResImpl<>(hedResId, hingRes.getUrl(), httpInfo);
+        data.remove(hingResId);
+        data.put(hedResId, hedRes);
+        return hedResId;
     }
 
     @Override
-    public synchronized DownloadingResource.Id createDownloadingResource(NewResource.Id newResId) {
-        NewResource newRes = (NewResource) data.get(newResId);
-        DownloadingResource.Id dingResId = new DownloadingResource.Id(newResId.getId());
+    public synchronized DownloadingRes.Id createDownloadingResource(HeadedRes.Id hedResId) {
+        HeadedRes newRes = (HeadedRes) data.get(hedResId);
+        DownloadingRes.Id dingResId = new DownloadingRes.Id(hedResId.getId());
         checkAlreadyExists(dingResId);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         dingRess.put(dingResId, os);
-        DownloadingResource dingRes = new DownloadingResourceImpl<>(dingResId, newRes.getUrl(), os);
-        data.remove(newResId);
+        DownloadingRes dingRes = new DownloadingResImpl<>(dingResId, newRes.getUrl(), os);
+        data.remove(hedResId);
         data.put(dingRes.getId(), dingRes);
-        log.debug("DownloadingResource is created: " + dingResId);
+        log.debug("DownloadingRes is created: " + dingResId);
         return dingResId;
     }
 
     @Override
     @SneakyThrows
-    public synchronized DownloadedResource.Id createDownloadedResource(DownloadingResource.Id dingResId) {
-        DownloadedResource.Id dedResId = new BytesDownloadedResource.Id(dingResId.getId());
+    public synchronized DownloadedRes.Id createDownloadedResource(DownloadingRes.Id dingResId) {
+        DownloadedRes.Id dedResId = new BytesDownloadedRes.Id(dingResId.getId());
         checkAlreadyExists(dedResId);
-        DownloadingResource<DownloadingResource.Id> dingRes = getResource(dingResId);
+        DownloadingRes<DownloadingRes.Id> dingRes = getResource(dingResId);
         byte[] bytes = dingRess.get(dingResId).toByteArray();
-        DownloadedResource dedResource = new BytesDownloadedResource<>(dedResId, dingRes.getUrl(), bytes);
+        DownloadedRes dedResource = new BytesDownloadedRes<>(dedResId, dingRes.getUrl(), bytes);
         data.remove(dingResId);
         data.put(dedResId, dedResource);
-        log.debug("BytesDownloadedResource is created: " + dedResId);
+        log.debug("BytesDownloadedRes is created: " + dedResId);
         return dedResId;
     }
 
     @Override
-    public ParsingResource.Id createParsingRes(DownloadedResource.Id dedResId) {
+    public synchronized ParsingResource.Id createParsingRes(DownloadedRes.Id dedResId) {
         return null;
     }
 
     @Override
-    public ParsedResource.Id createParsedRes(ParsingResource.Id dedResId) {
+    public synchronized ParsedResource.Id createParsedRes(ParsingResource.Id dedResId) {
         return null;
+    }
+
+    @Override
+    public synchronized RejectedRes.Id createRejectedRes(Resource.ResourceId resId) {
+        RejectedRes.Id rejResId = new RejectedRes.Id(resId.getId());
+        Resource res = data.get(resId);
+        RejectedRes<RejectedRes.Id> rejRes = new RejectedResImpl<>(rejResId, res.getUrl());
+        log.debug("RejectedRes is created: " + rejRes.getId());
+        return rejResId;
     }
 
     private void checkAlreadyExists(Resource.ResourceId id) {

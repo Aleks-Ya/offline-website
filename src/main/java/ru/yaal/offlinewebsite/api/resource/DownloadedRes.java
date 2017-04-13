@@ -4,18 +4,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+
+import java.io.InputStream;
 
 /**
  * @author Aleksey Yablokov
  */
-public interface HttpHeadedResource<R extends HttpHeadedResource.Id> extends Resource<R> {
+public interface DownloadedRes<R extends DownloadedRes.Id> extends Resource<R> {
     R getId();
 
-    SiteUrl getUrl();
-
-    HttpInfo getHttpInfo();
+    InputStream getContent();
 
     @RequiredArgsConstructor
     @Getter
