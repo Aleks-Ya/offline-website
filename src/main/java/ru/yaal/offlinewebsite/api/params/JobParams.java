@@ -10,10 +10,15 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
  * @author Aleksey Yablokov
  */
 public interface JobParams extends Params {
-    SiteUrl getSiteUrl();
+    SiteUrl getRootSiteUrl();
+
     Downloader getDownloader();
+
     Storage getStorage();
+
     ThreadPool getThreadPool();
+
     HeadRequest getHeadRequest();
+
     Parser getParser();
 }

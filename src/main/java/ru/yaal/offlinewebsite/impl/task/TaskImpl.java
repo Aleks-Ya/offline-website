@@ -5,7 +5,6 @@ import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.http.HeadRequest;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.TaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.*;
@@ -19,18 +18,18 @@ import ru.yaal.offlinewebsite.impl.filter.SizeFilter;
  */
 @Slf4j
 public class TaskImpl implements Task {
-    private final SiteUrl url;
+    private final HeadingRes.Id hingResId;
     private final Downloader downloader;
     private final Storage storage;
     private final boolean onlySameDomain;
-    private final Filter<NewRes> onlySameDomainFilter;
+    private final Filter<HeadingRes> onlySameDomainFilter;
     private final Filter<HeadedRes> sizeFilter;
     private final HeadRequest headRequest;
     private final long maxSize;
     private final Parser parser;
 
     public TaskImpl(TaskParams params) {
-        url = params.getSiteUrl();
+        hingResId = params.getHingResId();
         downloader = params.getDownloader();
         storage = params.getStorage();
         onlySameDomain = params.isOnlySameDomain();
@@ -43,27 +42,25 @@ public class TaskImpl implements Task {
 
     @Override
     public Void call() throws Exception {
-        NewRes.Id newResId = storage.createNewResource(url);
-
-        NewRes<NewRes.Id> newRes = storage.getResource(newResId);
+        HeadingRes<HeadingRes.Id> hingRes = storage.getResource(hingResId);
         if (onlySameDomain) {
-            FilterDecision decision = onlySameDomainFilter.filter(newRes);
+            FilterDecision decision = onlySameDomainFilter.filter(hingRes);
             if (!decision.isAccepted()) {
                 log.debug("Reject resource: " + decision.getMessage());
-                storage.createRejectedRes(newResId);
+                storage.createRejectedRes(hingResId);
                 return null;
             }
         }
 
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
         HeadedRes.Id hedResId = headRequest.requestHead(hingResId);
         HeadedRes<HeadedRes.Id> hedRes = storage.getResource(hedResId);
         if (maxSize > 0) {
             FilterDecision decision = sizeFilter.filter(hedRes);
             if (!decision.isAccepted()) {
                 log.debug("Skip resource by $s (maxSize=%d, resource size=%d: $s",
-                        sizeFilter.getClass().getSimpleName(), maxSize, hedRes.getHttpInfo().getContentLength(), newResId);
-                storage.createRejectedRes(newResId);
+                        sizeFilter.getClass().getSimpleName(), maxSize,
+                        hedRes.getHttpInfo().getContentLength(), hingResId);
+                storage.createRejectedRes(hingResId);
                 return null;
             }
         }

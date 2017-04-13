@@ -4,14 +4,14 @@ import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 
 import java.net.URL;
 
 /**
  * @author Aleksey Yablokov
  */
-public class SameDomainFilter implements Filter<NewRes> {
+public class SameDomainFilter implements Filter<HeadingRes> {
     private final String rootHost;
 
     @SneakyThrows
@@ -21,10 +21,10 @@ public class SameDomainFilter implements Filter<NewRes> {
 
     @Override
     @SneakyThrows
-    public FilterDecision filter(NewRes newRes) {
-        boolean accepted = new URL(newRes.getUrl().getUrl()).getHost().equals(rootHost);
+    public FilterDecision filter(HeadingRes hingRes) {
+        boolean accepted = new URL(hingRes.getUrl().getUrl()).getHost().equals(rootHost);
         if (!accepted) {
-            return new NegativeDecision("%s: Resource %s rejected", getClass().getSimpleName(), newRes.getId());
+            return new NegativeDecision("%s: Resource %s rejected", getClass().getSimpleName(), hingRes.getId());
         }
         return PositiveDecision.INSTANCE;
     }

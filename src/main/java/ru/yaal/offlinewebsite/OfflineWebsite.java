@@ -41,8 +41,7 @@ public class OfflineWebsite {
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
         ParserParams parserParams = new ParserParamsImpl(storage);
         Parser parser = new ParserImpl(parserParams);
-        JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage, threadPool,
-                headRequest, parser);
+        JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage, threadPool, headRequest, parser);
         Job job = new JobImpl(jobParams);
         job.process();
         threadPool.shutdown();
