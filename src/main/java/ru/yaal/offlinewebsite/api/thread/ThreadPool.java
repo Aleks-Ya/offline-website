@@ -10,4 +10,6 @@ public interface ThreadPool {
     <V> Future<V> submit(Callable<V> callable);
 
     void shutdown();
+
+    boolean isShutdown();
 }

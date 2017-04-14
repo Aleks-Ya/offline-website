@@ -60,6 +60,7 @@ public class JobImpl implements Job {
             } else {
                 removeFinishedFutures();
                 if (futures.isEmpty()) {
+                    threadPool.shutdown();
                     break;
                 }
             }
@@ -76,6 +77,6 @@ public class JobImpl implements Job {
     private void submitTask(HeadingRes.Id hingResId) {
         TaskParams params = new TaskParamsImpl(rootUrl, hingResId, downloader, storage,
                 true, headRequest, 1_000_000, parser);
-        threadPool.submit(new TaskImpl(params));
+        futures.add(threadPool.submit(new TaskImpl(params)));
     }
 }

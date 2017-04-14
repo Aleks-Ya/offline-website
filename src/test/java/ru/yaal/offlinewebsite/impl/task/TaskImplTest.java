@@ -19,28 +19,25 @@ import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 
+import static ru.yaal.offlinewebsite.impl.TestHelper.makeTask;
+
 /**
  * @author Aleksey Yablokov
  */
 public class TaskImplTest {
     @Test
     public void call() throws Exception {
-        SiteUrl rootSiteUrl = new SiteUrlImpl("http://ya.ru");
-        Storage storage = new SyncInMemoryStorageImpl();
-        NewRes.Id newResId = storage.createNewResource(rootSiteUrl);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
-        HttpInfo httpInfo = new HttpInfoImpl(200, 100_000, 2000000);
-        Network network = new BytesNetwork("<html></html>".getBytes(), httpInfo);
-        DownloaderParams params = new DownloaderParamsImpl(storage, network);
-        Downloader downloader = new DownloaderImpl(params);
-        HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
-        HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
-        ParserParams parserParams = new ParserParamsImpl(storage);
-        Parser parser = new ParserImpl(parserParams);
-        TaskParams taskParams = new TaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
-                true, headRequest, 1000000, parser);
-        Task task = new TaskImpl(taskParams);
+        String rootUrl = "http://ya.ru";
+        String html = "<html></html>";
+        int responseCode = 200;
+        int contentLength = 100_000;
+        int lastModified = 2000000;
+        boolean onlySameDomain = true;
+        int maxSize = 1000000;
+
+        Task task = makeTask(rootUrl, html, responseCode, contentLength, lastModified, onlySameDomain, maxSize);
         task.call();
     }
+
 
 }

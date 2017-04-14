@@ -1,13 +1,11 @@
 package ru.yaal.offlinewebsite.impl.thread;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 /**
  * @author Aleksey Yablokov
@@ -32,7 +30,17 @@ public class ThreadPoolImpl implements ThreadPool {
     }
 
     @Override
+    @SneakyThrows
     public void shutdown() {
         pool.shutdown();
+        boolean successful = pool.awaitTermination(5, TimeUnit.SECONDS);
+        if (!successful) {
+            throw new RuntimeException("ThreadPool terminated");
+        }
+    }
+
+    @Override
+    public boolean isShutdown() {
+        return pool.isShutdown();
     }
 }

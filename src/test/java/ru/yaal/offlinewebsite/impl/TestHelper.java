@@ -1,15 +1,15 @@
-package ru.yaal.offlinewebsite.impl.job;
+package ru.yaal.offlinewebsite.impl;
 
-import org.junit.Test;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.*;
 import ru.yaal.offlinewebsite.api.parser.Parser;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
-import ru.yaal.offlinewebsite.api.thread.ThreadPool;
+import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
@@ -17,24 +17,19 @@ import ru.yaal.offlinewebsite.impl.params.*;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
-import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
-
-import static org.junit.Assert.assertTrue;
+import ru.yaal.offlinewebsite.impl.task.TaskImpl;
 
 /**
  * @author Aleksey Yablokov
  */
-public class JobImplTest {
-    @Test
-    public void process() {
-        String rootUrl = "http://ya.ru";
-        String html = "<html></html>";
-        int responseCode = 200;
-        int contentLength = 100_000;
-        int lastModified = 2000000;
+public abstract class TestHelper {
+    public static Task makeTask(String rootUrl, String html, int responseCode,
+                                int contentLength, int lastModified, boolean onlySameDomain, int maxSize) {
 
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootUrl);
         Storage storage = new SyncInMemoryStorageImpl();
+        NewRes.Id newResId = storage.createNewResource(rootSiteUrl);
+        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
         HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);
         Network network = new BytesNetwork(html.getBytes(), httpInfo);
         DownloaderParams params = new DownloaderParamsImpl(storage, network);
@@ -43,13 +38,9 @@ public class JobImplTest {
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
         ParserParams parserParams = new ParserParamsImpl(storage);
         Parser parser = new ParserImpl(parserParams);
-        ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(3);
-        ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
-
-        JobParams jobParams = new JobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
-        Job job = new JobImpl(jobParams);
-        job.process();
-        assertTrue(threadPool.isShutdown());
+        TaskParams taskParams = new TaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
+                onlySameDomain, headRequest, maxSize, parser);
+        return new TaskImpl(taskParams);
     }
 
 }
