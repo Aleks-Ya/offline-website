@@ -8,7 +8,7 @@
 
     <appender name="stdout_short" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%logger{0}: %msg%n</pattern>
+            <pattern>%-5level %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
 
