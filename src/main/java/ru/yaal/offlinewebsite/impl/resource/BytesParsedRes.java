@@ -1,11 +1,10 @@
 package ru.yaal.offlinewebsite.impl.resource;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 /**
  * @author Aleksey Yablokov
@@ -13,16 +12,13 @@ import java.io.InputStream;
 @EqualsAndHashCode(callSuper = true)
 public class BytesParsedRes<R extends ParsedRes.Id>
         extends AbstractResource<R>
-        implements ParsedRes<R> {
-    private final byte[] bytes;
+        implements ParsedRes<TagNode, R> {
 
-    public BytesParsedRes(R id, SiteUrl url, byte[] bytes) {
+    @Getter
+    private final TagNode parsedContent;
+
+    public BytesParsedRes(R id, SiteUrl url, TagNode parsedContent) {
         super(id, url);
-        this.bytes = bytes;
-    }
-
-    @Override
-    public InputStream getContent() {
-        return new ByteArrayInputStream(bytes);
+        this.parsedContent = parsedContent;
     }
 }

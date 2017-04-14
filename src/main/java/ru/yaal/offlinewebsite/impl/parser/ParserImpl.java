@@ -13,8 +13,6 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -33,7 +31,7 @@ public class ParserImpl implements Parser {
     @Override
     @SneakyThrows
     public ParsedRes.Id parse(ParsingRes.Id pingResId) {
-        ParsingRes<ParsingRes.Id> pingRes = storage.getResource(pingResId);
+        ParsingRes<TagNode, ParsingRes.Id> pingRes = storage.getResource(pingResId);
         InputStream is = pingRes.getDownloadedContent();
         TagNode rootNode = cleaner.clean(is);
         List<? extends TagNode> hrefs = rootNode.getElementListByName("a", true);
@@ -41,11 +39,7 @@ public class ParserImpl implements Parser {
         hrefs.stream()
                 .map(node -> new SiteUrlImpl(node.getAttributeByName("href")))
                 .forEach(storage::createNewResource);
-        OutputStream os = pingRes.getParsedContentOutputStream();
-//        ObjectOutputStream oos = new ObjectOutputStream(os);
-//        oos.writeObject(rootNode);
-//        oos.close();
-
+        pingRes.setParsedContent(rootNode);
         ParsedRes.Id pedResId = storage.createParsedRes(pingResId);
         log.debug("Resource is parsed: " + pedResId);
         return pedResId;

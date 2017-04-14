@@ -10,10 +10,10 @@ import java.io.InputStream;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsedRes<R extends ParsedRes.Id> extends Resource<R> {
+public interface ParsedRes<C, R extends ParsedRes.Id> extends Resource<R> {
     R getId();
 
-    InputStream getContent();
+    C getParsedContent();
 
     @RequiredArgsConstructor
     @Getter

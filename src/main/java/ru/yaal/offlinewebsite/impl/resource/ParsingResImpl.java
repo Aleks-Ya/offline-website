@@ -2,22 +2,29 @@ package ru.yaal.offlinewebsite.impl.resource;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author Aleksey Yablokov
  */
-@RequiredArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Getter
-@EqualsAndHashCode
-public class ParsingResImpl<R extends ParsingRes.Id> implements ParsingRes<R> {
-    private final R id;
-    private final SiteUrl url;
+public class ParsingResImpl<R extends ParsingRes.Id>
+        extends AbstractResource<R>
+        implements ParsingRes<TagNode, R> {
+
     private final InputStream downloadedContent;
-    private final OutputStream parsedContentOutputStream;
+
+    @Setter
+    private TagNode parsedContent;
+
+    public ParsingResImpl(R id, SiteUrl url, InputStream downloadedContent) {
+        super(id, url);
+        this.downloadedContent = downloadedContent;
+    }
 }

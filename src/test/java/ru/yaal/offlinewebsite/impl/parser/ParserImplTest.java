@@ -1,7 +1,7 @@
 package ru.yaal.offlinewebsite.impl.parser;
 
-import com.sun.deploy.net.HttpRequest;
 import org.apache.commons.io.IOUtils;
+import org.htmlcleaner.TagNode;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
@@ -16,7 +16,6 @@ import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -51,10 +50,9 @@ public class ParserImplTest {
         assertThat(newResIds, hasSize(1));
         assertThat(newResIds.get(0).getId(), equalTo("http://ya.ru/link"));
 
-
-//        ParsedRes<ParsedRes.Id> pedRes = storage.getResource(pedResId);
-//        String actHtml = IOUtils.toString(pedRes.getContent(), Charset.defaultCharset());
-//        assertThat(actHtml, equalTo(html));
+        ParsedRes<TagNode, ParsedRes.Id> pedRes = storage.getResource(pedResId);
+        TagNode hrefNode = pedRes.getParsedContent();
+        assertThat(hrefNode.getName(), equalTo("html"));
     }
 
 }

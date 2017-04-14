@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.storage;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
+import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.*;
@@ -11,8 +11,6 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.resource.*;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -101,8 +99,7 @@ public class SyncInMemoryStorageImpl implements Storage {
         ParsingRes.Id pingResId = new ParsingRes.Id(dedResId.getId());
         checkAlreadyExists(pingResId);
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
-        OutputStream os = new ByteArrayOutputStream();
-        ParsingRes pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent(), os);
+        ParsingRes pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
         return pingResId;
@@ -113,10 +110,8 @@ public class SyncInMemoryStorageImpl implements Storage {
     public synchronized ParsedRes.Id createParsedRes(ParsingRes.Id dedResId) {
         ParsedRes.Id pedResId = new ParsedRes.Id(dedResId.getId());
         checkAlreadyExists(pedResId);
-        ParsingRes pingRes = (ParsingRes) data.get(dedResId);
-        InputStream is = pingRes.getDownloadedContent();
-        byte[] bytes = IOUtils.toByteArray(is);
-        ParsedRes pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), bytes);
+        ParsingRes<TagNode, ParsingRes.Id> pingRes = (ParsingRes<TagNode, ParsingRes.Id>) data.get(dedResId);
+        ParsedRes<TagNode, ParsedRes.Id> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
         data.remove(dedResId);
         data.put(pedResId, pedRes);
         return pedResId;

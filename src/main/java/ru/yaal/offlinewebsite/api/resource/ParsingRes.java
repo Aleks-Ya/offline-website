@@ -7,19 +7,20 @@ import lombok.ToString;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsingRes<R extends ParsingRes.Id> extends Resource<R> {
+public interface ParsingRes<C, R extends ParsingRes.Id> extends Resource<R> {
     R getId();
 
     SiteUrl getUrl();
 
     InputStream getDownloadedContent();
 
-    OutputStream getParsedContentOutputStream();
+    void setParsedContent(C content);
+
+    C getParsedContent();
 
     @RequiredArgsConstructor
     @Getter
