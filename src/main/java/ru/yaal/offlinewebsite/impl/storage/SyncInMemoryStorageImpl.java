@@ -32,6 +32,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
+    public <ID extends Resource.ResourceId> boolean hasResource(ID id) {
+        return getResource(id) != null;
+    }
+
+    @Override
     public synchronized NewRes.Id createNewResource(SiteUrl url) {
         NewRes.Id newResId = new NewRes.Id(url.getUrl());
         checkAlreadyExists(newResId);
@@ -44,6 +49,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized HeadingRes.Id createHeadingResource(NewRes.Id newResId) {
         HeadingRes.Id hingResId = new HeadingRes.Id(newResId.getId());
+        checkAlreadyExists(hingResId);
         NewRes newRes = (NewRes) data.get(newResId);
         HeadingRes hingRes = new HeadingResImpl<>(hingResId, newRes.getUrl());
         data.remove(newResId);
@@ -54,6 +60,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized HeadedRes.Id createHeadedResource(HeadingRes.Id hingResId, HttpInfo httpInfo) {
         HeadedRes.Id hedResId = new HeadedRes.Id(hingResId.getId());
+        checkAlreadyExists(hedResId);
         HeadingRes hingRes = (HeadingRes) data.get(hingResId);
         HeadedRes hedRes = new HeadedResImpl<>(hedResId, hingRes.getUrl(), httpInfo);
         data.remove(hingResId);
@@ -92,6 +99,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized ParsingRes.Id createParsingRes(DownloadedRes.Id dedResId) {
         ParsingRes.Id pingResId = new ParsingRes.Id(dedResId.getId());
+        checkAlreadyExists(pingResId);
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
         OutputStream os = new ByteArrayOutputStream();
         ParsingRes pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent(), os);
@@ -104,6 +112,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     @SneakyThrows
     public synchronized ParsedRes.Id createParsedRes(ParsingRes.Id dedResId) {
         ParsedRes.Id pedResId = new ParsedRes.Id(dedResId.getId());
+        checkAlreadyExists(pedResId);
         ParsingRes pingRes = (ParsingRes) data.get(dedResId);
         InputStream is = pingRes.getDownloadedContent();
         byte[] bytes = IOUtils.toByteArray(is);
@@ -116,8 +125,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized RejectedRes.Id createRejectedRes(Resource.ResourceId resId) {
         RejectedRes.Id rejResId = new RejectedRes.Id(resId.getId());
+        checkAlreadyExists(rejResId);
         Resource res = data.get(resId);
         RejectedRes<RejectedRes.Id> rejRes = new RejectedResImpl<>(rejResId, res.getUrl());
+        data.remove(resId);
+        data.put(rejResId, rejRes);
         log.debug("RejectedRes is created: " + rejRes.getId());
         return rejResId;
     }

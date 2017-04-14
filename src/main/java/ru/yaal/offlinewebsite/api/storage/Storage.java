@@ -10,6 +10,8 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface Storage {
+    <ID extends Resource.ResourceId> boolean hasResource(ID id);
+
     <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id);
 
     NewRes.Id createNewResource(SiteUrl url);
