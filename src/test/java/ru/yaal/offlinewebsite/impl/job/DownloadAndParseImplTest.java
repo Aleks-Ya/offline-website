@@ -20,8 +20,6 @@ import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
-import static org.junit.Assert.assertTrue;
-
 /**
  * @author Aleksey Yablokov
  */
@@ -51,7 +49,6 @@ public class DownloadAndParseImplTest {
         JobParams jobParams = new JobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
         Job job = new DownloadAndParseImpl(jobParams);
         job.process();
-        assertTrue(threadPool.isShutdown());
     }
 
 }

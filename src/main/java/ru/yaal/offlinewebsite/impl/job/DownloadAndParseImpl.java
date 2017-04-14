@@ -61,7 +61,6 @@ public class DownloadAndParseImpl implements Job {
             } else {
                 removeFinishedFutures();
                 if (futures.isEmpty()) {
-                    threadPool.shutdown();
                     break;
                 }
             }
