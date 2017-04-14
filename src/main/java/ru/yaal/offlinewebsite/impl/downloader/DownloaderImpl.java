@@ -36,9 +36,9 @@ public class DownloaderImpl implements Downloader {
         SiteUrl url = res.getUrl();
         InputStream is = network.openUrl(url);
         OutputStream os = res.getOutputStream();
-        log.info("Downloading: " + res.getId());
+        log.debug("Downloading: " + res.getId());
         IOUtils.copy(is, os);
-        log.info("Downloaded: " + res.getId());
+        log.debug("Downloaded: " + res.getId());
         return storage.createDownloadedResource(res.getId());
     }
 }

@@ -30,7 +30,7 @@ public class OfflineWebsite {
 
     public static void download(URL url) {
         log.info("Start downloading: " + url);
-        SiteUrl siteUrl = new SiteUrlImpl(url.toString());
+        SiteUrl rootSiteUrl = new SiteUrlImpl(url.toString());
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
         Network network = new NetworkImpl();
@@ -41,9 +41,9 @@ public class OfflineWebsite {
         Downloader downloader = new DownloaderImpl(downloaderParams);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
-        ParserParams parserParams = new ParserParamsImpl(storage);
+        ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
         Parser parser = new ParserImpl(parserParams);
-        JobParams jobParams = new JobParamsImpl(siteUrl, downloader, storage, threadPool, headRequest, parser);
+        JobParams jobParams = new JobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
         Job job = new JobImpl(jobParams);
         job.process();
         threadPool.shutdown();

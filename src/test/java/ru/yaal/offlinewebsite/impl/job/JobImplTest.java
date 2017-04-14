@@ -43,7 +43,7 @@ public class JobImplTest {
         Downloader downloader = new DownloaderImpl(params);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
-        ParserParams parserParams = new ParserParamsImpl(storage);
+        ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
         Parser parser = new ParserImpl(parserParams);
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(3);
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);

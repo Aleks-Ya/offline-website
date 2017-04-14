@@ -33,9 +33,9 @@ public class ParserImplTest {
     public void parse() throws IOException {
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
-        ParserParams params = new ParserParamsImpl(storage);
-        Parser parser = new ParserImpl(params);
         SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru");
+        ParserParams params = new ParserParamsImpl(storage, siteUrl);
+        Parser parser = new ParserImpl(params);
         ResourceId<NewRes> newResId = storage.createNewResource(siteUrl);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         HttpInfo httpInfo = new HttpInfoImpl(200, 1000, 1000000);

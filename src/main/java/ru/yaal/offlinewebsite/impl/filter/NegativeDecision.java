@@ -19,6 +19,6 @@ public class NegativeDecision implements FilterDecision {
 
     @Override
     public String getMessage() {
-        return null;
+        return message;
     }
 }

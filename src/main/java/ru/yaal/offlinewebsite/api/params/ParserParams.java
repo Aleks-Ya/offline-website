@@ -7,4 +7,5 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
  */
 public interface ParserParams extends Params {
     Storage getStorage();
+    SiteUrl getRootSiteUrl();
 }

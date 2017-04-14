@@ -39,7 +39,7 @@ public abstract class TestHelper {
         Downloader downloader = new DownloaderImpl(params);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
-        ParserParams parserParams = new ParserParamsImpl(storage);
+        ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
         Parser parser = new ParserImpl(parserParams);
         TaskParams taskParams = new TaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
                 onlySameDomain, headRequest, maxSize, parser);
