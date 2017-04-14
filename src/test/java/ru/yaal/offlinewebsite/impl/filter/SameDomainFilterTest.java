@@ -6,6 +6,7 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -24,8 +25,8 @@ public class SameDomainFilterTest {
         assertFalse(filter.filter(makeNewRes(notAccepted)).isAccepted());
     }
 
-    private HeadingRes<HeadingRes.Id> makeNewRes(String s1) {
-        return new HeadingResImpl<>(new HeadingRes.Id(s1), new SiteUrlImpl(s1));
+    private HeadingRes makeNewRes(String s1) {
+        return new HeadingResImpl(new ResourceIdImpl<>(s1), new SiteUrlImpl(s1));
     }
 
 }

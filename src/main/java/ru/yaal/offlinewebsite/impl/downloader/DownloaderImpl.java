@@ -9,6 +9,7 @@ import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 
@@ -30,8 +31,8 @@ public class DownloaderImpl implements Downloader {
 
     @Override
     @SneakyThrows
-    public DownloadedRes.Id download(DownloadingRes.Id didResId) {
-        DownloadingRes<DownloadingRes.Id> res = storage.getResource(didResId);
+    public ResourceId<DownloadedRes> download(ResourceId<DownloadingRes> didResId) {
+        DownloadingRes res = storage.getResource(didResId);
         SiteUrl url = res.getUrl();
         InputStream is = network.openUrl(url);
         OutputStream os = res.getOutputStream();

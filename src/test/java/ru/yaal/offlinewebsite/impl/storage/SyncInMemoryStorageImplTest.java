@@ -27,15 +27,15 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createNewResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
         assertTrue(storage.hasResource(newResId));
         assertThat(newResId.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createHeadingResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         assertFalse(storage.hasResource(newResId));
         assertTrue(storage.hasResource(hingResId));
         assertThat(hingResId.getId(), equalTo(urlStr));
@@ -43,9 +43,9 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createHeadedResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
-        HeadedRes.Id hedResId = storage.createHeadedResource(hingResId, httpInfo);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
+        ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
 
         assertFalse(storage.hasResource(newResId));
         assertFalse(storage.hasResource(hingResId));
@@ -55,10 +55,10 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createDownloadingResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
-        HeadedRes.Id hedResId = storage.createHeadedResource(hingResId, httpInfo);
-        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
+        ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
+        ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
 
         assertFalse(storage.hasResource(newResId));
         assertFalse(storage.hasResource(hingResId));
@@ -69,11 +69,11 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createDownloadedResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
-        HeadedRes.Id hedResId = storage.createHeadedResource(hingResId, httpInfo);
-        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
-        DownloadedRes.Id dedResId = storage.createDownloadedResource(dingResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
+        ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
+        ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
+        ResourceId<DownloadedRes> dedResId = storage.createDownloadedResource(dingResId);
 
         assertFalse(storage.hasResource(newResId));
         assertFalse(storage.hasResource(hingResId));
@@ -85,8 +85,8 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createRejectedResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        RejectedRes.Id rejRes = storage.createRejectedRes(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<RejectedRes> rejRes = storage.createRejectedRes(newResId);
 
         assertFalse(storage.hasResource(newResId));
         assertTrue(storage.hasResource(rejRes));
@@ -95,8 +95,8 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void getResource() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        Resource<NewRes.Id> res = storage.getResource(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        Resource res = storage.getResource(newResId);
         assertNotNull(res);
         assertThat(res.getId().getId(), equalTo(urlStr));
     }
@@ -110,7 +110,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsHeading() {
-        NewRes.Id newResId = storage.createNewResource(url);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
         storage.createHeadingResource(newResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createHeadingResource(newResId);
@@ -118,8 +118,8 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsHeaded() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hedResId = storage.createHeadingResource(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hedResId = storage.createHeadingResource(newResId);
         storage.createHeadedResource(hedResId, httpInfo);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createHeadedResource(hedResId, httpInfo);
@@ -127,7 +127,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsDownloading() {
-        HeadedRes.Id hedResId = makeHeadedResId();
+        ResourceId<HeadedRes> hedResId = makeHeadedResId();
         storage.createDownloadingResource(hedResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createDownloadingResource(hedResId);
@@ -135,16 +135,16 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsDownloaded() {
-        HeadedRes.Id hedResId = makeHeadedResId();
-        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
+        ResourceId<HeadedRes> hedResId = makeHeadedResId();
+        ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
         storage.createDownloadedResource(dingResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createDownloadedResource(dingResId);
     }
 
-    private HeadedRes.Id makeHeadedResId() {
-        NewRes.Id newResId = storage.createNewResource(url);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
+    private ResourceId<HeadedRes> makeHeadedResId() {
+        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         return storage.createHeadedResource(hingResId, httpInfo);
     }
 }

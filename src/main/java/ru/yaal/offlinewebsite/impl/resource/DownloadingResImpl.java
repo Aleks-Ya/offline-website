@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
 import java.io.OutputStream;
 
@@ -12,12 +13,11 @@ import java.io.OutputStream;
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class DownloadingResImpl<R extends DownloadingResImpl.Id>
-        extends AbstractResource<R>
-        implements DownloadingRes<R> {
+public class DownloadingResImpl extends AbstractRes<DownloadingRes> implements DownloadingRes {
+
     private final OutputStream outputStream;
 
-    public DownloadingResImpl(R id, SiteUrl url, OutputStream outputStream) {
+    public DownloadingResImpl(ResourceId<DownloadingRes> id, SiteUrl url, OutputStream outputStream) {
         super(id, url);
         this.outputStream = outputStream;
     }

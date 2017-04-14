@@ -10,25 +10,25 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface Storage {
-    <ID extends ResourceId> boolean hasResource(ID id);
+    <ID extends ResourceId> boolean hasResource(ID resId);
 
-    <ID extends ResourceId, R extends Resource<ID>> R getResource(ID id);
+    <R extends Resource> R getResource(ResourceId<R> resId);
 
-    NewRes.Id createNewResource(SiteUrl url);
+    ResourceId<NewRes> createNewResource(SiteUrl url);
 
-    HeadingRes.Id createHeadingResource(NewRes.Id newResId);
+    ResourceId<HeadingRes> createHeadingResource(ResourceId<NewRes> newResId);
 
-    HeadedRes.Id createHeadedResource(HeadingRes.Id hingResId, HttpInfo httpInfo);
+    ResourceId<HeadedRes> createHeadedResource(ResourceId<HeadingRes> hingResId, HttpInfo httpInfo);
 
-    DownloadingRes.Id createDownloadingResource(HeadedRes.Id newResId);
+    ResourceId<DownloadingRes> createDownloadingResource(ResourceId<HeadedRes> newResId);
 
-    DownloadedRes.Id createDownloadedResource(DownloadingRes.Id dingResId);
+    ResourceId<DownloadedRes> createDownloadedResource(ResourceId<DownloadingRes> dingResId);
 
-    ParsingRes.Id createParsingRes(DownloadedRes.Id dedResId);
+    ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId);
 
-    ParsedRes.Id createParsedRes(ParsingRes.Id dedResId);
+    ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> dedResId);
 
-    RejectedRes.Id createRejectedRes(ResourceId resId);
+    ResourceId<RejectedRes> createRejectedRes(ResourceId resId);
 
-    List<NewRes.Id> getNewResourceIds();
+    List<ResourceId<NewRes>> getNewResourceIds();
 }

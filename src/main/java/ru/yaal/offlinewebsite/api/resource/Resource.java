@@ -5,8 +5,8 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 /**
  * @author Aleksey Yablokov
  */
-public interface Resource<R extends ResourceId> {
-    R getId();
-    SiteUrl getUrl();
+public interface Resource<R extends Resource> {
+    ResourceId<R> getId();
 
+    SiteUrl getUrl();
 }

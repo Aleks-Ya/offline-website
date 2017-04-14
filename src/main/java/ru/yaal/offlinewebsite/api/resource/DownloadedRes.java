@@ -1,25 +1,10 @@
 package ru.yaal.offlinewebsite.api.resource;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-
 import java.io.InputStream;
 
 /**
  * @author Aleksey Yablokov
  */
-public interface DownloadedRes<R extends DownloadedRes.Id> extends Resource<R> {
-    R getId();
-
+public interface DownloadedRes extends Resource<DownloadedRes> {
     InputStream getContent();
-
-    @RequiredArgsConstructor
-    @Getter
-    @EqualsAndHashCode
-    @ToString
-    class Id implements ResourceId {
-        private final String id;
-    }
 }

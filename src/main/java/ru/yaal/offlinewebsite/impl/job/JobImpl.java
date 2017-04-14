@@ -11,6 +11,7 @@ import ru.yaal.offlinewebsite.api.params.TaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.TaskParamsImpl;
@@ -47,12 +48,12 @@ public class JobImpl implements Job {
     @SneakyThrows
     public void process() {
         log.debug("Job started");
-        NewRes.Id rootNewResId = storage.createNewResource(rootUrl);
-        HeadingRes.Id rootHingResId = storage.createHeadingResource(rootNewResId);
+        ResourceId<NewRes> rootNewResId = storage.createNewResource(rootUrl);
+        ResourceId<HeadingRes> rootHingResId = storage.createHeadingResource(rootNewResId);
         submitTask(rootHingResId);
 
         for (; ; ) {
-            List<NewRes.Id> newResIds = storage.getNewResourceIds();
+            List<ResourceId<NewRes>> newResIds = storage.getNewResourceIds();
             if (!newResIds.isEmpty()) {
                 newResIds.stream()
                         .map(storage::createHeadingResource)
@@ -74,7 +75,7 @@ public class JobImpl implements Job {
         futures.removeAll(doneFutures);
     }
 
-    private void submitTask(HeadingRes.Id hingResId) {
+    private void submitTask(ResourceId<HeadingRes> hingResId) {
         TaskParams params = new TaskParamsImpl(rootUrl, hingResId, downloader, storage,
                 true, headRequest, 1_000_000, parser);
         futures.add(threadPool.submit(new TaskImpl(params)));

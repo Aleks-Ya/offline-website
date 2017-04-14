@@ -8,6 +8,7 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.TaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 /**
@@ -17,7 +18,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 @RequiredArgsConstructor
 public class TaskParamsImpl implements TaskParams {
     private final SiteUrl rootUrl;
-    private final HeadingRes.Id hingResId;
+    private final ResourceId<HeadingRes> hingResId;
     private final Downloader downloader;
     private final Storage storage;
     private final boolean onlySameDomain;

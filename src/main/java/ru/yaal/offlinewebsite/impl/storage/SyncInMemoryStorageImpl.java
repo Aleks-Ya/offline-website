@@ -22,58 +22,58 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SyncInMemoryStorageImpl implements Storage {
     private final Map<ResourceId, Resource> data = new HashMap<>();
-    private final Map<DownloadingRes.Id, ByteArrayOutputStream> dingRess = new HashMap<>();
+    private final Map<ResourceId<DownloadingRes>, ByteArrayOutputStream> dingRess = new HashMap<>();
 
     @Override
-    public synchronized <ID extends ResourceId, R extends Resource<ID>> R getResource(ID id) {
-        return (R) data.get(id);
+    public synchronized <R extends Resource> R getResource(ResourceId<R> resId) {
+        return (R) data.get(resId);
     }
 
     @Override
-    public <ID extends ResourceId> boolean hasResource(ID id) {
-        return getResource(id) != null;
+    public <ID extends ResourceId> boolean hasResource(ID resId) {
+        return getResource(resId) != null;
     }
 
     @Override
-    public synchronized NewRes.Id createNewResource(SiteUrl url) {
-        NewRes.Id newResId = new NewRes.Id(url.getUrl());
+    public synchronized ResourceId<NewRes> createNewResource(SiteUrl url) {
+        ResourceId<NewRes> newResId = new ResourceIdImpl<>(url.getUrl());
         checkAlreadyExists(newResId);
-        NewResImpl newRes = new NewResImpl<>(newResId, url);
+        NewRes newRes = new NewResImpl(newResId, url);
         data.put(newRes.getId(), newRes);
         log.debug("NewRes is created: " + newResId);
         return newResId;
     }
 
     @Override
-    public synchronized HeadingRes.Id createHeadingResource(NewRes.Id newResId) {
-        HeadingRes.Id hingResId = new HeadingRes.Id(newResId.getId());
+    public synchronized ResourceId<HeadingRes> createHeadingResource(ResourceId<NewRes> newResId) {
+        ResourceId<HeadingRes> hingResId = new ResourceIdImpl<>(newResId.getId());
         checkAlreadyExists(hingResId);
         NewRes newRes = (NewRes) data.get(newResId);
-        HeadingRes hingRes = new HeadingResImpl<>(hingResId, newRes.getUrl());
+        HeadingRes hingRes = new HeadingResImpl(hingResId, newRes.getUrl());
         data.remove(newResId);
         data.put(hingResId, hingRes);
         return hingResId;
     }
 
     @Override
-    public synchronized HeadedRes.Id createHeadedResource(HeadingRes.Id hingResId, HttpInfo httpInfo) {
-        HeadedRes.Id hedResId = new HeadedRes.Id(hingResId.getId());
+    public synchronized ResourceId<HeadedRes> createHeadedResource(ResourceId<HeadingRes> hingResId, HttpInfo httpInfo) {
+        ResourceId<HeadedRes> hedResId = new ResourceIdImpl<>(hingResId.getId());
         checkAlreadyExists(hedResId);
         HeadingRes hingRes = (HeadingRes) data.get(hingResId);
-        HeadedRes hedRes = new HeadedResImpl<>(hedResId, hingRes.getUrl(), httpInfo);
+        HeadedRes hedRes = new HeadedResImpl(hedResId, hingRes.getUrl(), httpInfo);
         data.remove(hingResId);
         data.put(hedResId, hedRes);
         return hedResId;
     }
 
     @Override
-    public synchronized DownloadingRes.Id createDownloadingResource(HeadedRes.Id hedResId) {
+    public synchronized ResourceId<DownloadingRes> createDownloadingResource(ResourceId<HeadedRes> hedResId) {
         HeadedRes newRes = (HeadedRes) data.get(hedResId);
-        DownloadingRes.Id dingResId = new DownloadingRes.Id(hedResId.getId());
+        ResourceId<DownloadingRes> dingResId = new ResourceIdImpl<>(hedResId.getId());
         checkAlreadyExists(dingResId);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         dingRess.put(dingResId, os);
-        DownloadingRes dingRes = new DownloadingResImpl<>(dingResId, newRes.getUrl(), os);
+        DownloadingRes dingRes = new DownloadingResImpl(dingResId, newRes.getUrl(), os);
         data.remove(hedResId);
         data.put(dingRes.getId(), dingRes);
         log.debug("DownloadingRes is created: " + dingResId);
@@ -82,12 +82,12 @@ public class SyncInMemoryStorageImpl implements Storage {
 
     @Override
     @SneakyThrows
-    public synchronized DownloadedRes.Id createDownloadedResource(DownloadingRes.Id dingResId) {
-        DownloadedRes.Id dedResId = new BytesDownloadedRes.Id(dingResId.getId());
+    public synchronized ResourceId<DownloadedRes> createDownloadedResource(ResourceId<DownloadingRes> dingResId) {
+        ResourceId<DownloadedRes> dedResId = new ResourceIdImpl<>(dingResId.getId());
         checkAlreadyExists(dedResId);
-        DownloadingRes<DownloadingRes.Id> dingRes = getResource(dingResId);
+        DownloadingRes dingRes = getResource(dingResId);
         byte[] bytes = dingRess.get(dingResId).toByteArray();
-        DownloadedRes dedResource = new BytesDownloadedRes<>(dedResId, dingRes.getUrl(), bytes);
+        DownloadedRes dedResource = new BytesDownloadedRes(dedResId, dingRes.getUrl(), bytes);
         data.remove(dingResId);
         data.put(dedResId, dedResource);
         log.debug("BytesDownloadedRes is created: " + dedResId);
@@ -95,11 +95,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized ParsingRes.Id createParsingRes(DownloadedRes.Id dedResId) {
-        ParsingRes.Id pingResId = new ParsingRes.Id(dedResId.getId());
+    public synchronized ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId) {
+        ResourceId<ParsingRes> pingResId = new ResourceIdImpl<>(dedResId.getId());
         checkAlreadyExists(pingResId);
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
-        ParsingRes pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent());
+        ParsingRes pingRes = new ParsingResImpl(pingResId, dedRes.getUrl(), dedRes.getContent());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
         return pingResId;
@@ -107,22 +107,22 @@ public class SyncInMemoryStorageImpl implements Storage {
 
     @Override
     @SneakyThrows
-    public synchronized ParsedRes.Id createParsedRes(ParsingRes.Id dedResId) {
-        ParsedRes.Id pedResId = new ParsedRes.Id(dedResId.getId());
+    public synchronized ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> dedResId) {
+        ResourceId<ParsedRes> pedResId = new ResourceIdImpl<>(dedResId.getId());
         checkAlreadyExists(pedResId);
-        ParsingRes<TagNode, ParsingRes.Id> pingRes = (ParsingRes<TagNode, ParsingRes.Id>) data.get(dedResId);
-        ParsedRes<TagNode, ParsedRes.Id> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
+        ParsingRes<TagNode> pingRes = (ParsingRes<TagNode>) data.get(dedResId);
+        ParsedRes pedRes = new BytesParsedRes(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
         data.remove(dedResId);
         data.put(pedResId, pedRes);
         return pedResId;
     }
 
     @Override
-    public synchronized RejectedRes.Id createRejectedRes(ResourceId resId) {
-        RejectedRes.Id rejResId = new RejectedRes.Id(resId.getId());
+    public synchronized ResourceId<RejectedRes> createRejectedRes(ResourceId resId) {
+        ResourceId<RejectedRes> rejResId = new ResourceIdImpl<>(resId.getId());
         checkAlreadyExists(rejResId);
         Resource res = data.get(resId);
-        RejectedRes<RejectedRes.Id> rejRes = new RejectedResImpl<>(rejResId, res.getUrl());
+        RejectedRes rejRes = new RejectedResImpl(rejResId, res.getUrl());
         data.remove(resId);
         data.put(rejResId, rejRes);
         log.debug("RejectedRes is created: " + rejRes.getId());
@@ -130,7 +130,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized List<NewRes.Id> getNewResourceIds() {
+    public synchronized List<ResourceId<NewRes>> getNewResourceIds() {
         return data.values().stream()
                 .filter(res -> res instanceof NewResImpl)
                 .map(res -> (NewRes) res)

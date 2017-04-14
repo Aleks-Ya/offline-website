@@ -4,16 +4,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
 /**
  * @author Aleksey Yablokov
  */
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class HeadingResImpl<R extends HeadingRes.Id>
-        extends AbstractResource<R>
-        implements HeadingRes<R> {
-    public HeadingResImpl(R id, SiteUrl url) {
+public class HeadingResImpl extends AbstractRes<HeadingRes> implements HeadingRes {
+    public HeadingResImpl(ResourceId<HeadingRes> id, SiteUrl url) {
         super(id, url);
     }
 }

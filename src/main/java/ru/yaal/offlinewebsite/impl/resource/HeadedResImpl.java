@@ -5,19 +5,18 @@ import lombok.Getter;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
 /**
  * @author Aleksey Yablokov
  */
 @EqualsAndHashCode(callSuper = true)
 @Getter
-public class HeadedResImpl<R extends HeadedRes.Id>
-        extends AbstractResource<R>
-        implements HeadedRes<R> {
+public class HeadedResImpl extends AbstractRes<HeadedRes> implements HeadedRes {
 
     private final HttpInfo httpInfo;
 
-    public HeadedResImpl(R id, SiteUrl url, HttpInfo httpInfo) {
+    public HeadedResImpl(ResourceId<HeadedRes> id, SiteUrl url, HttpInfo httpInfo) {
         super(id, url);
         this.httpInfo = httpInfo;
     }

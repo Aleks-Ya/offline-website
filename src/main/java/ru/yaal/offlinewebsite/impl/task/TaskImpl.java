@@ -18,7 +18,7 @@ import ru.yaal.offlinewebsite.impl.filter.SizeFilter;
  */
 @Slf4j
 public class TaskImpl implements Task {
-    private final HeadingRes.Id hingResId;
+    private final ResourceId<HeadingRes> hingResId;
     private final Downloader downloader;
     private final Storage storage;
     private final boolean onlySameDomain;
@@ -42,7 +42,7 @@ public class TaskImpl implements Task {
 
     @Override
     public Void call() throws Exception {
-        HeadingRes<HeadingRes.Id> hingRes = storage.getResource(hingResId);
+        HeadingRes hingRes = storage.getResource(hingResId);
         if (onlySameDomain) {
             FilterDecision decision = onlySameDomainFilter.filter(hingRes);
             if (!decision.isAccepted()) {
@@ -52,8 +52,8 @@ public class TaskImpl implements Task {
             }
         }
 
-        HeadedRes.Id hedResId = headRequest.requestHead(hingResId);
-        HeadedRes<HeadedRes.Id> hedRes = storage.getResource(hedResId);
+        ResourceId<HeadedRes> hedResId = headRequest.requestHead(hingResId);
+        HeadedRes hedRes = storage.getResource(hedResId);
         if (maxSize > 0) {
             FilterDecision decision = sizeFilter.filter(hedRes);
             if (!decision.isAccepted()) {
@@ -65,9 +65,9 @@ public class TaskImpl implements Task {
             }
         }
 
-        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
-        DownloadedRes.Id dedResId = downloader.download(dingResId);
-        ParsingRes.Id pingResId = storage.createParsingRes(dedResId);
+        ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
+        ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);
+        ResourceId<ParsingRes> pingResId = storage.createParsingRes(dedResId);
         parser.parse(pingResId);
         return null;
     }

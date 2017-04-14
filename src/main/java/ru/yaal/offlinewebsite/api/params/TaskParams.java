@@ -4,6 +4,7 @@ import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 /**
@@ -12,7 +13,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 public interface TaskParams extends Params {
     SiteUrl getRootUrl();
 
-    HeadingRes.Id getHingResId();
+    ResourceId<HeadingRes> getHingResId();
 
     Downloader getDownloader();
 
@@ -23,5 +24,6 @@ public interface TaskParams extends Params {
     HeadRequest getHeadRequest();
 
     long getMaxSize();
+
     Parser getParser();
 }

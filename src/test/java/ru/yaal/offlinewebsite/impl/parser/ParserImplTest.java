@@ -32,25 +32,25 @@ public class ParserImplTest {
         ParserParams params = new ParserParamsImpl(storage);
         Parser parser = new ParserImpl(params);
         SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru");
-        NewRes.Id newResId = storage.createNewResource(siteUrl);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(siteUrl);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         HttpInfo httpInfo = new HttpInfoImpl(200, 1000, 1000000);
-        HeadedRes.Id hedResId = storage.createHeadedResource(hingResId, httpInfo);
-        DownloadingRes.Id dingResId = storage.createDownloadingResource(hedResId);
-        DownloadingRes<DownloadingRes.Id> dingRes = storage.getResource(dingResId);
+        ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
+        ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
+        DownloadingRes dingRes = storage.getResource(dingResId);
         OutputStream os = dingRes.getOutputStream();
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
         IOUtils.write(html.getBytes(), os);
-        DownloadedRes.Id dedResId = storage.createDownloadedResource(dingResId);
-        ParsingRes.Id pingResId = storage.createParsingRes(dedResId);
+        ResourceId<DownloadedRes> dedResId = storage.createDownloadedResource(dingResId);
+        ResourceId<ParsingRes> pingResId = storage.createParsingRes(dedResId);
 
-        ParsedRes.Id pedResId = parser.parse(pingResId);
+        ResourceId<ParsedRes> pedResId = parser.parse(pingResId);
 
-        List<NewRes.Id> newResIds = storage.getNewResourceIds();
+        List<ResourceId<NewRes>> newResIds = storage.getNewResourceIds();
         assertThat(newResIds, hasSize(1));
         assertThat(newResIds.get(0).getId(), equalTo("http://ya.ru/link"));
 
-        ParsedRes<TagNode, ParsedRes.Id> pedRes = storage.getResource(pedResId);
+        ParsedRes<TagNode> pedRes = storage.getResource(pedResId);
         TagNode hrefNode = pedRes.getParsedContent();
         assertThat(hrefNode.getName(), equalTo("html"));
     }

@@ -7,6 +7,7 @@ import ru.yaal.offlinewebsite.api.params.*;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.task.Task;
@@ -28,8 +29,8 @@ public abstract class TestHelper {
 
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootUrl);
         Storage storage = new SyncInMemoryStorageImpl();
-        NewRes.Id newResId = storage.createNewResource(rootSiteUrl);
-        HeadingRes.Id hingResId = storage.createHeadingResource(newResId);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootSiteUrl);
+        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);
         Network network = new BytesNetwork(html.getBytes(), httpInfo);
         DownloaderParams params = new DownloaderParamsImpl(storage, network);
