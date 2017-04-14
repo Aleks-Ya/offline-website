@@ -9,18 +9,16 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 /**
  * @author Aleksey Yablokov
  */
-@RequiredArgsConstructor
-@Getter
-@EqualsAndHashCode
-public class NewRes<R extends NewRes.Id> implements Resource<R> {
-    private final R id;
-    private final SiteUrl url;
+public interface NewRes<R extends NewRes.Id> extends Resource<R> {
+    R getId();
+
+    SiteUrl getUrl();
 
     @RequiredArgsConstructor
     @Getter
     @EqualsAndHashCode
     @ToString
-    public static class Id implements ResourceId {
+    class Id implements ResourceId {
         private final String id;
     }
 }

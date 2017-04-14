@@ -38,7 +38,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     public synchronized NewRes.Id createNewResource(SiteUrl url) {
         NewRes.Id newResId = new NewRes.Id(url.getUrl());
         checkAlreadyExists(newResId);
-        NewRes newRes = new NewRes<>(newResId, url);
+        NewResImpl newRes = new NewResImpl<>(newResId, url);
         data.put(newRes.getId(), newRes);
         log.debug("NewRes is created: " + newResId);
         return newResId;
@@ -132,7 +132,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized List<NewRes.Id> getNewResourceIds() {
         return data.values().stream()
-                .filter(res -> res instanceof NewRes)
+                .filter(res -> res instanceof NewResImpl)
                 .map(res -> (NewRes) res)
                 .map(NewRes::getId)
                 .collect(Collectors.toList());
