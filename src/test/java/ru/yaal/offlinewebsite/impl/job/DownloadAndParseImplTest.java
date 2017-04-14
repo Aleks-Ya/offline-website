@@ -25,7 +25,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Aleksey Yablokov
  */
-public class JobImplTest {
+public class DownloadAndParseImplTest {
     @Test
     public void process() {
         String rootUrl = "http://ya.ru";
@@ -49,7 +49,7 @@ public class JobImplTest {
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
 
         JobParams jobParams = new JobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
-        Job job = new JobImpl(jobParams);
+        Job job = new DownloadAndParseImpl(jobParams);
         job.process();
         assertTrue(threadPool.isShutdown());
     }

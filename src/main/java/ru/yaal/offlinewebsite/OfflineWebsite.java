@@ -11,7 +11,7 @@ import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
-import ru.yaal.offlinewebsite.impl.job.JobImpl;
+import ru.yaal.offlinewebsite.impl.job.DownloadAndParseImpl;
 import ru.yaal.offlinewebsite.impl.params.*;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
@@ -44,7 +44,7 @@ public class OfflineWebsite {
         ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
         Parser parser = new ParserImpl(parserParams);
         JobParams jobParams = new JobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
-        Job job = new JobImpl(jobParams);
+        Job job = new DownloadAndParseImpl(jobParams);
         job.process();
         threadPool.shutdown();
         log.info("Downloading finished: " + url);
