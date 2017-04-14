@@ -21,16 +21,16 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class SyncInMemoryStorageImpl implements Storage {
-    private final Map<Resource.ResourceId, Resource> data = new HashMap<>();
+    private final Map<ResourceId, Resource> data = new HashMap<>();
     private final Map<DownloadingRes.Id, ByteArrayOutputStream> dingRess = new HashMap<>();
 
     @Override
-    public synchronized <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id) {
+    public synchronized <ID extends ResourceId, R extends Resource<ID>> R getResource(ID id) {
         return (R) data.get(id);
     }
 
     @Override
-    public <ID extends Resource.ResourceId> boolean hasResource(ID id) {
+    public <ID extends ResourceId> boolean hasResource(ID id) {
         return getResource(id) != null;
     }
 
@@ -118,7 +118,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized RejectedRes.Id createRejectedRes(Resource.ResourceId resId) {
+    public synchronized RejectedRes.Id createRejectedRes(ResourceId resId) {
         RejectedRes.Id rejResId = new RejectedRes.Id(resId.getId());
         checkAlreadyExists(rejResId);
         Resource res = data.get(resId);
@@ -138,7 +138,7 @@ public class SyncInMemoryStorageImpl implements Storage {
                 .collect(Collectors.toList());
     }
 
-    private void checkAlreadyExists(Resource.ResourceId id) {
+    private void checkAlreadyExists(ResourceId id) {
         if (data.containsKey(id)) {
             throw new ResourceAlreadyExistsException(id);
         }

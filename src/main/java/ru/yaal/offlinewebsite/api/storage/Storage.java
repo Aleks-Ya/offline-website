@@ -10,9 +10,9 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface Storage {
-    <ID extends Resource.ResourceId> boolean hasResource(ID id);
+    <ID extends ResourceId> boolean hasResource(ID id);
 
-    <ID extends Resource.ResourceId, R extends Resource<ID>> R getResource(ID id);
+    <ID extends ResourceId, R extends Resource<ID>> R getResource(ID id);
 
     NewRes.Id createNewResource(SiteUrl url);
 
@@ -28,7 +28,7 @@ public interface Storage {
 
     ParsedRes.Id createParsedRes(ParsingRes.Id dedResId);
 
-    RejectedRes.Id createRejectedRes(Resource.ResourceId resId);
+    RejectedRes.Id createRejectedRes(ResourceId resId);
 
     List<NewRes.Id> getNewResourceIds();
 }
