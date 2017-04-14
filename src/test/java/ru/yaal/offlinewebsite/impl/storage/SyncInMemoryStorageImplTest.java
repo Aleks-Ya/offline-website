@@ -9,15 +9,18 @@ import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.*;
 
 /**
  * @author Aleksey Yablokov
  */
 public class SyncInMemoryStorageImplTest {
-    private final Storage storage = new SyncInMemoryStorageImpl();
+    private final Storage storage = new SyncInMemoryStorageImpl(new StorageParamsImpl(new ResourceComparatorImpl()));
     private final String urlStr = "http://google.com";
     private final SiteUrl url = new SiteUrlImpl(urlStr);
     private final HttpInfoImpl httpInfo = new HttpInfoImpl(200, 1000, 1);
@@ -36,8 +39,8 @@ public class SyncInMemoryStorageImplTest {
     public void createHeadingResource() {
         ResourceId<NewRes> newResId = storage.createNewResource(url);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
-        assertFalse(storage.hasResource(newResId));
-        assertTrue(storage.hasResource(hingResId));
+        assertThat(newResId, equalTo(hingResId));
+        assertThat(storage.getResource(hingResId), instanceOf(HeadingRes.class));
         assertThat(hingResId.getId(), equalTo(urlStr));
     }
 
@@ -47,10 +50,9 @@ public class SyncInMemoryStorageImplTest {
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
 
-        assertFalse(storage.hasResource(newResId));
-        assertFalse(storage.hasResource(hingResId));
-        assertTrue(storage.hasResource(hedResId));
-        assertThat(hingResId.getId(), equalTo(urlStr));
+        assertThat(newResId, equalTo(hedResId));
+        assertThat(storage.getResource(hedResId), instanceOf(HeadedRes.class));
+        assertThat(hedResId.getId(), equalTo(urlStr));
     }
 
     @Test
@@ -60,10 +62,8 @@ public class SyncInMemoryStorageImplTest {
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
 
-        assertFalse(storage.hasResource(newResId));
-        assertFalse(storage.hasResource(hingResId));
-        assertFalse(storage.hasResource(hedResId));
-        assertTrue(storage.hasResource(dingResId));
+        assertThat(newResId, equalTo(dingResId));
+        assertThat(storage.getResource(dingResId), instanceOf(DownloadingRes.class));
         assertThat(dingResId.getId(), equalTo(urlStr));
     }
 
@@ -75,11 +75,8 @@ public class SyncInMemoryStorageImplTest {
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
         ResourceId<DownloadedRes> dedResId = storage.createDownloadedResource(dingResId);
 
-        assertFalse(storage.hasResource(newResId));
-        assertFalse(storage.hasResource(hingResId));
-        assertFalse(storage.hasResource(hedResId));
-        assertFalse(storage.hasResource(dingResId));
-        assertTrue(storage.hasResource(dedResId));
+        assertThat(newResId, equalTo(dedResId));
+        assertThat(storage.getResource(dedResId), instanceOf(DownloadedRes.class));
         assertThat(dedResId.getId(), equalTo(urlStr));
     }
 
@@ -88,8 +85,8 @@ public class SyncInMemoryStorageImplTest {
         ResourceId<NewRes> newResId = storage.createNewResource(url);
         ResourceId<RejectedRes> rejRes = storage.createRejectedRes(newResId);
 
-        assertFalse(storage.hasResource(newResId));
-        assertTrue(storage.hasResource(rejRes));
+        assertThat(newResId, equalTo(rejRes));
+        assertThat(storage.getResource(rejRes), instanceOf(RejectedRes.class));
         assertThat(rejRes.getId(), equalTo(urlStr));
     }
 

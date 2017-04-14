@@ -14,6 +14,7 @@ import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.job.JobImpl;
 import ru.yaal.offlinewebsite.impl.params.*;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
@@ -30,7 +31,8 @@ public class OfflineWebsite {
     public static void download(URL url) {
         log.info("Start downloading: " + url);
         SiteUrl siteUrl = new SiteUrlImpl(url.toString());
-        Storage storage = new SyncInMemoryStorageImpl();
+        StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
+        Storage storage = new SyncInMemoryStorageImpl(storageParams);
         Network network = new NetworkImpl();
         int poolSize = 10;
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(poolSize);

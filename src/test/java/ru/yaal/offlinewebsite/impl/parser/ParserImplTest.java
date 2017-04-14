@@ -6,12 +6,15 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 
 import java.io.IOException;
@@ -28,7 +31,8 @@ import static org.hamcrest.Matchers.hasSize;
 public class ParserImplTest {
     @Test
     public void parse() throws IOException {
-        Storage storage = new SyncInMemoryStorageImpl();
+        StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
+        Storage storage = new SyncInMemoryStorageImpl(storageParams);
         ParserParams params = new ParserParamsImpl(storage);
         Parser parser = new ParserImpl(params);
         SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru");

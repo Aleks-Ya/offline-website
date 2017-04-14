@@ -16,6 +16,7 @@ import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.*;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 import ru.yaal.offlinewebsite.impl.task.TaskImpl;
@@ -28,7 +29,8 @@ public abstract class TestHelper {
                                 int contentLength, int lastModified, boolean onlySameDomain, int maxSize) {
 
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootUrl);
-        Storage storage = new SyncInMemoryStorageImpl();
+        StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
+        Storage storage = new SyncInMemoryStorageImpl(storageParams);
         ResourceId<NewRes> newResId = storage.createNewResource(rootSiteUrl);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);

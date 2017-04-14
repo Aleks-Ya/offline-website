@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 public class FactoryImpl implements Factory {
     private static Factory INSTANCE = new FactoryImpl();
     private final Downloader downloader = new DownloaderImpl(null);
-    private final Storage storage = new SyncInMemoryStorageImpl();
+    private final Storage storage = new SyncInMemoryStorageImpl(null);
 
     private FactoryImpl() {
     }

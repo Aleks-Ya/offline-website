@@ -15,6 +15,7 @@ import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.*;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
@@ -34,7 +35,8 @@ public class JobImplTest {
         int lastModified = 2000000;
 
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootUrl);
-        Storage storage = new SyncInMemoryStorageImpl();
+        StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
+        Storage storage = new SyncInMemoryStorageImpl(storageParams);
         HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);
         Network network = new BytesNetwork(html.getBytes(), httpInfo);
         DownloaderParams params = new DownloaderParamsImpl(storage, network);
