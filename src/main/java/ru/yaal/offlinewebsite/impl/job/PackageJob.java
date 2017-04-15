@@ -6,18 +6,17 @@ import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
-import ru.yaal.offlinewebsite.api.params.PackageTaskParams;
-import ru.yaal.offlinewebsite.api.resource.PackagingRes;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.PackageTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.task.PackageTask;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksey Yablokov
@@ -38,14 +37,17 @@ public class PackageJob implements Job {
     @SneakyThrows
     public void process() {
         log.debug("Job started");
-        List<ResourceId<PackagingRes<TagNode>>> packagingResIds = storage.getPackagingResourceIds();
-        log.debug("Resources for packaging: " + packagingResIds.size());
+        List<ResourceId<ParsedRes<TagNode>>> parsedResIds = storage.getParsedResourceIds();
+        log.debug("Resources for packaging: " + parsedResIds.size());
 
-        List<Future<Void>> futures = new ArrayList<>();
-        for (ResourceId<PackagingRes<TagNode>> packagingResId : packagingResIds) {
-            PackageTaskParams<TagNode> taskParams = new PackageTaskParamsImpl<>(storage, packager, packagingResId);
-            futures.add(threadPool.submit(new PackageTask(taskParams)));
-        }
+        List<Future<Void>> futures = parsedResIds.stream()
+                .map(storage::createPackagingRes)
+                .map(packagingResId -> new PackageTaskParamsImpl<>(storage, packager, packagingResId))
+                .map(PackageTask::new)
+                .map(threadPool::submit)
+                .collect(Collectors.toList());
+
+        log.debug("Submitted packaging tasks: " + futures.size());
 
         for (Future<Void> future : futures) {
             try {
@@ -56,6 +58,6 @@ public class PackageJob implements Job {
                 log.error("Task failed", e);
             }
         }
-
+        log.debug("Job finished");
     }
 }

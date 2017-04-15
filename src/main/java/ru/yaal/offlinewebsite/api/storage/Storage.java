@@ -48,5 +48,5 @@ public interface Storage {
 
     List<ResourceId<NewRes>> getNewResourceIds();
 
-    <C> List<ResourceId<PackagingRes<C>>> getPackagingResourceIds();
+    <C> List<ResourceId<ParsedRes<C>>> getParsedResourceIds();
 }

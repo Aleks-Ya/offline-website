@@ -6,8 +6,8 @@ import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
@@ -17,10 +17,7 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.task.DownloadTask;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 /**
  * @author Aleksey Yablokov
@@ -33,7 +30,7 @@ public class DownloadJob implements Job {
     private final ThreadPool threadPool;
     private final HeadRequest headRequest;
     private final Parser parser;
-    private final List<Future> futures = new ArrayList<>();
+    private long taskRun = 0;
 
     public DownloadJob(DownloadJobParams params) {
         rootUrl = params.getRootSiteUrl();
@@ -59,8 +56,7 @@ public class DownloadJob implements Job {
                         .map(storage::createHeadingResource)
                         .forEach(this::submitTask);
             } else {
-                removeFinishedFutures();
-                if (futures.isEmpty()) {
+                if (threadPool.getCompletedTaskCount() == taskRun) {
                     break;
                 }
             }
@@ -69,14 +65,10 @@ public class DownloadJob implements Job {
         log.debug("Job finished");
     }
 
-    private void removeFinishedFutures() {
-        List<Future> doneFutures = futures.stream().filter(f -> f.isDone() || f.isCancelled()).collect(Collectors.toList());
-        futures.removeAll(doneFutures);
-    }
-
     private void submitTask(ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams params = new DownloadTaskParamsImpl(rootUrl, hingResId, downloader, storage,
                 true, headRequest, 1_000_000, parser);
-        futures.add(threadPool.submit(new DownloadTask(params)));
+        threadPool.submit(new DownloadTask(params));
+        taskRun++;
     }
 }

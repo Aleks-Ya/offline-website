@@ -7,6 +7,9 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -22,7 +25,7 @@ public class DownloadTaskTest {
         Task task = factory.createTask(rootSiteUrl, headingRes, true, 1000000);
 
         task.call();
+
+        assertThat(factory.getStorage().getParsedResourceIds(), hasSize(1));
     }
-
-
 }

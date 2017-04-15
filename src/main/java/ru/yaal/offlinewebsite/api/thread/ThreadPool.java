@@ -12,4 +12,6 @@ public interface ThreadPool {
     void shutdown();
 
     boolean isShutdown();
+
+    long getCompletedTaskCount();
 }

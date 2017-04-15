@@ -191,10 +191,10 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized <C> List<ResourceId<PackagingRes<C>>> getPackagingResourceIds() {
+    public synchronized <C> List<ResourceId<ParsedRes<C>>> getParsedResourceIds() {
         return data.values().stream()
-                .filter(res -> res instanceof PackagingRes)
-                .map(res -> (PackagingRes<C>) res)
+                .filter(res -> res instanceof ParsedRes)
+                .map(res -> (ParsedRes<C>) res)
                 .map(Resource::getId)
                 .collect(Collectors.toList());
     }

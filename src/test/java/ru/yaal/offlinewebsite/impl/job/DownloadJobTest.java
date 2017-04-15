@@ -12,10 +12,14 @@ import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.equalTo;
+
 /**
  * @author Aleksey Yablokov
  */
-public class DownloadAndParseImplTest {
+public class DownloadJobTest {
     @Test
     public void process() {
         String rootSiteStr = "http://ya.ru";
@@ -30,6 +34,9 @@ public class DownloadAndParseImplTest {
 
         Job job = new DownloadJob(downloadJobParams);
         job.process();
+
+        assertThat(threadPool.getCompletedTaskCount(), equalTo(1L));
+        assertThat(factory.getStorage().getParsedResourceIds(), emptyIterable());
     }
 
 }

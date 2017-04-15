@@ -1,5 +1,7 @@
 package ru.yaal.offlinewebsite.impl.storage;
 
+import org.hamcrest.Matchers;
+import org.htmlcleaner.TagNode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -10,6 +12,7 @@ import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -22,8 +25,6 @@ import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -154,9 +155,9 @@ public class SyncInMemoryStorageImplTest {
     @Test
     public void getPackagingResourceIds() {
         TestFactory factory = new TestFactory(url);
-        assertThat(factory.getStorage().getPackagingResourceIds(), emptyIterable());
-        factory.createPackagingRes(url, "<html></html>", TestFactory.httpInfoDefault);
-        assertThat(factory.getStorage().getPackagingResourceIds(), hasSize(1));
+        ResourceId<PackagingRes<TagNode>> packagingResId =
+                factory.createPackagingRes(url, "<html></html>", TestFactory.httpInfoDefault);
+        assertThat(factory.getStorage().getResource(packagingResId), Matchers.instanceOf(PackagingRes.class));
     }
 
     private ResourceId<HeadedRes> makeHeadedResId() {

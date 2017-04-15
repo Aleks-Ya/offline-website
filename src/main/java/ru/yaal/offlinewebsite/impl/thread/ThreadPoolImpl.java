@@ -5,7 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Aleksey Yablokov
@@ -13,7 +17,7 @@ import java.util.concurrent.*;
 @Slf4j
 public class ThreadPoolImpl implements ThreadPool {
     private final int size;
-    private ExecutorService pool;
+    private ThreadPoolExecutor pool;
 
     public ThreadPoolImpl(ThreadPoolParams params) {
         this.size = params.getPoolSize();
@@ -24,7 +28,7 @@ public class ThreadPoolImpl implements ThreadPool {
     public synchronized <V> Future<V> submit(Callable<V> callable) {
         log.debug("Submit callable");
         if (pool == null) {
-            pool = Executors.newFixedThreadPool(size);
+            pool = (ThreadPoolExecutor) Executors.newFixedThreadPool(size);
         }
         return pool.submit(callable);
     }
@@ -42,5 +46,10 @@ public class ThreadPoolImpl implements ThreadPool {
     @Override
     public boolean isShutdown() {
         return pool.isShutdown();
+    }
+
+    @Override
+    public long getCompletedTaskCount() {
+        return pool.getCompletedTaskCount();
     }
 }
