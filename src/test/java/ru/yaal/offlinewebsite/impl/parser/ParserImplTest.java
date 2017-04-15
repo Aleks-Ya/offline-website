@@ -1,5 +1,6 @@
 package ru.yaal.offlinewebsite.impl.parser;
 
+import org.apache.commons.io.IOUtils;
 import org.htmlcleaner.TagNode;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
@@ -14,6 +15,7 @@ import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,8 +28,8 @@ import static org.hamcrest.Matchers.hasSize;
 public class ParserImplTest {
     @Test
     public void parse() throws IOException {
-        String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
-        String rootSiteStr = "http://ya.ru";
+        String html = IOUtils.toString(getClass().getResourceAsStream("parser_test.html"), Charset.defaultCharset());
+        String rootSiteStr = "https://logback.qos.ch";
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootSiteStr);
         TestFactory factory = new TestFactory(rootSiteUrl);
         ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
@@ -37,8 +39,7 @@ public class ParserImplTest {
         ResourceId<ParsedRes<TagNode>> parsedResId = parser.parse(parsingResId);
 
         List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();
-        assertThat(newResIds, hasSize(1));
-        assertThat(newResIds.get(0).getId(), equalTo("http://ya.ru/link"));
+        assertThat(newResIds, hasSize(13));
 
         ParsedRes<TagNode> pedRes = factory.getStorage().getResource(parsedResId);
         TagNode hrefNode = pedRes.getParsedContent();
