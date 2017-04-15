@@ -32,8 +32,7 @@ public class ParserImplTest {
         String rootSiteStr = "http://ya.ru";
         SiteUrl rootSiteUrl = new SiteUrlImpl(rootSiteStr);
         TestFactory factory = new TestFactory(rootSiteUrl);
-        HttpInfo httpInfo = new HttpInfoImpl(200, 1000, 1000000);
-        ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, httpInfo);
+        ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
 
         ParserParams params = new ParserParamsImpl(factory.getStorage(), rootSiteUrl);
         Parser<TagNode> parser = new ParserImpl(params);

@@ -31,6 +31,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
+import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
@@ -53,6 +54,7 @@ import java.nio.file.Path;
 @RequiredArgsConstructor
 @Getter
 public class TestFactory {
+    public static final HttpInfo httpInfoDefault = new HttpInfoImpl(200, 10_000, 6000000);
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;

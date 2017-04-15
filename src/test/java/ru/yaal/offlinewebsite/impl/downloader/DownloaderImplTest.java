@@ -8,7 +8,6 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
 import java.io.IOException;
@@ -28,8 +27,7 @@ public class DownloaderImplTest {
         TestFactory factory = new TestFactory(siteUrl);
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
 
-        HttpInfoImpl httpInfo = new HttpInfoImpl(200, 1000, 1);
-        ResourceId<DownloadingRes> dingResId = factory.createDownloadingRes(siteUrl, html, httpInfo);
+        ResourceId<DownloadingRes> dingResId = factory.createDownloadingRes(siteUrl, html, TestFactory.httpInfoDefault);
 
         Downloader downloader = factory.getDownloader();
         ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);

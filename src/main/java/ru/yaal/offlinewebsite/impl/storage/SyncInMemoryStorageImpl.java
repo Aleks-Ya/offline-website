@@ -2,7 +2,6 @@ package ru.yaal.offlinewebsite.impl.storage;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
@@ -27,6 +26,8 @@ import ru.yaal.offlinewebsite.impl.resource.DownloadingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.NewResImpl;
+import ru.yaal.offlinewebsite.impl.resource.PackagedResImpl;
+import ru.yaal.offlinewebsite.impl.resource.PackagingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ParsingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
@@ -125,9 +126,9 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized <C> ResourceId<ParsingRes<C>> createParsingRes(ResourceId<DownloadedRes> dedResId) {
         checkAlreadyExists(dedResId, ParsingRes.class);
-        ResourceId<ParsingRes> pingResId = new ResourceIdImpl<>(dedResId.getId());
+        ResourceId<ParsingRes<C>> pingResId = new ResourceIdImpl<>(dedResId.getId());
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
-        ParsingRes pingRes = new ParsingResImpl(pingResId, dedRes.getUrl(), dedRes.getContent());
+        ParsingRes<C> pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
         return pingRes.getId();
@@ -137,22 +138,34 @@ public class SyncInMemoryStorageImpl implements Storage {
     @SneakyThrows
     public synchronized <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> dedResId) {
         checkAlreadyExists(dedResId, ParsedRes.class);
-        ResourceId<ParsedRes> pedResId = new ResourceIdImpl<>(dedResId.getId());
-        ParsingRes<TagNode> pingRes = (ParsingRes<TagNode>) data.get(dedResId);
-        ParsedRes pedRes = new BytesParsedRes(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
+        ResourceId<ParsedRes<C>> pedResId = new ResourceIdImpl<>(dedResId.getId());
+        ParsingRes<C> pingRes = getResource(dedResId);
+        ParsedRes<C> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
         data.remove(dedResId);
         data.put(pedResId, pedRes);
         return pedRes.getId();
     }
 
     @Override
-    public <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> pedResId) {
-        return null;
+    public <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> parsedResId) {
+        checkAlreadyExists(parsedResId, PackagingRes.class);
+        ResourceId<PackagingRes<C>> packagingResId = new ResourceIdImpl<>(parsedResId.getId());
+        ParsedRes<C> parsedRes = getResource(parsedResId);
+        PackagingRes<C> packagingRes = new PackagingResImpl<>(packagingResId, parsedRes.getUrl(), parsedRes.getParsedContent());
+        data.remove(parsedResId);
+        data.put(packagingResId, packagingRes);
+        return packagingResId;
     }
 
     @Override
     public <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId) {
-        return null;
+        checkAlreadyExists(packagingResId, PackagedRes.class);
+        ResourceId<PackagedRes> packagedResId = new ResourceIdImpl<>(packagingResId.getId());
+        PackagingRes<C> packagingRes = getResource(packagingResId);
+        PackagedRes packagedRes = new PackagedResImpl(packagedResId, packagingRes.getUrl());
+        data.remove(packagingResId);
+        data.put(packagedResId, packagedRes);
+        return packagedResId;
     }
 
     @Override

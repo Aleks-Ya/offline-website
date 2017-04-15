@@ -5,7 +5,7 @@ import java.io.InputStream;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsingRes<C> extends Resource<ParsingRes> {
+public interface ParsingRes<C> extends Resource<ParsingRes<C>> {
 
     InputStream getDownloadedContent();
 

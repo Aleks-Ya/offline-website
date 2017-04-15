@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
  */
 @RequiredArgsConstructor
 @EqualsAndHashCode
-abstract class AbstractRes<R extends Resource> implements Resource<R> {
+abstract class AbstractRes<R extends Resource<R>> implements Resource<R> {
     @Getter
     private final ResourceId<R> id;
     @Getter
