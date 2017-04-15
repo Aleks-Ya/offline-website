@@ -25,12 +25,10 @@ import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
-import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
@@ -50,86 +48,70 @@ public class TestFactory {
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;
-    private final Parser parser;
+    private final Parser<TagNode> parser;
     private final Packager<TagNode> packager;
     private final BytesNetwork network;
 
-    public TestFactory(SiteUrl rootSiteUrl, String html) throws IOException {
-        this(rootSiteUrl, 200, 100_000, 6000000000L, html,
-                Files.createTempDirectory(TestFactory.class.getSimpleName()));
-
+    public TestFactory(SiteUrl rootSiteUrl) throws IOException {
+        this(rootSiteUrl, Files.createTempDirectory(TestFactory.class.getSimpleName()));
     }
 
-    public TestFactory(
-            SiteUrl rootSiteUrl, int responseCode, int contentLength, long lastModified, String html, Path outletDir)
-            throws IOException {
-
+    public TestFactory(SiteUrl rootSiteUrl, Path outletDir) {
         this.outletDir = outletDir;
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         storage = new SyncInMemoryStorageImpl(storageParams);
 
-        PackagerParams params = new PackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
-        packager = new FolderPackager(params);
         network = new BytesNetwork();
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
+
         ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
         parser = new ParserImpl(parserParams);
+
+        PackagerParams params = new PackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        packager = new FolderPackager(params);
     }
 
-    public ResourceId<NewRes> createNewRes(String siteUrlStr) {
-        SiteUrl url = new SiteUrlImpl(siteUrlStr);
-        return storage.createNewResource(url);
+    public ResourceId<NewRes> createNewRes(SiteUrl siteUrl) {
+        return storage.createNewResource(siteUrl);
     }
 
-    public ResourceId<HeadingRes> createHeadingRes(String siteUrlStr) {
-        return storage.createHeadingResource(createNewRes(siteUrlStr));
+    public ResourceId<HeadingRes> createHeadingRes(SiteUrl siteUrl, HttpInfo httpInfo) {
+        network.putHttpInfo(siteUrl, httpInfo);
+        return storage.createHeadingResource(createNewRes(siteUrl));
     }
 
-    public ResourceId<HeadedRes> createHeadedRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        SiteUrl siteUrl = new SiteUrlImpl(siteUrlStr);
-        ResourceId<HeadingRes> hingResId = storage.createHeadingResource(createNewRes(siteUrlStr));
-        HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);
-        network.putBytes(siteUrl, html);
-//        network.putHttpInfo(siteUrl, httpInfo);
+    public ResourceId<HeadedRes> createHeadedRes(SiteUrl siteUrl, HttpInfo httpInfo) {
+        ResourceId<HeadingRes> hingResId = createHeadingRes(siteUrl, httpInfo);
         return storage.createHeadedResource(hingResId, httpInfo);
     }
 
-    public ResourceId<DownloadingRes> createDownloadingRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<HeadedRes> headedRes = createHeadedRes(siteUrlStr, html, responseCode, contentLength, lastModified);
+    public ResourceId<DownloadingRes> createDownloadingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        ResourceId<HeadedRes> headedRes = createHeadedRes(siteUrl, httpInfo);
+        network.putBytes(siteUrl, html);
         return storage.createDownloadingResource(headedRes);
     }
 
-    public ResourceId<DownloadedRes> createDownloadedRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<DownloadingRes> dingResId = createDownloadingRes(siteUrlStr, html, responseCode, contentLength, lastModified);
-        return storage.createDownloadedResource(dingResId);
+    public ResourceId<DownloadedRes> createDownloadedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        return downloader.download(createDownloadingRes(siteUrl, html, httpInfo));
     }
 
-    public ResourceId<ParsingRes<TagNode>> createParsingRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<DownloadedRes> dedResId = createDownloadedRes(siteUrlStr, html, responseCode, contentLength, lastModified);
+    public ResourceId<ParsingRes<TagNode>> createParsingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        ResourceId<DownloadedRes> dedResId = createDownloadedRes(siteUrl, html, httpInfo);
         return storage.createParsingRes(dedResId);
     }
 
-    public ResourceId<ParsedRes<TagNode>> createParsedRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<ParsingRes<TagNode>> parsingResId = createParsingRes(siteUrlStr, html, responseCode, contentLength, lastModified);
-        return storage.createParsedRes(parsingResId);
+    public ResourceId<ParsedRes<TagNode>> createParsedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        return parser.parse(createParsingRes(siteUrl, html, httpInfo));
     }
 
-    public ResourceId<PackagingRes<TagNode>> createPackagingRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<ParsedRes<TagNode>> parsedResId = createParsedRes(siteUrlStr, html, responseCode, contentLength, lastModified);
+    public ResourceId<PackagingRes<TagNode>> createPackagingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        ResourceId<ParsedRes<TagNode>> parsedResId = createParsedRes(siteUrl, html, httpInfo);
         return storage.createPackagingRes(parsedResId);
     }
 
-    public ResourceId<PackagedRes> createPackagedRes(
-            String siteUrlStr, String html, int responseCode, long contentLength, long lastModified) {
-        ResourceId<PackagingRes<TagNode>> packagingResId = createPackagingRes(siteUrlStr, html, responseCode, contentLength, lastModified);
-        return storage.createPackagedRes(packagingResId);
+    public ResourceId<PackagedRes> createPackagedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        return packager.pack(createPackagingRes(siteUrl, html, httpInfo));
     }
 
 

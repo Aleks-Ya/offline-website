@@ -17,7 +17,7 @@ public class FolderPackagerTest {
     public void pack() throws IOException {
         SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru/info");
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
-        TestFactory factory = new TestFactory(siteUrl, html);
+        TestFactory factory = new TestFactory(siteUrl);
         Packager<TagNode> packager = factory.getPackager();
     }
 }
