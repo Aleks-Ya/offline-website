@@ -17,8 +17,8 @@ public class NetworkImpl implements Network {
 
     @Override
     @SneakyThrows
-    public InputStream openUrl(SiteUrl url) {
-        return new URL(url.getUrl()).openStream();
+    public InputStream openUrl(SiteUrl siteUrl) {
+        return new URL(siteUrl.getUrl()).openStream();
     }
 
     @Override

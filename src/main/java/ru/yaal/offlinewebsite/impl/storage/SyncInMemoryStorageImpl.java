@@ -6,10 +6,30 @@ import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
-import ru.yaal.offlinewebsite.api.resource.*;
+import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
+import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.PackagedRes;
+import ru.yaal.offlinewebsite.api.resource.PackagingRes;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
+import ru.yaal.offlinewebsite.api.resource.RejectedRes;
+import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.ResourceComparator;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.resource.*;
+import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedRes;
+import ru.yaal.offlinewebsite.impl.resource.BytesParsedRes;
+import ru.yaal.offlinewebsite.impl.resource.DownloadingResImpl;
+import ru.yaal.offlinewebsite.impl.resource.HeadedResImpl;
+import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
+import ru.yaal.offlinewebsite.impl.resource.NewResImpl;
+import ru.yaal.offlinewebsite.impl.resource.ParsingResImpl;
+import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
@@ -103,26 +123,36 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId) {
+    public synchronized <C> ResourceId<ParsingRes<C>> createParsingRes(ResourceId<DownloadedRes> dedResId) {
         checkAlreadyExists(dedResId, ParsingRes.class);
         ResourceId<ParsingRes> pingResId = new ResourceIdImpl<>(dedResId.getId());
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
         ParsingRes pingRes = new ParsingResImpl(pingResId, dedRes.getUrl(), dedRes.getContent());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
-        return pingResId;
+        return pingRes.getId();
     }
 
     @Override
     @SneakyThrows
-    public synchronized ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> dedResId) {
+    public synchronized <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> dedResId) {
         checkAlreadyExists(dedResId, ParsedRes.class);
         ResourceId<ParsedRes> pedResId = new ResourceIdImpl<>(dedResId.getId());
         ParsingRes<TagNode> pingRes = (ParsingRes<TagNode>) data.get(dedResId);
         ParsedRes pedRes = new BytesParsedRes(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
         data.remove(dedResId);
         data.put(pedResId, pedRes);
-        return pedResId;
+        return pedRes.getId();
+    }
+
+    @Override
+    public <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> pedResId) {
+        return null;
+    }
+
+    @Override
+    public <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId) {
+        return null;
     }
 
     @Override

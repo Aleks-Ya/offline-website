@@ -25,5 +25,5 @@ public interface TaskParams extends Params {
 
     long getMaxSize();
 
-    Parser getParser();
+    <C> Parser<C> getParser();
 }

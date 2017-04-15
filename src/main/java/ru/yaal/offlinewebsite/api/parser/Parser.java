@@ -7,7 +7,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 /**
  * @author Aleksey Yablokov
  */
-public interface Parser {
-    ResourceId<ParsedRes> parse(ResourceId<ParsingRes> pingResId);
+public interface Parser<C> {
+    ResourceId<ParsedRes<C>> parse(ResourceId<ParsingRes<C>> pingResId);
 
 }

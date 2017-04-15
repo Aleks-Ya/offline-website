@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.impl.task;
 
 import lombok.extern.slf4j.Slf4j;
+import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
@@ -26,7 +27,7 @@ public class TaskImpl implements Task {
     private final Filter<HeadedRes> sizeFilter;
     private final HeadRequest headRequest;
     private final long maxSize;
-    private final Parser parser;
+    private final Parser<TagNode> parser;
 
     public TaskImpl(TaskParams params) {
         hingResId = params.getHingResId();
@@ -67,7 +68,7 @@ public class TaskImpl implements Task {
 
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
         ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);
-        ResourceId<ParsingRes> pingResId = storage.createParsingRes(dedResId);
+        ResourceId<ParsingRes<TagNode>> pingResId = storage.createParsingRes(dedResId);
         parser.parse(pingResId);
         return null;
     }

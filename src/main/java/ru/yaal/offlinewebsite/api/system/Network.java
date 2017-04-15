@@ -9,7 +9,7 @@ import java.io.InputStream;
  * @author Aleksey Yablokov
  */
 public interface Network {
-    InputStream openUrl(SiteUrl url);
+    InputStream openUrl(SiteUrl siteUrl);
 
-    HttpInfo requestHttpInfo(SiteUrl url);
+    HttpInfo requestHttpInfo(SiteUrl siteUrl);
 }

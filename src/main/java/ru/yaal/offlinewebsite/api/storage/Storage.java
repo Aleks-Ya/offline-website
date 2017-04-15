@@ -2,7 +2,18 @@ package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.*;
+import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
+import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.PackagedRes;
+import ru.yaal.offlinewebsite.api.resource.PackagingRes;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
+import ru.yaal.offlinewebsite.api.resource.RejectedRes;
+import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
 import java.util.List;
 
@@ -24,9 +35,13 @@ public interface Storage {
 
     ResourceId<DownloadedRes> createDownloadedResource(ResourceId<DownloadingRes> dingResId);
 
-    ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId);
+    <C> ResourceId<ParsingRes<C>> createParsingRes(ResourceId<DownloadedRes> dedResId);
 
-    ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> dedResId);
+    <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> dedResId);
+
+    <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> pedResId);
+
+    <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId);
 
     ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId);
 

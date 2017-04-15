@@ -1,6 +1,17 @@
 package ru.yaal.offlinewebsite.impl.resource;
 
-import ru.yaal.offlinewebsite.api.resource.*;
+import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
+import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.PackagedRes;
+import ru.yaal.offlinewebsite.api.resource.PackagingRes;
+import ru.yaal.offlinewebsite.api.resource.ParsedRes;
+import ru.yaal.offlinewebsite.api.resource.ParsingRes;
+import ru.yaal.offlinewebsite.api.resource.RejectedRes;
+import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.ResourceComparator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +42,14 @@ public class ResourceComparatorImpl implements ResourceComparator {
         put(ParsedRes.class, 7);
         put(BytesParsedRes.class, 7);
 
-        put(RejectedRes.class, 8);
-        put(RejectedResImpl.class, 8);
+        put(PackagingRes.class, 8);
+        put(PackagingResImpl.class, 8);
+
+        put(PackagedRes.class, 9);
+        put(PackagedResImpl.class, 9);
+
+        put(RejectedRes.class, 10);
+        put(RejectedResImpl.class, 10);
     }};
 
     @Override

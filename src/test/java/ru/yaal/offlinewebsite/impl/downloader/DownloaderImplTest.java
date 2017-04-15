@@ -29,15 +29,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DownloaderImplTest {
     @Test
     public void download() throws ExecutionException, InterruptedException, IOException {
+        String urlStr = "abc";
+        SiteUrl siteUrl = new SiteUrlImpl(urlStr);
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
         String content = "how are you";
-        Network network = new BytesNetwork(content.getBytes());
+        BytesNetwork network = new BytesNetwork();
+        network.putBytes(siteUrl, content);
         DownloaderParamsImpl params = new DownloaderParamsImpl(storage, network);
         Downloader downloader = new DownloaderImpl(params);
-        String urlStr = "abc";
-        SiteUrl url = new SiteUrlImpl(urlStr);
-        ResourceId<NewRes> newResId = storage.createNewResource(url);
+        ResourceId<NewRes> newResId = storage.createNewResource(siteUrl);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         HttpInfoImpl httpInfo = new HttpInfoImpl(200, 1000, 1);
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);

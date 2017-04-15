@@ -20,7 +20,7 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class ParserImpl implements Parser {
+public class ParserImpl implements Parser<TagNode> {
     private final HtmlCleaner cleaner = new HtmlCleaner();
     private final Storage storage;
     private final URL rootUrl;
@@ -34,7 +34,7 @@ public class ParserImpl implements Parser {
 
     @Override
     @SneakyThrows
-    public ResourceId<ParsedRes> parse(ResourceId<ParsingRes> pingResId) {
+    public ResourceId<ParsedRes<TagNode>> parse(ResourceId<ParsingRes<TagNode>> pingResId) {
         ParsingRes<TagNode> pingRes = storage.getResource(pingResId);
         InputStream is = pingRes.getDownloadedContent();
         TagNode rootNode = cleaner.clean(is);
@@ -47,7 +47,7 @@ public class ParserImpl implements Parser {
                 .map(SiteUrlImpl::new)
                 .forEach(storage::createNewResource);
         pingRes.setParsedContent(rootNode);
-        ResourceId<ParsedRes> pedResId = storage.createParsedRes(pingResId);
+        ResourceId<ParsedRes<TagNode>> pedResId = storage.createParsedRes(pingResId);
         log.debug("Resource is parsed: " + pedResId);
         return pedResId;
     }

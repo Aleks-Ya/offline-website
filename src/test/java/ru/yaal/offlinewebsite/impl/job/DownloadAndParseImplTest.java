@@ -8,7 +8,6 @@ import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.*;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
@@ -36,7 +35,9 @@ public class DownloadAndParseImplTest {
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
         HttpInfo httpInfo = new HttpInfoImpl(responseCode, contentLength, lastModified);
-        Network network = new BytesNetwork(html.getBytes(), httpInfo);
+        BytesNetwork network = new BytesNetwork();
+        network.putBytes(rootSiteUrl, html);
+        network.putHttpInfo(rootSiteUrl, httpInfo);
         DownloaderParams params = new DownloaderParamsImpl(storage, network);
         Downloader downloader = new DownloaderImpl(params);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
