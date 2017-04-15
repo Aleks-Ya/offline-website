@@ -41,7 +41,7 @@ public class BytesNetwork implements Network {
     }
 
     public void putBytes(SiteUrl siteUrl, String content) {
-        byteMap.put(siteUrl, content.getBytes());
+        putBytes(siteUrl, content.getBytes());
     }
 
     public void putHttpInfo(SiteUrl siteUrl, HttpInfo httpInfo) {
