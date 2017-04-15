@@ -3,7 +3,6 @@ package ru.yaal.offlinewebsite.impl.parser;
 import org.htmlcleaner.TagNode;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
-import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
@@ -11,7 +10,6 @@ import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
@@ -34,7 +32,7 @@ public class ParserImplTest {
         TestFactory factory = new TestFactory(rootSiteUrl);
         ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
 
-        ParserParams params = new ParserParamsImpl(factory.getStorage(), rootSiteUrl);
+        ParserParams<TagNode> params = new ParserParamsImpl<>(factory.getStorage(), rootSiteUrl, TestFactory.allExtractors);
         Parser<TagNode> parser = new ParserImpl(params);
         ResourceId<ParsedRes<TagNode>> parsedResId = parser.parse(parsingResId);
 

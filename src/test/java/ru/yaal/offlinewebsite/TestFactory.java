@@ -9,14 +9,15 @@ import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
+import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
 import ru.yaal.offlinewebsite.api.params.PackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
-import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
+import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -33,13 +34,16 @@ import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
+import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
+import ru.yaal.offlinewebsite.impl.parser.HrefUrlExtractor;
+import ru.yaal.offlinewebsite.impl.parser.LinkUrlExtractor;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
+import ru.yaal.offlinewebsite.impl.parser.ScriptUrlExtractor;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
@@ -47,6 +51,8 @@ import ru.yaal.offlinewebsite.impl.task.DownloadTask;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Aleksey Yablokov
@@ -55,6 +61,8 @@ import java.nio.file.Path;
 @Getter
 public class TestFactory {
     public static final HttpInfo httpInfoDefault = new HttpInfoImpl(200, 10_000, 6000000);
+    public static final List<UrlExtractor<TagNode>> allExtractors
+            = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;
@@ -84,7 +92,7 @@ public class TestFactory {
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
 
-        ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
+        ParserParams<TagNode> parserParams = new ParserParamsImpl<>(storage, rootSiteUrl, TestFactory.allExtractors);
         parser = new ParserImpl(parserParams);
 
         PackagerParams params = new PackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);

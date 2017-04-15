@@ -18,6 +18,7 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
+import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
@@ -35,7 +36,10 @@ import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
+import ru.yaal.offlinewebsite.impl.parser.HrefUrlExtractor;
+import ru.yaal.offlinewebsite.impl.parser.LinkUrlExtractor;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
+import ru.yaal.offlinewebsite.impl.parser.ScriptUrlExtractor;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
@@ -45,6 +49,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Aleksey Yablokov
@@ -65,7 +71,9 @@ public class OfflineWebsite {
         Downloader downloader = new DownloaderImpl(downloaderParams);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
-        ParserParams parserParams = new ParserParamsImpl(storage, rootSiteUrl);
+        List<UrlExtractor<TagNode>> extractors
+                = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
+        ParserParams<TagNode> parserParams = new ParserParamsImpl<>(storage, rootSiteUrl, extractors);
         Parser<TagNode> parser = new ParserImpl(parserParams);
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
