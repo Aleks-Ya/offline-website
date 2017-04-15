@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class DownloadAndParseImpl implements Job {
+public class DownloadAndParseJob implements Job {
     private final SiteUrl rootUrl;
     private final Downloader downloader;
     private final Storage storage;
@@ -35,7 +35,7 @@ public class DownloadAndParseImpl implements Job {
     private final Parser parser;
     private final List<Future> futures = new ArrayList<>();
 
-    public DownloadAndParseImpl(JobParams params) {
+    public DownloadAndParseJob(JobParams params) {
         rootUrl = params.getRootSiteUrl();
         downloader = params.getDownloader();
         storage = params.getStorage();

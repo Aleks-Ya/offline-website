@@ -2,12 +2,15 @@ package ru.yaal.offlinewebsite;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
+import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
 import ru.yaal.offlinewebsite.api.params.PackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
@@ -25,8 +28,10 @@ import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
+import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
@@ -35,7 +40,6 @@ import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -51,9 +55,15 @@ public class TestFactory {
     private final Parser<TagNode> parser;
     private final Packager<TagNode> packager;
     private final BytesNetwork network;
+    private final HeadRequest headRequest;
 
-    public TestFactory(SiteUrl rootSiteUrl) throws IOException {
-        this(rootSiteUrl, Files.createTempDirectory(TestFactory.class.getSimpleName()));
+    public TestFactory(SiteUrl rootSiteUrl) {
+        this(rootSiteUrl, makTempDir());
+    }
+
+    @SneakyThrows
+    private static Path makTempDir() {
+        return Files.createTempDirectory(TestFactory.class.getSimpleName());
     }
 
     public TestFactory(SiteUrl rootSiteUrl, Path outletDir) {
@@ -62,6 +72,9 @@ public class TestFactory {
         storage = new SyncInMemoryStorageImpl(storageParams);
 
         network = new BytesNetwork();
+        HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
+        headRequest = new HeadRequestImpl(headRequestParams);
+
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
 
