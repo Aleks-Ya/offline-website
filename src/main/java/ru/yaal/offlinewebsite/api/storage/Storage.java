@@ -47,4 +47,6 @@ public interface Storage {
     ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId);
 
     List<ResourceId<NewRes>> getNewResourceIds();
+
+    <C> List<ResourceId<PackagingRes<C>>> getPackagingResourceIds();
 }

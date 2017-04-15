@@ -148,7 +148,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> parsedResId) {
+    public synchronized <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> parsedResId) {
         checkAlreadyExists(parsedResId, PackagingRes.class);
         ResourceId<PackagingRes<C>> packagingResId = new ResourceIdImpl<>(parsedResId.getId());
         ParsedRes<C> parsedRes = getResource(parsedResId);
@@ -159,7 +159,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location) {
+    public synchronized <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location) {
         checkAlreadyExists(packagingResId, PackagedRes.class);
         ResourceId<PackagedRes> packagedResId = new ResourceIdImpl<>(packagingResId.getId());
         PackagingRes<C> packagingRes = getResource(packagingResId);
@@ -187,6 +187,15 @@ public class SyncInMemoryStorageImpl implements Storage {
                 .filter(res -> res instanceof NewResImpl)
                 .map(res -> (NewRes) res)
                 .map(NewRes::getId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public synchronized <C> List<ResourceId<PackagingRes<C>>> getPackagingResourceIds() {
+        return data.values().stream()
+                .filter(res -> res instanceof PackagingRes)
+                .map(res -> (PackagingRes<C>) res)
+                .map(Resource::getId)
                 .collect(Collectors.toList());
     }
 

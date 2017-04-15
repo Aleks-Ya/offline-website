@@ -7,5 +7,5 @@ import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
  */
 public interface ParamsFactory {
     DownloaderParamsImpl getDownloaderParams();
-    JobParams getJobParams();
+    DownloadJobParams getJobParams();
 }

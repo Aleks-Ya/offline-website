@@ -6,7 +6,7 @@ import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.http.HeadRequest;
-import ru.yaal.offlinewebsite.api.params.TaskParams;
+import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.*;
 import ru.yaal.offlinewebsite.api.storage.Storage;
@@ -18,7 +18,7 @@ import ru.yaal.offlinewebsite.impl.filter.SizeFilter;
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class TaskImpl implements Task {
+public class DownloadTask implements Task {
     private final ResourceId<HeadingRes> hingResId;
     private final Downloader downloader;
     private final Storage storage;
@@ -29,7 +29,7 @@ public class TaskImpl implements Task {
     private final long maxSize;
     private final Parser<TagNode> parser;
 
-    public TaskImpl(TaskParams params) {
+    public DownloadTask(DownloadTaskParams params) {
         hingResId = params.getHingResId();
         downloader = params.getDownloader();
         storage = params.getStorage();

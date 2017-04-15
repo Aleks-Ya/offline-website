@@ -3,11 +3,11 @@ package ru.yaal.offlinewebsite.impl.job;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
-import ru.yaal.offlinewebsite.api.params.JobParams;
+import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
-import ru.yaal.offlinewebsite.impl.params.JobParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
@@ -25,10 +25,10 @@ public class DownloadAndParseImplTest {
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(3);
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
 
-        JobParams jobParams = new JobParamsImpl(siteUrl, factory.getDownloader(),
+        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(siteUrl, factory.getDownloader(),
                 factory.getStorage(), threadPool, factory.getHeadRequest(), factory.getParser());
 
-        Job job = new DownloadAndParseJob(jobParams);
+        Job job = new DownloadJob(downloadJobParams);
         job.process();
     }
 

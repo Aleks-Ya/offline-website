@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.impl.params;
 
-import ru.yaal.offlinewebsite.api.params.JobParams;
+import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.ParamsFactory;
 
 /**
@@ -13,7 +13,7 @@ public class ParamsFactoryImpl implements ParamsFactory {
     }
 
     @Override
-    public JobParams getJobParams() {
+    public DownloadJobParams getJobParams() {
         return null;
     }
 }

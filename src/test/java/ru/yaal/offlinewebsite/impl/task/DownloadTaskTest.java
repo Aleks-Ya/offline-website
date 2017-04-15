@@ -10,7 +10,7 @@ import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 /**
  * @author Aleksey Yablokov
  */
-public class TaskImplTest {
+public class DownloadTaskTest {
     @Test
     public void call() throws Exception {
         SiteUrlImpl rootSiteUrl = new SiteUrlImpl("http://ya.ru");

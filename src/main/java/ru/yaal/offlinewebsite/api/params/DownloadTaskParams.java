@@ -10,7 +10,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 /**
  * @author Aleksey Yablokov
  */
-public interface TaskParams extends Params {
+public interface DownloadTaskParams extends Params {
     SiteUrl getRootUrl();
 
     ResourceId<HeadingRes> getHingResId();

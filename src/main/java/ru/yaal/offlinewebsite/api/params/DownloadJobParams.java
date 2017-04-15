@@ -9,7 +9,7 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 /**
  * @author Aleksey Yablokov
  */
-public interface JobParams extends Params {
+public interface DownloadJobParams extends Params {
     SiteUrl getRootSiteUrl();
 
     Downloader getDownloader();
