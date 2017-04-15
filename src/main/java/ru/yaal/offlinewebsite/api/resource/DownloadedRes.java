@@ -1,5 +1,7 @@
 package ru.yaal.offlinewebsite.api.resource;
 
+import ru.yaal.offlinewebsite.api.http.HttpInfo;
+
 import java.io.InputStream;
 
 /**
@@ -7,4 +9,7 @@ import java.io.InputStream;
  */
 public interface DownloadedRes extends Resource<DownloadedRes> {
     InputStream getContent();
+
+    HttpInfo getHttpInfo();
+
 }

@@ -1,5 +1,7 @@
 package ru.yaal.offlinewebsite.api.resource;
 
+import ru.yaal.offlinewebsite.api.http.HttpInfo;
+
 import java.io.InputStream;
 
 /**
@@ -12,4 +14,6 @@ public interface ParsingRes<C> extends Resource<ParsingRes<C>> {
     void setParsedContent(C content);
 
     C getParsedContent();
+
+    HttpInfo getHttpInfo();
 }

@@ -31,7 +31,8 @@ public class NetworkImpl implements Network {
         int responseCode = conn.getResponseCode();
         int contentLength = conn.getContentLength();
         long lastModified = conn.getLastModified();
+        String contentType = conn.getContentType();
         conn.disconnect();
-        return new HttpInfoImpl(responseCode, contentLength, lastModified);
+        return new HttpInfoImpl(responseCode, contentLength, lastModified, contentType);
     }
 }

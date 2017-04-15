@@ -60,7 +60,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class TestFactory {
-    public static final HttpInfo httpInfoDefault = new HttpInfoImpl(200, 10_000, 6000000);
+    public static final HttpInfo httpInfoDefault
+            = new HttpInfoImpl(200, 10_000, 6000000, "text/html");
     public static final List<UrlExtractor<TagNode>> allExtractors
             = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
     private final Path outletDir;

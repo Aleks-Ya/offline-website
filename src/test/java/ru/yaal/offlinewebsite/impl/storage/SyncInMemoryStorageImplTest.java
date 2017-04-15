@@ -36,7 +36,8 @@ public class SyncInMemoryStorageImplTest {
     private final Storage storage = new SyncInMemoryStorageImpl(new StorageParamsImpl(new ResourceComparatorImpl()));
     private final String urlStr = "http://google.com";
     private final SiteUrl url = new SiteUrlImpl(urlStr);
-    private final HttpInfoImpl httpInfo = new HttpInfoImpl(200, 1000, 1);
+    private final HttpInfoImpl httpInfo
+            = new HttpInfoImpl(200, 1000, 1, "text/html");
 
     @Rule
     public ExpectedException exception = ExpectedException.none();

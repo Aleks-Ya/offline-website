@@ -99,11 +99,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized ResourceId<DownloadingRes> createDownloadingResource(ResourceId<HeadedRes> hedResId) {
         checkAlreadyExists(hedResId, DownloadingRes.class);
-        HeadedRes newRes = (HeadedRes) data.get(hedResId);
+        HeadedRes headedRes = (HeadedRes) data.get(hedResId);
         ResourceId<DownloadingRes> dingResId = new ResourceIdImpl<>(hedResId.getId());
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         dingRess.put(dingResId, os);
-        DownloadingRes dingRes = new DownloadingResImpl(dingResId, newRes.getUrl(), os);
+        DownloadingRes dingRes = new DownloadingResImpl(dingResId, headedRes.getUrl(), os, headedRes.getHttpInfo());
         data.remove(hedResId);
         data.put(dingRes.getId(), dingRes);
         log.debug("DownloadingRes is created: " + dingResId);
@@ -117,7 +117,7 @@ public class SyncInMemoryStorageImpl implements Storage {
         ResourceId<DownloadedRes> dedResId = new ResourceIdImpl<>(dingResId.getId());
         DownloadingRes dingRes = getResource(dingResId);
         byte[] bytes = dingRess.get(dingResId).toByteArray();
-        DownloadedRes dedResource = new BytesDownloadedRes(dedResId, dingRes.getUrl(), bytes);
+        DownloadedRes dedResource = new BytesDownloadedRes(dedResId, dingRes.getUrl(), bytes, dingRes.getHttpInfo());
         data.remove(dingResId);
         data.put(dedResId, dedResource);
         log.debug("BytesDownloadedRes is created: " + dedResId);
@@ -129,7 +129,7 @@ public class SyncInMemoryStorageImpl implements Storage {
         checkAlreadyExists(dedResId, ParsingRes.class);
         ResourceId<ParsingRes<C>> pingResId = new ResourceIdImpl<>(dedResId.getId());
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
-        ParsingRes<C> pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent());
+        ParsingRes<C> pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent(), dedRes.getHttpInfo());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
         return pingRes.getId();

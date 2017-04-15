@@ -15,4 +15,5 @@ public class HttpInfoImpl implements HttpInfo {
     private final int responseCode;
     private final long contentLength;
     private final long lastModified;
+    private final String contentType;
 }

@@ -9,4 +9,10 @@ public interface HttpInfo {
     long getContentLength();
 
     long getLastModified();
+
+    String getContentType();
+
+    interface ContentType {
+        String HTML = "text/html";
+    }
 }

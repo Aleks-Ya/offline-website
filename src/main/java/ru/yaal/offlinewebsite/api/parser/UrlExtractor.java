@@ -1,7 +1,5 @@
 package ru.yaal.offlinewebsite.api.parser;
 
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
-
 import java.util.List;
 
 /**
