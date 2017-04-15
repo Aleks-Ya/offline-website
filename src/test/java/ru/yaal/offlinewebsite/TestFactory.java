@@ -15,6 +15,7 @@ import ru.yaal.offlinewebsite.api.params.PackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
+import ru.yaal.offlinewebsite.api.params.TaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
@@ -27,6 +28,7 @@ import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
+import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
@@ -35,10 +37,12 @@ import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.TaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
+import ru.yaal.offlinewebsite.impl.task.TaskImpl;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -125,6 +129,12 @@ public class TestFactory {
 
     public ResourceId<PackagedRes> createPackagedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
         return packager.pack(createPackagingRes(siteUrl, html, httpInfo));
+    }
+
+    public Task createTask(SiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
+        TaskParams taskParams = new TaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
+                onlySameDomain, headRequest, maxSize, parser);
+        return new TaskImpl(taskParams);
     }
 
 
