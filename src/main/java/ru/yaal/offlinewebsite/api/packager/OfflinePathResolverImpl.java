@@ -17,13 +17,24 @@ public class OfflinePathResolverImpl implements OfflinePathResolver {
     @SneakyThrows
     public Path internetUrlToOfflinePath(Path outletDir, SiteUrl siteUrl) {
         URL url = new URL(siteUrl.getUrl());
-        String protocol = url.getProtocol();
-        String port = String.valueOf(url.getPort());
-        String host = url.getHost();
-        String path = url.getPath();
-        String query = URLEncoder.encode(url.getQuery(), Charset.defaultCharset().name());
 
-        Path relPath = Paths.get(host + "-" + port + "-" + protocol, path, query);
+        StringBuilder hostPortProtocol = new StringBuilder();
+        hostPortProtocol.append(url.getHost());
+        if (url.getPort() != -1) {
+            hostPortProtocol.append("-");
+            hostPortProtocol.append(url.getPort());
+        }
+        hostPortProtocol.append("-");
+        hostPortProtocol.append(url.getProtocol());
+
+        String path = url.getPath();
+
+        String query = "";
+        if (url.getQuery() != null) {
+            query = URLEncoder.encode(url.getQuery(), Charset.defaultCharset().name());
+        }
+
+        Path relPath = Paths.get(hostPortProtocol.toString(), path, query);
         return outletDir.resolve(relPath);
     }
 }

@@ -26,4 +26,35 @@ public class OfflinePathResolverImplTest {
         assertThat(path, equalTo(expPath));
     }
 
+    @Test
+    public void noQuery() {
+        Path outletDir = Paths.get("c:/tmp/outlet");
+        SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru:80/russia/spb.html");
+        Path path = resolver.internetUrlToOfflinePath(outletDir, siteUrl);
+
+        Path expPath = Paths.get("c:/tmp/outlet/ya.ru-80-http/russia/spb.html");
+        assertThat(path, equalTo(expPath));
+    }
+
+
+    @Test
+    public void noPath() {
+        Path outletDir = Paths.get("c:/tmp/outlet");
+        SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru:80");
+        Path path = resolver.internetUrlToOfflinePath(outletDir, siteUrl);
+
+        Path expPath = Paths.get("c:/tmp/outlet/ya.ru-80-http");
+        assertThat(path, equalTo(expPath));
+    }
+
+    @Test
+    public void noPort() {
+        Path outletDir = Paths.get("c:/tmp/outlet");
+        SiteUrl siteUrl = new SiteUrlImpl("http://ya.ru/russia");
+        Path path = resolver.internetUrlToOfflinePath(outletDir, siteUrl);
+
+        Path expPath = Paths.get("c:/tmp/outlet/ya.ru-http/russia");
+        assertThat(path, equalTo(expPath));
+    }
+
 }

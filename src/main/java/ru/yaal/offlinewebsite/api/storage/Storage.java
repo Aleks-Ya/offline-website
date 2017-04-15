@@ -15,6 +15,7 @@ import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -41,7 +42,7 @@ public interface Storage {
 
     <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> pedResId);
 
-    <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId);
+    <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location);
 
     ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId);
 

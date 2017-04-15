@@ -33,6 +33,7 @@ import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -158,11 +159,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId) {
+    public <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location) {
         checkAlreadyExists(packagingResId, PackagedRes.class);
         ResourceId<PackagedRes> packagedResId = new ResourceIdImpl<>(packagingResId.getId());
         PackagingRes<C> packagingRes = getResource(packagingResId);
-        PackagedRes packagedRes = new PackagedResImpl(packagedResId, packagingRes.getUrl());
+        PackagedRes packagedRes = new PackagedResImpl(packagedResId, packagingRes.getUrl(), location);
         data.remove(packagingResId);
         data.put(packagedResId, packagedRes);
         return packagedResId;
