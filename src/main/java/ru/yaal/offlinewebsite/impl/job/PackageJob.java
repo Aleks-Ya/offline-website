@@ -39,6 +39,7 @@ public class PackageJob implements Job {
     public void process() {
         log.debug("Job started");
         List<ResourceId<PackagingRes<TagNode>>> packagingResIds = storage.getPackagingResourceIds();
+        log.debug("Resources for packaging: " + packagingResIds.size());
 
         List<Future<Void>> futures = new ArrayList<>();
         for (ResourceId<PackagingRes<TagNode>> packagingResId : packagingResIds) {

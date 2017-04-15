@@ -3,8 +3,16 @@ package ru.yaal.offlinewebsite.impl.storage;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.resource.*;
+import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
+import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
+import ru.yaal.offlinewebsite.api.resource.HeadedRes;
+import ru.yaal.offlinewebsite.api.resource.HeadingRes;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
+import ru.yaal.offlinewebsite.api.resource.RejectedRes;
+import ru.yaal.offlinewebsite.api.resource.Resource;
+import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
@@ -14,7 +22,11 @@ import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.emptyIterable;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Aleksey Yablokov
@@ -137,6 +149,14 @@ public class SyncInMemoryStorageImplTest {
         storage.createDownloadedResource(dingResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createDownloadedResource(dingResId);
+    }
+
+    @Test
+    public void getPackagingResourceIds() {
+        TestFactory factory = new TestFactory(url);
+        assertThat(factory.getStorage().getPackagingResourceIds(), emptyIterable());
+        factory.createPackagingRes(url, "<html></html>", TestFactory.httpInfoDefault);
+        assertThat(factory.getStorage().getPackagingResourceIds(), hasSize(1));
     }
 
     private ResourceId<HeadedRes> makeHeadedResId() {
