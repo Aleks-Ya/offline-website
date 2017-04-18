@@ -6,6 +6,7 @@ import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
+import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
@@ -40,7 +41,7 @@ public class PackageJob implements Job {
         List<ResourceId<ParsedRes<TagNode>>> parsedResIds = storage.getParsedResourceIds();
         log.debug("Resources for packaging: " + parsedResIds.size());
 
-        List<Future<Void>> futures = parsedResIds.stream()
+        List<Future<ResourceId<PackagedRes>>> futures = parsedResIds.stream()
                 .map(storage::createPackagingRes)
                 .map(packagingResId -> new PackageTaskParamsImpl<>(storage, packager, packagingResId))
                 .map(PackageTask::new)
@@ -49,7 +50,7 @@ public class PackageJob implements Job {
 
         log.debug("Submitted packaging tasks: " + futures.size());
 
-        for (Future<Void> future : futures) {
+        for (Future<ResourceId<PackagedRes>> future : futures) {
             try {
                 future.get();
             } catch (InterruptedException e) {
