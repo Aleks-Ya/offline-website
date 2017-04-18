@@ -11,6 +11,8 @@ import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -24,5 +26,5 @@ public class DownloadTaskParamsImpl implements DownloadTaskParams {
     private final boolean onlySameDomain;
     private final HeadRequest headRequest;
     private final long maxSize;
-    private final Parser parser;
+    private final List<Parser<?>> parsers;
 }

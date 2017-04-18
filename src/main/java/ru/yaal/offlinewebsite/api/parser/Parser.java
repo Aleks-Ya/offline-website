@@ -10,4 +10,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 public interface Parser<C> {
     ResourceId<ParsedRes<C>> parse(ResourceId<ParsingRes<C>> pingResId);
 
+    boolean accept(String contentType);
+
+    int getPriority();
 }

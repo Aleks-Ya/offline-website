@@ -10,6 +10,8 @@ import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -21,6 +23,5 @@ public class DownloadJobParamsImpl implements DownloadJobParams {
     private final Storage storage;
     private final ThreadPool threadPool;
     private final HeadRequest headRequest;
-    private final Parser parser;
-
+    private final List<Parser<?>> parsers;
 }

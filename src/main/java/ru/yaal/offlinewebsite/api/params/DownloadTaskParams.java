@@ -7,6 +7,8 @@ import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -25,5 +27,5 @@ public interface DownloadTaskParams extends Params {
 
     long getMaxSize();
 
-    <C> Parser<C> getParser();
+    <C> List<Parser<C>> getParsers();
 }

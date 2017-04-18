@@ -37,8 +37,8 @@ import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HrefUrlExtractor;
+import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
 import ru.yaal.offlinewebsite.impl.parser.LinkUrlExtractor;
-import ru.yaal.offlinewebsite.impl.parser.ParserImpl;
 import ru.yaal.offlinewebsite.impl.parser.ScriptUrlExtractor;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
@@ -50,6 +50,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -73,14 +74,15 @@ public class OfflineWebsite {
         HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
         List<UrlExtractor<TagNode>> extractors
                 = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
-        ParserParams<TagNode> parserParams = new ParserParamsImpl<>(storage, rootSiteUrl, extractors);
-        Parser<TagNode> parser = new ParserImpl(parserParams);
+        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootSiteUrl, extractors, 1);
+        Parser<TagNode> parser = new HtmlParser(htmlParserParams);
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
         PackagerParams packagerParams = new PackagerParamsImpl(outletDir, offlinePathResolver, storage);
         Packager<TagNode> packager = new FolderPackager(packagerParams);
 
-        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage, threadPool, headRequest, parser);
+        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage,
+                threadPool, headRequest, Collections.singletonList(parser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 

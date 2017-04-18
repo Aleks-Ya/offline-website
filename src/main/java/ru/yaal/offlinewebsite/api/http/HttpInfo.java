@@ -12,7 +12,7 @@ public interface HttpInfo {
 
     String getContentType();
 
-    interface ContentType {
+    interface ContentTypes {
         String HTML = "text/html";
     }
 }

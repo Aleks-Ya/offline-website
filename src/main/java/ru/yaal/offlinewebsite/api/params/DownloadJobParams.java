@@ -6,6 +6,8 @@ import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -20,5 +22,5 @@ public interface DownloadJobParams extends Params {
 
     HeadRequest getHeadRequest();
 
-    Parser getParser();
+    List<Parser<?>> getParsers();
 }

@@ -25,7 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 /**
  * @author Aleksey Yablokov
  */
-public class ParserImplTest {
+public class HtmlParserTest {
     @Test
     public void parse() throws IOException {
         String html = IOUtils.toString(getClass().getResourceAsStream("parser_test.html"), Charset.defaultCharset());
@@ -34,8 +34,8 @@ public class ParserImplTest {
         TestFactory factory = new TestFactory(rootSiteUrl);
         ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
 
-        ParserParams<TagNode> params = new ParserParamsImpl<>(factory.getStorage(), rootSiteUrl, TestFactory.allExtractors);
-        Parser<TagNode> parser = new ParserImpl(params);
+        ParserParams<TagNode> params = new ParserParamsImpl<>(factory.getStorage(), rootSiteUrl, TestFactory.allExtractors, 1);
+        Parser<TagNode> parser = new HtmlParser(params);
         ResourceId<ParsedRes<TagNode>> parsedResId = parser.parse(parsingResId);
 
         List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();

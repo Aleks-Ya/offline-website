@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
+import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
@@ -24,17 +25,20 @@ import java.util.Objects;
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class ParserImpl implements Parser<TagNode> {
+public class HtmlParser implements Parser<TagNode> {
     private final HtmlCleaner cleaner = new HtmlCleaner();
     private final Storage storage;
     private final URL rootUrl;
     private final List<UrlExtractor<TagNode>> extractors;
+    private final int priority;
+
 
     @SneakyThrows
-    public ParserImpl(ParserParams<TagNode> params) {
+    public HtmlParser(ParserParams<TagNode> params) {
         storage = params.getStorage();
         rootUrl = new URL(params.getRootSiteUrl().getUrl());
         extractors = params.getExtractors();
+        priority = params.getPriority();
     }
 
     @Override
@@ -62,6 +66,16 @@ public class ParserImpl implements Parser<TagNode> {
         ResourceId<ParsedRes<TagNode>> pedResId = storage.createParsedRes(pingResId);
         log.debug("Resource is parsed: " + pedResId);
         return pedResId;
+    }
+
+    @Override
+    public boolean accept(String contentType) {
+        return HttpInfo.ContentTypes.HTML.equals(contentType);
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 
     @SneakyThrows

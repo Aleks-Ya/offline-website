@@ -29,7 +29,7 @@ public class DownloadJob implements Job {
     private final Storage storage;
     private final ThreadPool threadPool;
     private final HeadRequest headRequest;
-    private final Parser parser;
+    private final List<Parser<?>> parsers;
     private long taskRun = 0;
 
     public DownloadJob(DownloadJobParams params) {
@@ -38,7 +38,7 @@ public class DownloadJob implements Job {
         storage = params.getStorage();
         threadPool = params.getThreadPool();
         headRequest = params.getHeadRequest();
-        parser = params.getParser();
+        parsers = params.getParsers();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DownloadJob implements Job {
 
     private void submitTask(ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams params = new DownloadTaskParamsImpl(rootUrl, hingResId, downloader, storage,
-                true, headRequest, 1_000_000, parser);
+                true, headRequest, 1_000_000, parsers);
         threadPool.submit(new DownloadTask(params));
         taskRun++;
     }

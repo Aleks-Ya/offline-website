@@ -20,4 +20,5 @@ public class ParserParamsImpl<C> implements ParserParams<C> {
     private final Storage storage;
     private final SiteUrl rootSiteUrl;
     private final List<UrlExtractor<C>> extractors;
+    private final int priority;
 }

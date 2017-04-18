@@ -14,4 +14,6 @@ public interface ParserParams<C> extends Params {
     SiteUrl getRootSiteUrl();
 
     List<UrlExtractor<C>> getExtractors();
+
+    int getPriority();
 }
