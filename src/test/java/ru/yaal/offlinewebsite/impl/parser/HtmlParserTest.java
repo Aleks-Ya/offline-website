@@ -5,6 +5,7 @@ import org.htmlcleaner.TagNode;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
@@ -30,7 +31,7 @@ public class HtmlParserTest {
     public void parse() throws IOException {
         String html = IOUtils.toString(getClass().getResourceAsStream("parser_test.html"), Charset.defaultCharset());
         String rootSiteStr = "https://logback.qos.ch";
-        SiteUrl rootSiteUrl = new SiteUrlImpl(rootSiteStr);
+        RootSiteUrl rootSiteUrl = new SiteUrlImpl(rootSiteStr);
         TestFactory factory = new TestFactory(rootSiteUrl);
         ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
 

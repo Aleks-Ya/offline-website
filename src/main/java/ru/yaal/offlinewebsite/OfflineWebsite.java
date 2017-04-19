@@ -8,13 +8,15 @@ import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
+import ru.yaal.offlinewebsite.api.packager.Replacer;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
+import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
+import ru.yaal.offlinewebsite.api.params.InputStreamPackagerParams;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
-import ru.yaal.offlinewebsite.api.params.PackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
@@ -26,12 +28,16 @@ import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.job.DownloadJob;
 import ru.yaal.offlinewebsite.impl.job.PackageJob;
-import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
+import ru.yaal.offlinewebsite.impl.packager.HtmlPackager;
+import ru.yaal.offlinewebsite.impl.packager.InputStreamPackager;
+import ru.yaal.offlinewebsite.impl.packager.LinkReplacer;
+import ru.yaal.offlinewebsite.impl.packager.ReplacerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.InputStreamPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackageJobParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
@@ -46,6 +52,7 @@ import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,7 +68,7 @@ public class OfflineWebsite {
 
     public static void download(URL url, Path outletDir) {
         log.info("Start downloading: " + url);
-        SiteUrl rootSiteUrl = new SiteUrlImpl(url.toString());
+        RootSiteUrl rootSiteUrl = new SiteUrlImpl(url.toString());
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
         Network network = new NetworkImpl();
@@ -78,15 +85,21 @@ public class OfflineWebsite {
         Parser<TagNode> parser = new HtmlParser(htmlParserParams);
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
-        PackagerParams packagerParams = new PackagerParamsImpl(outletDir, offlinePathResolver, storage);
-        Packager<TagNode> packager = new FolderPackager(packagerParams);
+        List<Replacer<TagNode>> replacers = Arrays.asList(
+                new LinkReplacer(new ReplacerParamsImpl(storage, rootSiteUrl))
+        );
+
+        HtmlPackagerParams htmlPackagerParams = new HtmlPackagerParamsImpl(outletDir, offlinePathResolver, storage, replacers);
+        Packager<TagNode> htmlPackager = new HtmlPackager(htmlPackagerParams);
+        InputStreamPackagerParams inputStreamPackagerParams = new InputStreamPackagerParamsImpl(outletDir, offlinePathResolver, storage);
+        Packager<InputStream> inputStreamPackager = new InputStreamPackager(inputStreamPackagerParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage,
                 threadPool, headRequest, Collections.singletonList(parser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 
-        PackageJobParams<TagNode> packageJobParams = new PackageJobParamsImpl<>(storage, packager, threadPool);
+        PackageJobParams packageJobParams = new PackageJobParamsImpl(storage, htmlPackager, inputStreamPackager, threadPool, replacers);
         Job packageJob = new PackageJob(packageJobParams);
         packageJob.process();
 

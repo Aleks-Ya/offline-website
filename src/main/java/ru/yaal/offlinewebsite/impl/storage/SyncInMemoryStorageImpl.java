@@ -137,12 +137,12 @@ public class SyncInMemoryStorageImpl implements Storage {
 
     @Override
     @SneakyThrows
-    public synchronized <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> dedResId) {
-        checkAlreadyExists(dedResId, ParsedRes.class);
-        ResourceId<ParsedRes<C>> pedResId = new ResourceIdImpl<>(dedResId.getId());
-        ParsingRes<C> pingRes = getResource(dedResId);
-        ParsedRes<C> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent());
-        data.remove(dedResId);
+    public synchronized <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> parsingResId) {
+        checkAlreadyExists(parsingResId, ParsedRes.class);
+        ResourceId<ParsedRes<C>> pedResId = new ResourceIdImpl<>(parsingResId.getId());
+        ParsingRes<C> pingRes = getResource(parsingResId);
+        ParsedRes<C> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent(), pingRes.getHttpInfo());
+        data.remove(parsingResId);
         data.put(pedResId, pedRes);
         return pedRes.getId();
     }
@@ -152,7 +152,8 @@ public class SyncInMemoryStorageImpl implements Storage {
         checkAlreadyExists(parsedResId, PackagingRes.class);
         ResourceId<PackagingRes<C>> packagingResId = new ResourceIdImpl<>(parsedResId.getId());
         ParsedRes<C> parsedRes = getResource(parsedResId);
-        PackagingRes<C> packagingRes = new PackagingResImpl<>(packagingResId, parsedRes.getUrl(), parsedRes.getParsedContent());
+        PackagingRes<C> packagingRes = new PackagingResImpl<>(
+                packagingResId, parsedRes.getUrl(), parsedRes.getParsedContent(), parsedRes.getHttpInfo());
         data.remove(parsedResId);
         data.put(packagingResId, packagingRes);
         return packagingResId;

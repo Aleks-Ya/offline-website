@@ -3,11 +3,16 @@ package ru.yaal.offlinewebsite.impl.params;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.packager.Packager;
+import ru.yaal.offlinewebsite.api.packager.Replacer;
 import ru.yaal.offlinewebsite.api.params.PackageTaskParams;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author Aleksey Yablokov
@@ -15,8 +20,10 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 @RequiredArgsConstructor
 @ToString
 @Getter
-public class PackageTaskParamsImpl<C> implements PackageTaskParams<C> {
+public class PackageTaskParamsImpl implements PackageTaskParams {
     private final Storage storage;
-    private final Packager<C> packager;
-    private final ResourceId<PackagingRes<C>> resource;
+    private final Packager<TagNode> htmlPackager;
+    private final Packager<InputStream> inputStreamPackager;
+    private final ResourceId<PackagingRes<Object>> resource;
+    private final List<Replacer<TagNode>> replacers;
 }

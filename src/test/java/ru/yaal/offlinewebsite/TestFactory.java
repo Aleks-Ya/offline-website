@@ -9,11 +9,14 @@ import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
+import ru.yaal.offlinewebsite.api.packager.Replacer;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
-import ru.yaal.offlinewebsite.api.params.PackagerParams;
+import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
+import ru.yaal.offlinewebsite.api.params.InputStreamPackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
@@ -33,11 +36,15 @@ import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
-import ru.yaal.offlinewebsite.impl.packager.FolderPackager;
+import ru.yaal.offlinewebsite.impl.packager.HtmlPackager;
+import ru.yaal.offlinewebsite.impl.packager.InputStreamPackager;
+import ru.yaal.offlinewebsite.impl.packager.LinkReplacer;
+import ru.yaal.offlinewebsite.impl.packager.ReplacerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.PackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.InputStreamPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HrefUrlExtractor;
@@ -67,17 +74,19 @@ public class TestFactory {
             = new HttpInfoImpl(200, 10_000, 6000000, "text/html");
     public static final List<UrlExtractor<TagNode>> allExtractors
             = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
+    private final List<Replacer<TagNode>> allReplacers;
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;
     private final Parser<TagNode> htmlParser;
     private final Parser<?> skipParser;
-    private final Packager<TagNode> packager;
+    private final Packager<TagNode> htmlPackager;
+    private final Packager<InputStream> inputStreamPackager;
     private final BytesNetwork network;
     private final HeadRequest headRequest;
     private final List<Parser<?>> allParsers;
 
-    public TestFactory(SiteUrl rootSiteUrl) {
+    public TestFactory(RootSiteUrl rootSiteUrl) {
         this(rootSiteUrl, makTempDir());
     }
 
@@ -86,10 +95,12 @@ public class TestFactory {
         return Files.createTempDirectory(TestFactory.class.getSimpleName());
     }
 
-    public TestFactory(SiteUrl rootSiteUrl, Path outletDir) {
+    public TestFactory(RootSiteUrl rootSiteUrl, Path outletDir) {
         this.outletDir = outletDir;
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         storage = new SyncInMemoryStorageImpl(storageParams);
+
+        allReplacers = Arrays.asList(new LinkReplacer(new ReplacerParamsImpl(storage, rootSiteUrl)));
 
         network = new BytesNetwork();
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
@@ -107,8 +118,11 @@ public class TestFactory {
 
         allParsers = Arrays.asList(htmlParser, skipParser);
 
-        PackagerParams params = new PackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
-        packager = new FolderPackager(params);
+        HtmlPackagerParams params = new HtmlPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage, allReplacers);
+        htmlPackager = new HtmlPackager(params);
+
+        InputStreamPackagerParams isPackagerParams = new InputStreamPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        inputStreamPackager = new InputStreamPackager(isPackagerParams);
     }
 
     public ResourceId<NewRes> createNewRes(SiteUrl siteUrl) {
@@ -150,7 +164,7 @@ public class TestFactory {
     }
 
     public ResourceId<PackagedRes> createPackagedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        return packager.pack(createPackagingRes(siteUrl, html, httpInfo));
+        return htmlPackager.pack(createPackagingRes(siteUrl, html, httpInfo));
     }
 
     public Task createTask(SiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
