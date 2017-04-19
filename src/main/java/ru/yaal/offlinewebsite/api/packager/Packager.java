@@ -7,6 +7,6 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 /**
  * @author Aleksey Yablokov
  */
-public interface Packager<C> {
-    ResourceId<PackagedRes> pack(ResourceId<PackagingRes<C>> pickResId);
+public interface Packager {
+    ResourceId<PackagedRes> pack(ResourceId<PackagingRes> pickResId);
 }

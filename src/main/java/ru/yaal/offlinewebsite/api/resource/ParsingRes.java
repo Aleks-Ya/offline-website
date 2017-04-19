@@ -7,13 +7,9 @@ import java.io.InputStream;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParsingRes<C> extends Resource<ParsingRes<C>> {
+public interface ParsingRes extends Resource<ParsingRes> {
 
     InputStream getDownloadedContent();
-
-    void setParsedContent(C content);
-
-    C getParsedContent();
 
     HttpInfo getHttpInfo();
 }

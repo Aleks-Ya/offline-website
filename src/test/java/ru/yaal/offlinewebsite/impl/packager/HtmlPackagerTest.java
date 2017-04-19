@@ -1,6 +1,5 @@
 package ru.yaal.offlinewebsite.impl.packager;
 
-import org.htmlcleaner.TagNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
@@ -29,8 +28,8 @@ public class HtmlPackagerTest {
         RootSiteUrl rootSiteUrl = new SiteUrlImpl("http://ya.ru/info");
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
         TestFactory factory = new TestFactory(rootSiteUrl);
-        Packager<TagNode> packager = factory.getHtmlPackager();
-        ResourceId<PackagingRes<TagNode>> packagingResId = factory.createPackagingRes(rootSiteUrl, html, httpInfoDefault);
+        Packager packager = factory.getHtmlPackager();
+        ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(rootSiteUrl, html, httpInfoDefault);
         SiteUrlImpl nestedSiteUrl = new SiteUrlImpl("http://ya.ru/link");
 //        factory.createPackagedRes(nestedSiteUrl, "<html></html>", TestFactory.httpInfoDefault);
         ResourceId<PackagedRes> packedRedId = packager.pack(packagingResId);

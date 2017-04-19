@@ -27,5 +27,5 @@ public interface DownloadTaskParams extends Params {
 
     long getMaxSize();
 
-    <C> List<Parser<C>> getParsers();
+    List<Parser> getParsers();
 }

@@ -6,5 +6,5 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface UrlExtractor<C> {
-    List<String> extract(C content);
+    List<UuidLink> extract(C content);
 }

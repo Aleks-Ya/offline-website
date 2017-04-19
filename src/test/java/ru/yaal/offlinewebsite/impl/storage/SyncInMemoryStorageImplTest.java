@@ -1,7 +1,6 @@
 package ru.yaal.offlinewebsite.impl.storage;
 
 import org.hamcrest.Matchers;
-import org.htmlcleaner.TagNode;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -156,7 +155,7 @@ public class SyncInMemoryStorageImplTest {
     @Test
     public void getPackagingResourceIds() {
         TestFactory factory = new TestFactory(rootSiteUrl);
-        ResourceId<PackagingRes<TagNode>> packagingResId =
+        ResourceId<PackagingRes> packagingResId =
                 factory.createPackagingRes(rootSiteUrl, "<html></html>", TestFactory.httpInfoDefault);
         assertThat(factory.getStorage().getResource(packagingResId), Matchers.instanceOf(PackagingRes.class));
     }

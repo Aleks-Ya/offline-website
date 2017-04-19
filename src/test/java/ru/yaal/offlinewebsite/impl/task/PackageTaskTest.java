@@ -1,6 +1,5 @@
 package ru.yaal.offlinewebsite.impl.task;
 
-import org.htmlcleaner.TagNode;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.PackageTaskParams;
@@ -29,11 +28,11 @@ public class PackageTaskTest {
         String siteUrlStr = "http://google.com/data.html";
         SiteUrl siteUrl = new SiteUrlImpl(siteUrlStr);
         String html = "<html></html>";
-        ResourceId<PackagingRes<TagNode>> packagingResId = factory.createPackagingRes(siteUrl, html, TestFactory.httpInfoDefault);
+        ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(siteUrl, html, TestFactory.httpInfoDefault);
         Storage storage = factory.getStorage();
         PackageTaskParams params = new PackageTaskParamsImpl(
                 storage, factory.getHtmlPackager(), factory.getInputStreamPackager(),
-                new ResourceIdImpl<>(packagingResId.getId()), factory.getAllReplacers());
+                new ResourceIdImpl<>(packagingResId.getId()));
         Task<PackagedRes> task = new PackageTask(params);
         ResourceId<PackagedRes> packagedResId = task.call();
 

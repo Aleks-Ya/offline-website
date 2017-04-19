@@ -10,12 +10,13 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 import java.io.InputStream;
+import java.util.Collections;
 
 /**
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class SkipParser implements Parser<InputStream> {
+public class SkipParser implements Parser {
     private final Storage storage;
     private final int priority;
 
@@ -27,10 +28,10 @@ public class SkipParser implements Parser<InputStream> {
 
     @Override
     @SneakyThrows
-    public ResourceId<ParsedRes<InputStream>> parse(ResourceId<ParsingRes<InputStream>> pingResId) {
-        ParsingRes<InputStream> pingRes = storage.getResource(pingResId);
-        pingRes.setParsedContent(pingRes.getParsedContent());
-        ResourceId<ParsedRes<InputStream>> parsedResId = storage.createParsedRes(pingResId);
+    public ResourceId<ParsedRes> parse(ResourceId<ParsingRes> pingResId) {
+        ParsingRes pingRes = storage.getResource(pingResId);
+        ResourceId<ParsedRes> parsedResId =
+                storage.createParsedRes(pingResId, pingRes.getDownloadedContent(), Collections.emptyList());
         log.debug("Resource is parsed: " + parsedResId);
         return parsedResId;
     }

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
+import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -33,6 +34,7 @@ import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -125,11 +127,11 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized <C> ResourceId<ParsingRes<C>> createParsingRes(ResourceId<DownloadedRes> dedResId) {
+    public synchronized ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId) {
         checkAlreadyExists(dedResId, ParsingRes.class);
-        ResourceId<ParsingRes<C>> pingResId = new ResourceIdImpl<>(dedResId.getId());
+        ResourceId<ParsingRes> pingResId = new ResourceIdImpl<>(dedResId.getId());
         DownloadedRes dedRes = (DownloadedRes) data.get(dedResId);
-        ParsingRes<C> pingRes = new ParsingResImpl<>(pingResId, dedRes.getUrl(), dedRes.getContent(), dedRes.getHttpInfo());
+        ParsingRes pingRes = new ParsingResImpl(pingResId, dedRes.getUrl(), dedRes.getContent(), dedRes.getHttpInfo());
         data.remove(dedResId);
         data.put(pingResId, pingRes);
         return pingRes.getId();
@@ -137,33 +139,34 @@ public class SyncInMemoryStorageImpl implements Storage {
 
     @Override
     @SneakyThrows
-    public synchronized <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> parsingResId) {
+    public synchronized ResourceId<ParsedRes> createParsedRes(
+            ResourceId<ParsingRes> parsingResId, InputStream content, List<UuidAbsoluteLink> links) {
         checkAlreadyExists(parsingResId, ParsedRes.class);
-        ResourceId<ParsedRes<C>> pedResId = new ResourceIdImpl<>(parsingResId.getId());
-        ParsingRes<C> pingRes = getResource(parsingResId);
-        ParsedRes<C> pedRes = new BytesParsedRes<>(pedResId, pingRes.getUrl(), pingRes.getParsedContent(), pingRes.getHttpInfo());
+        ResourceId<ParsedRes> pedResId = new ResourceIdImpl<>(parsingResId.getId());
+        ParsingRes pingRes = getResource(parsingResId);
+        ParsedRes pedRes = new BytesParsedRes(pedResId, pingRes.getUrl(), content, pingRes.getHttpInfo(), links);
         data.remove(parsingResId);
         data.put(pedResId, pedRes);
         return pedRes.getId();
     }
 
     @Override
-    public synchronized <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> parsedResId) {
+    public synchronized ResourceId<PackagingRes> createPackagingRes(ResourceId<ParsedRes> parsedResId) {
         checkAlreadyExists(parsedResId, PackagingRes.class);
-        ResourceId<PackagingRes<C>> packagingResId = new ResourceIdImpl<>(parsedResId.getId());
-        ParsedRes<C> parsedRes = getResource(parsedResId);
-        PackagingRes<C> packagingRes = new PackagingResImpl<>(
-                packagingResId, parsedRes.getUrl(), parsedRes.getParsedContent(), parsedRes.getHttpInfo());
+        ResourceId<PackagingRes> packagingResId = new ResourceIdImpl<>(parsedResId.getId());
+        ParsedRes parsedRes = getResource(parsedResId);
+        PackagingRes packagingRes = new PackagingResImpl(
+                packagingResId, parsedRes.getUrl(), parsedRes.getParsedContent(), parsedRes.getHttpInfo(), parsedRes.getLinks());
         data.remove(parsedResId);
         data.put(packagingResId, packagingRes);
         return packagingResId;
     }
 
     @Override
-    public synchronized <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location) {
+    public synchronized ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes> packagingResId, Path location) {
         checkAlreadyExists(packagingResId, PackagedRes.class);
         ResourceId<PackagedRes> packagedResId = new ResourceIdImpl<>(packagingResId.getId());
-        PackagingRes<C> packagingRes = getResource(packagingResId);
+        PackagingRes packagingRes = getResource(packagingResId);
         PackagedRes packagedRes = new PackagedResImpl(packagedResId, packagingRes.getUrl(), location);
         data.remove(packagingResId);
         data.put(packagedResId, packagedRes);
@@ -192,10 +195,10 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized <C> List<ResourceId<ParsedRes<C>>> getParsedResourceIds() {
+    public synchronized List<ResourceId<ParsedRes>> getParsedResourceIds() {
         return data.values().stream()
                 .filter(res -> res instanceof ParsedRes)
-                .map(res -> (ParsedRes<C>) res)
+                .map(res -> (ParsedRes) res)
                 .map(Resource::getId)
                 .collect(Collectors.toList());
     }

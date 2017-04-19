@@ -1,12 +1,18 @@
 package ru.yaal.offlinewebsite.api.resource;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
+import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
+
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author Aleksey Yablokov
  */
-public interface PackagingRes<C> extends Resource<PackagingRes<C>> {
+public interface PackagingRes extends Resource<PackagingRes> {
     HttpInfo getHttpInfo();
 
-    C getContent();
+    InputStream getContent();
+
+    List<UuidAbsoluteLink> getLinks();
 }

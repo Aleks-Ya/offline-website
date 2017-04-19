@@ -33,7 +33,7 @@ public class DownloadTask implements Task {
     private final Filter<HeadedRes> sizeFilter;
     private final HeadRequest headRequest;
     private final long maxSize;
-    private final List<Parser<Object>> parsers;
+    private final List<Parser> parsers;
 
     public DownloadTask(DownloadTaskParams params) {
         hingResId = params.getHingResId();
@@ -74,8 +74,8 @@ public class DownloadTask implements Task {
 
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
         ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);
-        ResourceId<ParsingRes<Object>> parsingResId = storage.createParsingRes(dedResId);
-        ParsingRes<Object> parsingRes = storage.getResource(parsingResId);
+        ResourceId<ParsingRes> parsingResId = storage.createParsingRes(dedResId);
+        ParsingRes parsingRes = storage.getResource(parsingResId);
 
         parsers.stream()
                 .sorted((p1, p2) -> Integer.valueOf(p1.getPriority()).compareTo(p2.getPriority()))

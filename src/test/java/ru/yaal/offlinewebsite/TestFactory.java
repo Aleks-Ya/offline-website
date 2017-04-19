@@ -9,7 +9,6 @@ import ru.yaal.offlinewebsite.api.http.HeadRequest;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
-import ru.yaal.offlinewebsite.api.packager.Replacer;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
@@ -36,10 +35,8 @@ import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
 import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
-import ru.yaal.offlinewebsite.impl.packager.HtmlPackager;
-import ru.yaal.offlinewebsite.impl.packager.InputStreamPackager;
-import ru.yaal.offlinewebsite.impl.packager.LinkReplacer;
-import ru.yaal.offlinewebsite.impl.packager.ReplacerParamsImpl;
+import ru.yaal.offlinewebsite.impl.packager.CopyPackager;
+import ru.yaal.offlinewebsite.impl.packager.UuidLinkPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
@@ -47,11 +44,9 @@ import ru.yaal.offlinewebsite.impl.params.HtmlPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.InputStreamPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
-import ru.yaal.offlinewebsite.impl.parser.HrefUrlExtractor;
 import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
-import ru.yaal.offlinewebsite.impl.parser.LinkUrlExtractor;
-import ru.yaal.offlinewebsite.impl.parser.ScriptUrlExtractor;
 import ru.yaal.offlinewebsite.impl.parser.SkipParser;
+import ru.yaal.offlinewebsite.impl.parser.TagAttributeExtractor;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
@@ -72,19 +67,20 @@ import java.util.List;
 public class TestFactory {
     public static final HttpInfo httpInfoDefault
             = new HttpInfoImpl(200, 10_000, 6000000, "text/html");
-    public static final List<UrlExtractor<TagNode>> allExtractors
-            = Arrays.asList(new HrefUrlExtractor(), new LinkUrlExtractor(), new ScriptUrlExtractor());
-    private final List<Replacer<TagNode>> allReplacers;
+    public static final List<UrlExtractor<TagNode>> allExtractors = Arrays.asList(
+            new TagAttributeExtractor(new TagAttributeExtractor.Params("a", "href")),
+            new TagAttributeExtractor(new TagAttributeExtractor.Params("link", "href")),
+            new TagAttributeExtractor(new TagAttributeExtractor.Params("script", "href")));
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;
-    private final Parser<TagNode> htmlParser;
-    private final Parser<?> skipParser;
-    private final Packager<TagNode> htmlPackager;
-    private final Packager<InputStream> inputStreamPackager;
+    private final Parser htmlParser;
+    private final Parser skipParser;
+    private final Packager htmlPackager;
+    private final Packager inputStreamPackager;
     private final BytesNetwork network;
     private final HeadRequest headRequest;
-    private final List<Parser<?>> allParsers;
+    private final List<Parser> allParsers;
 
     public TestFactory(RootSiteUrl rootSiteUrl) {
         this(rootSiteUrl, makTempDir());
@@ -99,8 +95,6 @@ public class TestFactory {
         this.outletDir = outletDir;
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         storage = new SyncInMemoryStorageImpl(storageParams);
-
-        allReplacers = Arrays.asList(new LinkReplacer(new ReplacerParamsImpl(storage, rootSiteUrl)));
 
         network = new BytesNetwork();
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
@@ -118,11 +112,11 @@ public class TestFactory {
 
         allParsers = Arrays.asList(htmlParser, skipParser);
 
-        HtmlPackagerParams params = new HtmlPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage, allReplacers);
-        htmlPackager = new HtmlPackager(params);
+        HtmlPackagerParams params = new HtmlPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        htmlPackager = new CopyPackager(params);
 
         InputStreamPackagerParams isPackagerParams = new InputStreamPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
-        inputStreamPackager = new InputStreamPackager(isPackagerParams);
+        inputStreamPackager = new UuidLinkPackager(isPackagerParams);
     }
 
     public ResourceId<NewRes> createNewRes(SiteUrl siteUrl) {
@@ -149,17 +143,17 @@ public class TestFactory {
         return downloader.download(createDownloadingRes(siteUrl, html, httpInfo));
     }
 
-    public ResourceId<ParsingRes<TagNode>> createParsingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+    public ResourceId<ParsingRes> createParsingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
         ResourceId<DownloadedRes> dedResId = createDownloadedRes(siteUrl, html, httpInfo);
         return storage.createParsingRes(dedResId);
     }
 
-    public ResourceId<ParsedRes<TagNode>> createParsedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+    public ResourceId<ParsedRes> createParsedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
         return htmlParser.parse(createParsingRes(siteUrl, html, httpInfo));
     }
 
-    public ResourceId<PackagingRes<TagNode>> createPackagingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        ResourceId<ParsedRes<TagNode>> parsedResId = createParsedRes(siteUrl, html, httpInfo);
+    public ResourceId<PackagingRes> createPackagingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
+        ResourceId<ParsedRes> parsedResId = createParsedRes(siteUrl, html, httpInfo);
         return storage.createPackagingRes(parsedResId);
     }
 

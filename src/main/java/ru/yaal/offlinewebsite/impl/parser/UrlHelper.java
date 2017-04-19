@@ -15,4 +15,9 @@ public class UrlHelper {
     public static URL newAbsoluteURL(URL rootUrl, String relativeUrlStr) {
         return new URL(rootUrl, relativeUrlStr);
     }
+
+    @SneakyThrows
+    public static String newAbsoluteUrlStr(URL rootUrl, String relativeUrlStr) {
+        return newAbsoluteURL(rootUrl, relativeUrlStr).toString();
+    }
 }

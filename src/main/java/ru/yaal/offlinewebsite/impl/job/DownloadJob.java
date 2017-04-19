@@ -29,7 +29,7 @@ public class DownloadJob implements Job {
     private final Storage storage;
     private final ThreadPool threadPool;
     private final HeadRequest headRequest;
-    private final List<Parser<?>> parsers;
+    private final List<Parser> parsers;
     private long taskRun = 0;
 
     public DownloadJob(DownloadJobParams params) {

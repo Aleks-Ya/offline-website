@@ -6,7 +6,6 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
@@ -20,7 +19,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 
 /**
@@ -33,17 +32,18 @@ public class HtmlParserTest {
         String rootSiteStr = "https://logback.qos.ch";
         RootSiteUrl rootSiteUrl = new SiteUrlImpl(rootSiteStr);
         TestFactory factory = new TestFactory(rootSiteUrl);
-        ResourceId<ParsingRes<TagNode>> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
+        ResourceId<ParsingRes> parsingResId = factory.createParsingRes(rootSiteUrl, html, TestFactory.httpInfoDefault);
 
         ParserParams<TagNode> params = new ParserParamsImpl<>(factory.getStorage(), rootSiteUrl, TestFactory.allExtractors, 1);
-        Parser<TagNode> parser = new HtmlParser(params);
-        ResourceId<ParsedRes<TagNode>> parsedResId = parser.parse(parsingResId);
+        Parser parser = new HtmlParser(params);
+        ResourceId<ParsedRes> parsedResId = parser.parse(parsingResId);
 
         List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();
-        assertThat(newResIds, hasSize(13));
+        assertThat(newResIds, hasSize(9));
 
-        ParsedRes<TagNode> pedRes = factory.getStorage().getResource(parsedResId);
-        TagNode hrefNode = pedRes.getParsedContent();
-        assertThat(hrefNode.getName(), equalTo("html"));
+        ParsedRes pedRes = factory.getStorage().getResource(parsedResId);
+        String cont = IOUtils.toString(pedRes.getParsedContent(), Charset.defaultCharset());
+        assertThat(pedRes.getLinks(), hasSize(10));
+        assertThat(cont, containsString("<h1>Dependencies per module</h1>"));
     }
 }

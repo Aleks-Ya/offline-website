@@ -2,6 +2,7 @@ package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -15,6 +16,7 @@ import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -36,17 +38,17 @@ public interface Storage {
 
     ResourceId<DownloadedRes> createDownloadedResource(ResourceId<DownloadingRes> dingResId);
 
-    <C> ResourceId<ParsingRes<C>> createParsingRes(ResourceId<DownloadedRes> dedResId);
+    ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId);
 
-    <C> ResourceId<ParsedRes<C>> createParsedRes(ResourceId<ParsingRes<C>> dedResId);
+    ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> parsingResId, InputStream content, List<UuidAbsoluteLink> links);
 
-    <C> ResourceId<PackagingRes<C>> createPackagingRes(ResourceId<ParsedRes<C>> pedResId);
+    ResourceId<PackagingRes> createPackagingRes(ResourceId<ParsedRes> pedResId);
 
-    <C> ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes<C>> packagingResId, Path location);
+    ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes> packagingResId, Path location);
 
     ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId);
 
     List<ResourceId<NewRes>> getNewResourceIds();
 
-    <C> List<ResourceId<ParsedRes<C>>> getParsedResourceIds();
+    List<ResourceId<ParsedRes>> getParsedResourceIds();
 }

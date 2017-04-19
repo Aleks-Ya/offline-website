@@ -22,5 +22,5 @@ public interface DownloadJobParams extends Params {
 
     HeadRequest getHeadRequest();
 
-    List<Parser<?>> getParsers();
+    List<Parser> getParsers();
 }

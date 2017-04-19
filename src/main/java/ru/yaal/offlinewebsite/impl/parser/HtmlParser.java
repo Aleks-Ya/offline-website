@@ -2,12 +2,15 @@ package ru.yaal.offlinewebsite.impl.parser;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
+import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -15,17 +18,19 @@ import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class HtmlParser implements Parser<TagNode> {
+public class HtmlParser implements Parser {
     private final HtmlCleaner cleaner = new HtmlCleaner();
     private final Storage storage;
     private final URL rootUrl;
@@ -43,27 +48,31 @@ public class HtmlParser implements Parser<TagNode> {
 
     @Override
     @SneakyThrows
-    public ResourceId<ParsedRes<TagNode>> parse(ResourceId<ParsingRes<TagNode>> pingResId) {
-        ParsingRes<TagNode> pingRes = storage.getResource(pingResId);
+    public ResourceId<ParsedRes> parse(ResourceId<ParsingRes> pingResId) {
+        ParsingRes pingRes = storage.getResource(pingResId);
         InputStream is = pingRes.getDownloadedContent();
-        TagNode rootNode = cleaner.clean(is);
-        extractors.stream()
+        String content = IOUtils.toString(is, Charset.defaultCharset());
+        TagNode rootNode = cleaner.clean(content);
+        List<UuidAbsoluteLink> allLinks = extractors.stream()
                 .map(extractor -> extractor.extract(rootNode))
                 .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
-                .filter(urlStr -> !urlStr.isEmpty())
-                .map(urlStr -> UrlHelper.newAbsoluteURL(rootUrl, urlStr))
-                .map(URL::toString)
-                .map(SiteUrlImpl::new)
-                .forEach(siteUrl -> {
+                .map(link -> new UuidAbsoluteLinkImpl(link.getOriginal(), link.getUUID(),
+                        UrlHelper.newAbsoluteUrlStr(rootUrl, link.getOriginal())))
+                .map(link -> {
+                    SiteUrl siteUrl = new SiteUrlImpl(link.getAbsolute());
                     try {
                         storage.createNewResource(siteUrl);
                     } catch (ResourceAlreadyExistsException e) {
                         log.debug("Skipped already exists resource: " + siteUrl);
                     }
-                });
-        pingRes.setParsedContent(rootNode);
-        ResourceId<ParsedRes<TagNode>> pedResId = storage.createParsedRes(pingResId);
+                    return link;
+                })
+                .collect(Collectors.toList());
+        for (UuidAbsoluteLink link : allLinks) {
+            content = content.replaceAll(link.getOriginal(), link.getUUID());
+        }
+        InputStream resultIs = new ByteArrayInputStream(content.getBytes());
+        ResourceId<ParsedRes> pedResId = storage.createParsedRes(pingResId, resultIs, allLinks);
         log.debug("Resource is parsed: " + pedResId);
         return pedResId;
     }

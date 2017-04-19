@@ -23,5 +23,5 @@ public class DownloadJobParamsImpl implements DownloadJobParams {
     private final Storage storage;
     private final ThreadPool threadPool;
     private final HeadRequest headRequest;
-    private final List<Parser<?>> parsers;
+    private final List<Parser> parsers;
 }
