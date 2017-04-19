@@ -52,7 +52,7 @@ public class HtmlParser implements Parser<TagNode> {
                 .flatMap(Collection::stream)
                 .filter(Objects::nonNull)
                 .filter(urlStr -> !urlStr.isEmpty())
-                .map(this::newAbsoluteURL)
+                .map(urlStr -> UrlHelper.newAbsoluteURL(rootUrl, urlStr))
                 .map(URL::toString)
                 .map(SiteUrlImpl::new)
                 .forEach(siteUrl -> {
@@ -76,10 +76,5 @@ public class HtmlParser implements Parser<TagNode> {
     @Override
     public int getPriority() {
         return priority;
-    }
-
-    @SneakyThrows
-    private URL newAbsoluteURL(String relativeUrlStr) {
-        return new URL(rootUrl, relativeUrlStr);
     }
 }
