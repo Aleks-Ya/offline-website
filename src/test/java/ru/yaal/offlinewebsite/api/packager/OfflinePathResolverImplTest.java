@@ -57,4 +57,14 @@ public class OfflinePathResolverImplTest {
         assertThat(path, equalTo(expPath));
     }
 
+    @Test
+    public void fileProtocol() {
+        Path outletDir = Paths.get("c:/tmp/outlet");
+        SiteUrl siteUrl = new SiteUrlImpl("file:/C:/yaal/nested_page.html");
+        Path path = resolver.internetUrlToOfflinePath(outletDir, siteUrl);
+
+        Path expPath = Paths.get("c:/tmp/outlet/file/C/yaal/nested_page.html");
+        assertThat(path, equalTo(expPath));
+    }
+
 }

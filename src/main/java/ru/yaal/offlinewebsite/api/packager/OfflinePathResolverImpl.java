@@ -24,10 +24,12 @@ public class OfflinePathResolverImpl implements OfflinePathResolver {
             hostPortProtocol.append("-");
             hostPortProtocol.append(url.getPort());
         }
-        hostPortProtocol.append("-");
+        if (hostPortProtocol.length() > 0) {
+            hostPortProtocol.append("-");
+        }
         hostPortProtocol.append(url.getProtocol());
 
-        String path = url.getPath();
+        String path = url.getPath().replace(":", "");
 
         String query = "";
         if (url.getQuery() != null) {
