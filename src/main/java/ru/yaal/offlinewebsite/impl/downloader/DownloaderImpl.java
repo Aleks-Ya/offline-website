@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * TODO process HTTP errors (not found, etc)
+ *
  * @author Aleksey Yablokov
  */
 @Slf4j

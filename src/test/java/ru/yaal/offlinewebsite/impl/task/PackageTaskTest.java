@@ -31,7 +31,7 @@ public class PackageTaskTest {
         ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(siteUrl, html, TestFactory.httpInfoDefault);
         Storage storage = factory.getStorage();
         PackageTaskParams params = new PackageTaskParamsImpl(
-                storage, factory.getHtmlPackager(), factory.getInputStreamPackager(),
+                storage, factory.getCopyPackager(), factory.getUuidLinkPackager(),
                 new ResourceIdImpl<>(packagingResId.getId()));
         Task<PackagedRes> task = new PackageTask(params);
         ResourceId<PackagedRes> packagedResId = task.call();

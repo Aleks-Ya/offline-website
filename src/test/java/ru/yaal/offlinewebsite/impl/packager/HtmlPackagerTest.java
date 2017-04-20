@@ -28,7 +28,7 @@ public class HtmlPackagerTest {
         RootSiteUrl rootSiteUrl = new SiteUrlImpl("http://ya.ru/info");
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
         TestFactory factory = new TestFactory(rootSiteUrl);
-        Packager packager = factory.getHtmlPackager();
+        Packager packager = factory.getCopyPackager();
         ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(rootSiteUrl, html, httpInfoDefault);
         SiteUrlImpl nestedSiteUrl = new SiteUrlImpl("http://ya.ru/link");
 //        factory.createPackagedRes(nestedSiteUrl, "<html></html>", TestFactory.httpInfoDefault);

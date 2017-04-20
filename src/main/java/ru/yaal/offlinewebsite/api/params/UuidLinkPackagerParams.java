@@ -8,7 +8,7 @@ import java.nio.file.Path;
 /**
  * @author Aleksey Yablokov
  */
-public interface InputStreamPackagerParams extends Params {
+public interface UuidLinkPackagerParams extends Params {
     Path getOutletDir();
 
     OfflinePathResolver getOfflinePathResolver();

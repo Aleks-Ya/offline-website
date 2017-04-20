@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.params;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
-import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
+import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ import java.nio.file.Path;
  */
 @RequiredArgsConstructor
 @Getter
-public class HtmlPackagerParamsImpl implements HtmlPackagerParams {
+public class CopyPackagerParamsImpl implements CopyPackagerParams {
     private final Path outletDir;
     private final OfflinePathResolver offlinePathResolver;
     private final Storage storage;

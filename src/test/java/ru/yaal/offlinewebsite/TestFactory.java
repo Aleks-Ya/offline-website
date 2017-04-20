@@ -12,8 +12,8 @@ import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
-import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
-import ru.yaal.offlinewebsite.api.params.InputStreamPackagerParams;
+import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
+import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
@@ -40,8 +40,8 @@ import ru.yaal.offlinewebsite.impl.packager.UuidLinkPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.HtmlPackagerParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.InputStreamPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.CopyPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.UuidLinkPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
@@ -76,8 +76,8 @@ public class TestFactory {
     private final Downloader downloader;
     private final Parser htmlParser;
     private final Parser skipParser;
-    private final Packager htmlPackager;
-    private final Packager inputStreamPackager;
+    private final Packager copyPackager;
+    private final Packager uuidLinkPackager;
     private final BytesNetwork network;
     private final HeadRequest headRequest;
     private final List<Parser> allParsers;
@@ -112,11 +112,11 @@ public class TestFactory {
 
         allParsers = Arrays.asList(htmlParser, skipParser);
 
-        HtmlPackagerParams params = new HtmlPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
-        htmlPackager = new CopyPackager(params);
+        CopyPackagerParams params = new CopyPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        copyPackager = new CopyPackager(params);
 
-        InputStreamPackagerParams isPackagerParams = new InputStreamPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
-        inputStreamPackager = new UuidLinkPackager(isPackagerParams);
+        UuidLinkPackagerParams isPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        uuidLinkPackager = new UuidLinkPackager(isPackagerParams);
     }
 
     public ResourceId<NewRes> createNewRes(SiteUrl siteUrl) {
@@ -158,7 +158,7 @@ public class TestFactory {
     }
 
     public ResourceId<PackagedRes> createPackagedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        return htmlPackager.pack(createPackagingRes(siteUrl, html, httpInfo));
+        return copyPackager.pack(createPackagingRes(siteUrl, html, httpInfo));
     }
 
     public Task createTask(RootSiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {

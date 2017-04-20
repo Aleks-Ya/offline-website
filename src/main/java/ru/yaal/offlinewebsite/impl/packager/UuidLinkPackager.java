@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.Packager;
-import ru.yaal.offlinewebsite.api.params.InputStreamPackagerParams;
+import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
@@ -21,8 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * TODO split CopyPackager to Replacer and Packager
- *
  * @author Aleksey Yablokov
  */
 @Slf4j
@@ -31,7 +29,7 @@ public class UuidLinkPackager implements Packager {
     private final OfflinePathResolver resolver;
     private final Storage storage;
 
-    public UuidLinkPackager(InputStreamPackagerParams params) {
+    public UuidLinkPackager(UuidLinkPackagerParams params) {
         outletDir = params.getOutletDir();
         resolver = params.getOfflinePathResolver();
         storage = params.getStorage();
@@ -46,7 +44,10 @@ public class UuidLinkPackager implements Packager {
             Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
             if (res instanceof PackagedRes) {
                 Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new SiteUrlImpl(link.getAbsolute()));
-                contentStr = contentStr.replaceAll(link.getUUID(), linkPath.toString());
+                String uuid = link.getUUID();
+                String replacement = linkPath.toString();
+                log.debug("Replace uuid {} with link {}", uuid, replacement);
+                contentStr = contentStr.replaceAll(uuid, replacement);
             }
         }
         Path path = resolver.internetUrlToOfflinePath(outletDir, packagingRes.getUrl());

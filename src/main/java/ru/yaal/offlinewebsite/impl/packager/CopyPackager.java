@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.Packager;
-import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
+import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -16,8 +16,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * TODO split CopyPackager to Replacer and Packager
- *
  * @author Aleksey Yablokov
  */
 @Slf4j
@@ -26,7 +24,7 @@ public class CopyPackager implements Packager {
     private final Storage storage;
     private final OfflinePathResolver resolver;
 
-    public CopyPackager(HtmlPackagerParams params) {
+    public CopyPackager(CopyPackagerParams params) {
         outletDir = params.getOutletDir();
         storage = params.getStorage();
         resolver = params.getOfflinePathResolver();

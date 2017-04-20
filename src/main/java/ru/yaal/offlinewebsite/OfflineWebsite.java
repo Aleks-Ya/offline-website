@@ -11,8 +11,8 @@ import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
-import ru.yaal.offlinewebsite.api.params.HtmlPackagerParams;
-import ru.yaal.offlinewebsite.api.params.InputStreamPackagerParams;
+import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
+import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
@@ -32,8 +32,8 @@ import ru.yaal.offlinewebsite.impl.packager.UuidLinkPackager;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.HtmlPackagerParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.InputStreamPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.CopyPackagerParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.UuidLinkPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackageJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
@@ -82,10 +82,10 @@ public class OfflineWebsite {
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
 
-        HtmlPackagerParams htmlPackagerParams = new HtmlPackagerParamsImpl(outletDir, offlinePathResolver, storage);
-        Packager htmlPackager = new CopyPackager(htmlPackagerParams);
-        InputStreamPackagerParams inputStreamPackagerParams = new InputStreamPackagerParamsImpl(outletDir, offlinePathResolver, storage);
-        Packager inputStreamPackager = new UuidLinkPackager(inputStreamPackagerParams);
+        CopyPackagerParams copyPackagerParams = new CopyPackagerParamsImpl(outletDir, offlinePathResolver, storage);
+        Packager htmlPackager = new CopyPackager(copyPackagerParams);
+        UuidLinkPackagerParams uuidLinkPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, offlinePathResolver, storage);
+        Packager inputStreamPackager = new UuidLinkPackager(uuidLinkPackagerParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage,
                 threadPool, headRequest, Collections.singletonList(parser));

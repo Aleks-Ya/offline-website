@@ -8,7 +8,7 @@ import java.nio.file.Path;
 /**
  * @author Aleksey Yablokov
  */
-public interface HtmlPackagerParams extends Params {
+public interface CopyPackagerParams extends Params {
     Path getOutletDir();
 
     OfflinePathResolver getOfflinePathResolver();

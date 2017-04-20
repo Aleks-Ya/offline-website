@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.api.packager;
 
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 
 import java.net.URL;
@@ -12,6 +13,7 @@ import java.nio.file.Paths;
 /**
  * @author Aleksey Yablokov
  */
+@Slf4j
 public class OfflinePathResolverImpl implements OfflinePathResolver {
     @Override
     @SneakyThrows
@@ -36,6 +38,7 @@ public class OfflinePathResolverImpl implements OfflinePathResolver {
             query = URLEncoder.encode(url.getQuery(), Charset.defaultCharset().name());
         }
 
+        log.debug("Resolve path: hostPortProtocol={}, path={}, query={}", hostPortProtocol.toString(), path, query);
         Path relPath = Paths.get(hostPortProtocol.toString(), path, query);
         return outletDir.resolve(relPath);
     }
