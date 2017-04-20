@@ -3,6 +3,7 @@ package ru.yaal.offlinewebsite.impl.filter;
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
+import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 
@@ -15,7 +16,7 @@ public class SameDomainFilter implements Filter<HeadingRes> {
     private final String rootHost;
 
     @SneakyThrows
-    public SameDomainFilter(SiteUrl rootSiteUrl) {
+    public SameDomainFilter(RootSiteUrl rootSiteUrl) {
         this.rootHost = new URL(rootSiteUrl.getUrl()).getHost();
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface DownloadTaskParams extends Params {
-    SiteUrl getRootUrl();
+    RootSiteUrl getRootUrl();
 
     ResourceId<HeadingRes> getHingResId();
 

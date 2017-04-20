@@ -161,7 +161,7 @@ public class TestFactory {
         return htmlPackager.pack(createPackagingRes(siteUrl, html, httpInfo));
     }
 
-    public Task createTask(SiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
+    public Task createTask(RootSiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
         DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
                 onlySameDomain, headRequest, maxSize, Collections.singletonList(htmlParser));
         return new DownloadTask(downloadTaskParams);
