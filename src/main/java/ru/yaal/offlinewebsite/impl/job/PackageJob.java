@@ -40,9 +40,9 @@ public class PackageJob implements Job {
     @Override
     @SneakyThrows
     public void process() {
-        log.debug("Job started");
+        log.info("{} started", getClass().getSimpleName());
         List<ResourceId<ParsedRes>> parsedResIds = storage.getParsedResourceIds();
-        log.debug("Resources for packaging: " + parsedResIds.size());
+        log.info("Resources for packaging: " + parsedResIds.size());
 
         List<Future<ResourceId<PackagedRes>>> futures = parsedResIds.stream()
                 .map(storage::createPackagingRes)
@@ -52,7 +52,7 @@ public class PackageJob implements Job {
                 .map(threadPool::submit)
                 .collect(Collectors.toList());
 
-        log.debug("Submitted packaging tasks: " + futures.size());
+        log.info("Submitted packaging tasks: " + futures.size());
 
         for (Future<ResourceId<PackagedRes>> future : futures) {
             try {
@@ -63,6 +63,6 @@ public class PackageJob implements Job {
                 log.error("Task failed", e);
             }
         }
-        log.debug("Job finished");
+        log.info("{} finished", getClass().getSimpleName());
     }
 }

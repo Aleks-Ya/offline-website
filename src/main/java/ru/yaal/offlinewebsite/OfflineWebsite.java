@@ -84,14 +84,14 @@ public class OfflineWebsite {
         CopyPackagerParams copyPackagerParams = new CopyPackagerParamsImpl(outletDir, offlinePathResolver, storage);
         Packager htmlPackager = new CopyPackager(copyPackagerParams);
         UuidLinkPackagerParams uuidLinkPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, offlinePathResolver, storage);
-        Packager inputStreamPackager = new UuidLinkPackager(uuidLinkPackagerParams);
+        Packager uuidLinkPackager = new UuidLinkPackager(uuidLinkPackagerParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, downloader, storage,
                 threadPool, headRetriever, Collections.singletonList(parser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 
-        PackageJobParams packageJobParams = new PackageJobParamsImpl(storage, htmlPackager, inputStreamPackager, threadPool);
+        PackageJobParams packageJobParams = new PackageJobParamsImpl(storage, htmlPackager, uuidLinkPackager, threadPool);
         Job packageJob = new PackageJob(packageJobParams);
         packageJob.process();
 

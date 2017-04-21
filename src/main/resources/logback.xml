@@ -1,5 +1,28 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
+    <appender name="debug_file" class="ch.qos.logback.core.FileAppender">
+        <file>log/debug.log</file>
+        <append>false</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="info_file" class="ch.qos.logback.core.FileAppender">
+        <file>log/info.log</file>
+        <append>false</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
+
     <appender name="stdout_long" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
@@ -14,6 +37,8 @@
 
     <logger name="ru.yaal.offlinewebsite" level="DEBUG" additivity="false">
         <appender-ref ref="stdout_short"/>
+        <appender-ref ref="debug_file"/>
+        <appender-ref ref="info_file"/>
     </logger>
 
     <root level="INFO">

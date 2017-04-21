@@ -44,7 +44,8 @@ public class DownloadJob implements Job {
     @Override
     @SneakyThrows
     public void process() {
-        log.debug("Job started");
+        log.info("{} started", getClass().getSimpleName());
+        log.info("Root page: " + rootUrl);
         ResourceId<NewRes> rootNewResId = storage.createNewResource(rootUrl);
         ResourceId<HeadingRes> rootHingResId = storage.createHeadingResource(rootNewResId);
         submitTask(rootHingResId);
@@ -62,7 +63,7 @@ public class DownloadJob implements Job {
             }
         }
 
-        log.debug("Job finished");
+        log.info("{} finished", getClass().getSimpleName());
     }
 
     private void submitTask(ResourceId<HeadingRes> hingResId) {
