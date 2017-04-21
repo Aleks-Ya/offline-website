@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class DownloadTaskParamsImpl implements DownloadTaskParams {
-    private final RootPageUrl rootUrl;
+    private final RootPageUrl rootPageUrl;
     private final ResourceId<HeadingRes> hingResId;
     private final Downloader downloader;
     private final Storage storage;

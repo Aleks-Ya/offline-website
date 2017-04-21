@@ -11,15 +11,20 @@ import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
-import ru.yaal.offlinewebsite.api.resource.ResourceComparator;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Aleksey Yablokov
  */
-public class ResourceComparatorImpl implements ResourceComparator {
+public class ResourceComparator implements Comparator<Resource> {
+    public static ResourceComparator INSTANCE = new ResourceComparator();
+
+    private ResourceComparator() {
+    }
+
     private final Map<Class<? extends Resource>, Integer> ress = new HashMap<Class<? extends Resource>, Integer>() {{
         put(NewRes.class, 1);
         put(NewResImpl.class, 1);
@@ -57,7 +62,6 @@ public class ResourceComparatorImpl implements ResourceComparator {
         return ress.get(r1.getClass()).compareTo(ress.get(r2.getClass()));
     }
 
-    @Override
     public boolean isFirstGreaterOrEquals(Class<? extends Resource> resClass1, Class<? extends Resource> resClass2) {
         return ress.get(resClass1).compareTo(ress.get(resClass2)) >= 0;
     }

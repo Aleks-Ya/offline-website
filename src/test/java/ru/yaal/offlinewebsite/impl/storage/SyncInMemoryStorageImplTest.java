@@ -20,7 +20,6 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceComparatorImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -32,7 +31,7 @@ import static org.junit.Assert.assertTrue;
  * @author Aleksey Yablokov
  */
 public class SyncInMemoryStorageImplTest {
-    private final Storage storage = new SyncInMemoryStorageImpl(new StorageParamsImpl(new ResourceComparatorImpl()));
+    private final Storage storage = new SyncInMemoryStorageImpl(new StorageParamsImpl());
     private final String urlStr = "http://google.com";
     private final RootPageUrl rootPageUrl = new PageUrlImpl(urlStr);
     private final HttpInfoImpl httpInfo

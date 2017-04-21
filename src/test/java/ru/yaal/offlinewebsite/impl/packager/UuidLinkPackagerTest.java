@@ -1,46 +1,56 @@
 package ru.yaal.offlinewebsite.impl.packager;
 
-import org.apache.commons.io.IOUtils;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 
 import java.io.IOException;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
 
 /**
- * TODO assert packaging result
- *
  * @author Aleksey Yablokov
  */
 public class UuidLinkPackagerTest {
+
     @Test
     public void pack() throws IOException {
-        URL rootPageHtml = getClass().getResource("root_page.html");
-        String rootUrlStr = rootPageHtml.toString();
+        String rootUrlStr = "http://ya.ru/site";
         RootPageUrl rootPageUrl = new PageUrlImpl(rootUrlStr);
+
         TestFactory factory = new TestFactory(rootPageUrl);
+        String rootHtml = "<html><body><a href='nested_page.html'>Janino</a></body></html>";
+        ResourceId<PackagingRes> rootPackagingResId = factory.createPackagingRes(rootPageUrl, rootHtml, TestFactory.httpInfoDefault);
+
+        List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();
+        assertThat(newResIds, Matchers.iterableWithSize(1));
+        ResourceId<NewRes> nestedNewResId = newResIds.get(0);
+
+        ResourceId<PackagingRes> nestedParsingResId = factory.createParsedRes(nestedNewResId,
+                "<html><body><h1>Nested</h1></body></html>", TestFactory.httpInfoDefault);
+
         Packager packager = factory.getUuidLinkPackager();
+        ResourceId<PackagedRes> rootPackagedResId = packager.pack(rootPackagingResId);
+        ResourceId<PackagedRes> nestedPackagedResId = packager.pack(nestedParsingResId);
 
-        PageUrl pageUrl = new PageUrlImpl(rootUrlStr + "/nested_page.html");
-        String html = IOUtils.toString(rootPageHtml, Charset.defaultCharset());
-        ResourceId<PackagingRes> packagingRes = factory.createPackagingRes(pageUrl, html, TestFactory.httpInfoDefault);
-        ResourceId<PackagedRes> packagedResId = packager.pack(packagingRes);
-        PackagedRes packagedRes = factory.getStorage().getResource(packagedResId);
+        PackagedRes rootPackagedRes = factory.getStorage().getResource(rootPackagedResId);
+        PackagedRes nestedPackagedRes = factory.getStorage().getResource(nestedPackagedResId);
 
-        Path path = packagedRes.getLocation();
-        List<String> lines = Files.readAllLines(path);
-        System.out.println(lines);
+        String rootOutput = Files.readAllLines(rootPackagedRes.getLocation()).stream().collect(Collectors.joining("\n"));
+        String nestedOutput = Files.readAllLines(nestedPackagedRes.getLocation()).stream().collect(Collectors.joining("\n"));
+
+        assertThat(rootOutput, containsString(nestedPackagedRes.getLocation().toString()));
+        assertThat(nestedOutput, containsString("<h1>Nested</h1>"));
     }
-
 }

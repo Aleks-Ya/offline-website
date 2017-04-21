@@ -17,7 +17,6 @@ import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
-import ru.yaal.offlinewebsite.api.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
@@ -31,6 +30,7 @@ import ru.yaal.offlinewebsite.impl.resource.PackagedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.PackagingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ParsingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.ByteArrayOutputStream;
@@ -48,10 +48,8 @@ import java.util.stream.Collectors;
 public class SyncInMemoryStorageImpl implements Storage {
     private final Map<ResourceId, Resource> data = new HashMap<>();
     private final Map<ResourceId<DownloadingRes>, ByteArrayOutputStream> dingRess = new HashMap<>();
-    private final ResourceComparator comparator;
 
     public SyncInMemoryStorageImpl(StorageParams params) {
-        this.comparator = params.getResourceComparator();
     }
 
     @Override
@@ -205,7 +203,7 @@ public class SyncInMemoryStorageImpl implements Storage {
 
     private void checkAlreadyExists(ResourceId oldId, Class<? extends Resource> newResClass) {
         Resource oldRes = data.get(oldId);
-        if (oldRes != null && comparator.isFirstGreaterOrEquals(oldRes.getClass(), newResClass)) {
+        if (oldRes != null && ResourceComparator.INSTANCE.isFirstGreaterOrEquals(oldRes.getClass(), newResClass)) {
             throw new ResourceAlreadyExistsException(oldId);
         }
     }

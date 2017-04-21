@@ -41,7 +41,7 @@ public class DownloadTask implements Task {
         storage = params.getStorage();
         onlySameDomain = params.isOnlySameDomain();
         maxSize = params.getMaxSize();
-        onlySameDomainFilter = new SameDomainFilter(params.getRootUrl());
+        onlySameDomainFilter = new SameDomainFilter(params.getRootPageUrl());
         sizeFilter = new SizeFilter(maxSize);
         headRetriever = params.getHeadRetriever();
         parsers = params.getParsers();

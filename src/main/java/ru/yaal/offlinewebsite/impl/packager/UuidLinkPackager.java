@@ -13,12 +13,14 @@ import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Matcher;
 
 /**
  * @author Aleksey Yablokov
@@ -42,12 +44,14 @@ public class UuidLinkPackager implements Packager {
         String contentStr = IOUtils.toString(packagingRes.getContent(), Charset.defaultCharset());
         for (UuidLink link : packagingRes.getLinks()) {
             Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
-            if (res instanceof PackagedRes) {
+            if (ResourceComparator.INSTANCE.isFirstGreaterOrEquals(res.getClass(), PackagingRes.class)) {
                 Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(link.getAbsolute()));
                 String uuid = link.getUUID();
-                String replacement = linkPath.toString();
+                String replacement = Matcher.quoteReplacement("file://" + linkPath.toString());
                 log.debug("Replace uuid {} with link {}", uuid, replacement);
                 contentStr = contentStr.replaceAll(uuid, replacement);
+            } else {
+                throw new IllegalStateException("Resource isn't downloaded: " + res);
             }
         }
         Path path = resolver.internetUrlToOfflinePath(outletDir, packagingRes.getUrl());
