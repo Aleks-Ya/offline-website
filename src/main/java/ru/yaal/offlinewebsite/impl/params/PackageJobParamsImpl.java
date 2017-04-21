@@ -8,6 +8,8 @@ import ru.yaal.offlinewebsite.api.params.PackageJobParams;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
@@ -16,7 +18,6 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 @Getter
 public class PackageJobParamsImpl implements PackageJobParams {
     private final Storage storage;
-    private final Packager htmlPackager;
-    private final Packager inputStreamPackager;
+    private final List<Packager> packagers;
     private final ThreadPool threadPool;
 }

@@ -9,4 +9,8 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
  */
 public interface Packager {
     ResourceId<PackagedRes> pack(ResourceId<PackagingRes> pickResId);
+
+    boolean accept(String contentType);
+
+    int getPriority();
 }

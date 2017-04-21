@@ -2,7 +2,6 @@ package ru.yaal.offlinewebsite.impl.job;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
@@ -26,14 +25,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PackageJob implements Job {
     private final Storage storage;
-    private final Packager httpPackager;
-    private final Packager isPackager;
+    private final List<Packager> packagers;
     private final ThreadPool threadPool;
 
     public PackageJob(PackageJobParams params) {
         storage = params.getStorage();
-        httpPackager = params.getHtmlPackager();
-        isPackager = params.getInputStreamPackager();
+        packagers = params.getPackagers();
         threadPool = params.getThreadPool();
     }
 
@@ -47,7 +44,7 @@ public class PackageJob implements Job {
         List<Future<ResourceId<PackagedRes>>> futures = parsedResIds.stream()
                 .map(storage::createPackagingRes)
                 .map(packagingResId -> new PackageTaskParamsImpl(
-                        storage, httpPackager, isPackager, new ResourceIdImpl<>(packagingResId.getId())))
+                        storage, packagers, new ResourceIdImpl<>(packagingResId.getId())))
                 .map(PackageTask::new)
                 .map(threadPool::submit)
                 .collect(Collectors.toList());

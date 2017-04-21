@@ -3,8 +3,8 @@ package ru.yaal.offlinewebsite.impl.task;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.PackageTaskParams;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -30,8 +30,7 @@ public class PackageTaskTest {
         String html = "<html></html>";
         ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(pageUrl, html, TestFactory.httpInfoDefault);
         Storage storage = factory.getStorage();
-        PackageTaskParams params = new PackageTaskParamsImpl(
-                storage, factory.getCopyPackager(), factory.getUuidLinkPackager(),
+        PackageTaskParams params = new PackageTaskParamsImpl(storage, factory.getAllPackagers(),
                 new ResourceIdImpl<>(packagingResId.getId()));
         Task<PackagedRes> task = new PackageTask(params);
         ResourceId<PackagedRes> packagedResId = task.call();

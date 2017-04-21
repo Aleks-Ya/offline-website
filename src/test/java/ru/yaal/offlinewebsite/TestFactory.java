@@ -80,6 +80,7 @@ public class TestFactory {
     private final BytesNetwork network;
     private final HeadRetriever headRetriever;
     private final List<Parser> allParsers;
+    private final List<Packager> allPackagers;
 
     public TestFactory(RootPageUrl rootPageUrl) {
         this(rootPageUrl, makTempDir());
@@ -111,11 +112,13 @@ public class TestFactory {
 
         allParsers = Arrays.asList(htmlParser, skipParser);
 
-        CopyPackagerParams params = new CopyPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        CopyPackagerParams params = new CopyPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage, 0);
         copyPackager = new CopyPackager(params);
 
-        UuidLinkPackagerParams isPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage);
+        UuidLinkPackagerParams isPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, new OfflinePathResolverImpl(), storage, 1);
         uuidLinkPackager = new UuidLinkPackager(isPackagerParams);
+
+        allPackagers = Arrays.asList(copyPackager, uuidLinkPackager);
     }
 
     public ResourceId<NewRes> createNewRes(PageUrl pageUrl) {

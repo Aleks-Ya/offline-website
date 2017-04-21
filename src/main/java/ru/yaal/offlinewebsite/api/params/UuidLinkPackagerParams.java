@@ -15,4 +15,5 @@ public interface UuidLinkPackagerParams extends Params {
 
     Storage getStorage();
 
+    int getPriority();
 }

@@ -4,15 +4,15 @@ import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 
+import java.util.List;
+
 /**
  * @author Aleksey Yablokov
  */
 public interface PackageJobParams extends Params {
     Storage getStorage();
 
-    Packager getHtmlPackager();
-
-    Packager getInputStreamPackager();
+    List<Packager> getPackagers();
 
     ThreadPool getThreadPool();
 }

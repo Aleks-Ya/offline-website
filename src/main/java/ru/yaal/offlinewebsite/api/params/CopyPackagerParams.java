@@ -14,4 +14,6 @@ public interface CopyPackagerParams extends Params {
     OfflinePathResolver getOfflinePathResolver();
 
     Storage getStorage();
+
+    int getPriority();
 }

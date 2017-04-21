@@ -3,6 +3,7 @@ package ru.yaal.offlinewebsite.impl.packager;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
@@ -30,11 +31,13 @@ public class UuidLinkPackager implements Packager {
     private final Path outletDir;
     private final OfflinePathResolver resolver;
     private final Storage storage;
+    private final int priority;
 
     public UuidLinkPackager(UuidLinkPackagerParams params) {
         outletDir = params.getOutletDir();
         resolver = params.getOfflinePathResolver();
         storage = params.getStorage();
+        priority = params.getPriority();
     }
 
     @Override
@@ -61,5 +64,15 @@ public class UuidLinkPackager implements Packager {
         ResourceId<PackagedRes> packagedResId = storage.createPackagedRes(packingResId, path);
         log.debug("Saved {} to {}", packagedResId, path);
         return packagedResId;
+    }
+
+    @Override
+    public boolean accept(String contentType) {
+        return HttpInfo.ContentTypes.HTML.equals(contentType);
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }

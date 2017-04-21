@@ -17,4 +17,5 @@ public class CopyPackagerParamsImpl implements CopyPackagerParams {
     private final Path outletDir;
     private final OfflinePathResolver offlinePathResolver;
     private final Storage storage;
+    private final int priority;
 }

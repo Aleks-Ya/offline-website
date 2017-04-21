@@ -24,11 +24,13 @@ public class CopyPackager implements Packager {
     private final Path outletDir;
     private final Storage storage;
     private final OfflinePathResolver resolver;
+    private final int priority;
 
     public CopyPackager(CopyPackagerParams params) {
         outletDir = params.getOutletDir();
         storage = params.getStorage();
         resolver = params.getOfflinePathResolver();
+        priority = params.getPriority();
     }
 
     @Override
@@ -46,5 +48,15 @@ public class CopyPackager implements Packager {
         ResourceId<PackagedRes> packagedResId = storage.createPackagedRes(packingResId, path);
         log.debug("Saved {} to {}", packagedResId, path);
         return packagedResId;
+    }
+
+    @Override
+    public boolean accept(String contentType) {
+        return true;
+    }
+
+    @Override
+    public int getPriority() {
+        return priority;
     }
 }
