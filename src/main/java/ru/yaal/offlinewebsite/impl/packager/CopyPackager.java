@@ -12,6 +12,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
 import java.io.FileOutputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -36,7 +37,11 @@ public class CopyPackager implements Packager {
         PackagingRes packingRes = storage.getResource(packingResId);
         Path path = resolver.internetUrlToOfflinePath(outletDir, packingRes.getUrl());
         Files.createDirectories(path.getParent());
-        Files.createFile(path);
+        try {
+            Files.createFile(path);
+        } catch (FileAlreadyExistsException e) {
+            log.warn("File for resource {} already exists:{} ", packingRes, path);
+        }
         IOUtils.copy(packingRes.getContent(), new FileOutputStream(path.toFile()));
         ResourceId<PackagedRes> packagedResId = storage.createPackagedRes(packingResId, path);
         log.debug("Saved {} to {}", packagedResId, path);
