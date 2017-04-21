@@ -22,8 +22,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class DownloaderImplTest {
     @Test
     public void download() throws IOException {
-        String urlStr = "http://ya.ru/info";
-        RootPageUrl rootPageUrl = new PageUrlImpl(urlStr);
+        String rootUrlStr = "http://ya.ru/info/index.html";
+        RootPageUrl rootPageUrl = new PageUrlImpl(rootUrlStr);
         TestFactory factory = new TestFactory(rootPageUrl);
         String html = "<html><body><a href='http://ya.ru/link'/></body></html>";
 
@@ -32,7 +32,7 @@ public class DownloaderImplTest {
         Downloader downloader = factory.getDownloader();
         ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);
 
-        assertThat(dedResId.getId(), equalTo(urlStr));
+        assertThat(dedResId.getId(), equalTo(rootUrlStr));
         DownloadedRes dedRes = factory.getStorage().getResource(dedResId);
         assertThat(IOUtils.toString(dedRes.getContent(), Charset.defaultCharset()), equalTo(html));
     }
