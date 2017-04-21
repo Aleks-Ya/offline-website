@@ -14,10 +14,18 @@ public class UrlHelperTest {
     public void testToAbsoluteUrlStr() {
         assertThat(toAbsoluteUrlStr("http://ya.ru/site/index.html", "contacts.html"),
                 equalTo("http://ya.ru/site/contacts.html"));
+
         assertThat(toAbsoluteUrlStr("http://ya.ru/site/", "contacts.html"),
                 equalTo("http://ya.ru/site/contacts.html"));
+
         assertThat(toAbsoluteUrlStr("http://ya.ru/site/index.html", "/contacts.html"),
                 equalTo("http://ya.ru/contacts.html"));
+
+        assertThat(toAbsoluteUrlStr("http://ya.ru/site/index.html", "http://ya.ru/site/contacts.html"),
+                equalTo("http://ya.ru/site/contacts.html"));
+
+        assertThat(toAbsoluteUrlStr("https://logback.qos.ch/manual/index.html", "https://logback.qos.ch/manual/filters.html"),
+                equalTo("https://logback.qos.ch/manual/filters.html"));
     }
 
 }

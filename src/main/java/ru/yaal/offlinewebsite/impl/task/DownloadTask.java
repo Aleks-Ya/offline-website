@@ -45,6 +45,8 @@ public class DownloadTask implements Task {
         sizeFilter = new SizeFilter(maxSize);
         headRetriever = params.getHeadRetriever();
         parsers = params.getParsers();
+        parsers.sort((p1, p2) -> Integer.valueOf(p2.getPriority()).compareTo(p1.getPriority()));
+        log.debug("Parsers: " + parsers);
     }
 
     @Override
@@ -73,15 +75,22 @@ public class DownloadTask implements Task {
         }
 
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
-        ResourceId<DownloadedRes> dedResId = downloader.download(dingResId);
+        ResourceId<DownloadedRes> dedResId;
+        try {
+            dedResId = downloader.download(dingResId);
+        } catch (Exception e) {
+            log.warn("Can't download {} resource(reject it): {}", dingResId, e.getMessage());
+            storage.createRejectedRes(dingResId);
+            return null;
+        }
         ResourceId<ParsingRes> parsingResId = storage.createParsingRes(dedResId);
         ParsingRes parsingRes = storage.getResource(parsingResId);
+        String contentType = parsingRes.getHttpInfo().getContentType();
 
         parsers.stream()
-                .sorted((p1, p2) -> Integer.valueOf(p1.getPriority()).compareTo(p2.getPriority()))
-                .filter(parser -> parser.accept(parsingRes.getHttpInfo().getContentType()))
+                .filter(parser -> parser.accept(contentType))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No parser for: " + parsingResId))
+                .orElseThrow(() -> new IllegalStateException("No parser for: " + parsingRes))
                 .parse(parsingResId);
 
         return null;

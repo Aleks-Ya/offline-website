@@ -6,8 +6,10 @@ import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -16,8 +18,7 @@ import java.net.URL;
 public class NetworkImpl implements Network {
 
     @Override
-    @SneakyThrows
-    public InputStream openUrl(PageUrl pageUrl) {
+    public InputStream openUrl(PageUrl pageUrl) throws IOException {
         return new URL(pageUrl.getUrl()).openStream();
     }
 

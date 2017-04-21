@@ -13,8 +13,9 @@ import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
-import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.SkipParserParams;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
@@ -35,22 +36,24 @@ import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackageJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
-import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.SkipParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.UuidLinkPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
+import ru.yaal.offlinewebsite.impl.parser.SkipParser;
 import ru.yaal.offlinewebsite.impl.parser.TagAttributeExtractor;
 import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -76,8 +79,11 @@ public class OfflineWebsite {
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("a", "href")),
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("link", "href")),
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("script", "href")));
-        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootPageUrl, extractors, 1);
-        Parser parser = new HtmlParser(htmlParserParams);
+        HtmlParserParams<TagNode> htmlHtmlParserParams = new HtmlParserParamsImpl<>(storage, rootPageUrl, extractors, 1);
+        Parser htmlParser = new HtmlParser(htmlHtmlParserParams);
+
+        SkipParserParams skipParserParams = new SkipParserParamsImpl(storage, 0);
+        SkipParser skipParser = new SkipParser(skipParserParams);
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
 
@@ -88,7 +94,7 @@ public class OfflineWebsite {
         List<Packager> packagers = Arrays.asList(copyPackager, uuidLinkPackager);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, downloader, storage,
-                threadPool, headRetriever, Collections.singletonList(parser));
+                threadPool, headRetriever, Arrays.asList(htmlParser, skipParser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 

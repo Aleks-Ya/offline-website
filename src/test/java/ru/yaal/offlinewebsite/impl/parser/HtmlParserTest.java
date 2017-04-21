@@ -5,14 +5,14 @@ import org.htmlcleaner.TagNode;
 import org.htmlcleaner.Utils;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
-import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class HtmlParserTest {
         TestFactory factory = new TestFactory(rootPageUrl);
         ResourceId<ParsingRes> parsingResId = factory.createParsingRes(rootPageUrl, html, TestFactory.httpInfoDefault);
 
-        ParserParams<TagNode> params = new ParserParamsImpl<>(factory.getStorage(), rootPageUrl, TestFactory.allExtractors, 1);
+        HtmlParserParams<TagNode> params = new HtmlParserParamsImpl<>(factory.getStorage(), rootPageUrl, TestFactory.allExtractors, 1);
         Parser parser = new HtmlParser(params);
         ResourceId<ParsedRes> parsedResId = parser.parse(parsingResId);
 

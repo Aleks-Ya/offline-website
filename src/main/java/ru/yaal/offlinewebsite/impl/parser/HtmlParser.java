@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
 import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
@@ -38,7 +38,7 @@ public class HtmlParser implements Parser {
 
 
     @SneakyThrows
-    public HtmlParser(ParserParams<TagNode> params) {
+    public HtmlParser(HtmlParserParams<TagNode> params) {
         storage = params.getStorage();
         pageUrl = params.getPageUrl();
         extractors = params.getExtractors();

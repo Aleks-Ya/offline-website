@@ -2,14 +2,13 @@ package ru.yaal.offlinewebsite.impl.parser;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.yaal.offlinewebsite.api.params.ParserParams;
+import ru.yaal.offlinewebsite.api.params.SkipParserParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
-import java.io.InputStream;
 import java.util.Collections;
 
 /**
@@ -21,7 +20,7 @@ public class SkipParser implements Parser {
     private final int priority;
 
     @SneakyThrows
-    public SkipParser(ParserParams<InputStream> params) {
+    public SkipParser(SkipParserParams params) {
         storage = params.getStorage();
         priority = params.getPriority();
     }

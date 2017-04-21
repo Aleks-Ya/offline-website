@@ -17,7 +17,10 @@ import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.task.DownloadTask;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * @author Aleksey Yablokov
@@ -31,6 +34,7 @@ public class DownloadJob implements Job {
     private final HeadRetriever headRetriever;
     private final List<Parser> parsers;
     private long taskRun = 0;
+    private final List<Future> futures = new ArrayList<>();
 
     public DownloadJob(DownloadJobParams params) {
         rootUrl = params.getRootPageUrl();
@@ -57,7 +61,16 @@ public class DownloadJob implements Job {
                         .map(storage::createHeadingResource)
                         .forEach(this::submitTask);
             } else {
-                if (threadPool.getCompletedTaskCount() == taskRun) {
+                if (!futures.isEmpty()) {
+                    Future future = futures.get(0);
+                    try {
+                        future.get();
+                    } catch (InterruptedException | ExecutionException e) {
+                        log.error("Task failed", e);
+                    } finally {
+                        futures.remove(future);
+                    }
+                } else {
                     break;
                 }
             }
@@ -70,7 +83,7 @@ public class DownloadJob implements Job {
     private void submitTask(ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams params = new DownloadTaskParamsImpl(rootUrl, hingResId, downloader, storage,
                 true, headRetriever, 1_000_000, parsers);
-        threadPool.submit(new DownloadTask(params));
+        futures.add(threadPool.submit(new DownloadTask(params)));
         taskRun++;
     }
 }

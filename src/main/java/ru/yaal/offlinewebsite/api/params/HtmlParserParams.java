@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author Aleksey Yablokov
  */
-public interface ParserParams<C> extends Params {
+public interface HtmlParserParams<C> extends Params {
     Storage getStorage();
 
     PageUrl getPageUrl();

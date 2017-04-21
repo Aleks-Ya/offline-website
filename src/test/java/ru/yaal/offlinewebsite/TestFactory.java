@@ -13,9 +13,10 @@ import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
+import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
 import ru.yaal.offlinewebsite.api.params.PageUrl;
-import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.SkipParserParams;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
@@ -41,7 +42,8 @@ import ru.yaal.offlinewebsite.impl.params.CopyPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloadTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.SkipParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.UuidLinkPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
@@ -51,7 +53,6 @@ import ru.yaal.offlinewebsite.impl.storage.SyncInMemoryStorageImpl;
 import ru.yaal.offlinewebsite.impl.system.BytesNetwork;
 import ru.yaal.offlinewebsite.impl.task.DownloadTask;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -103,11 +104,10 @@ public class TestFactory {
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
 
-        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootPageUrl, TestFactory.allExtractors, 1);
-        htmlParser = new HtmlParser(htmlParserParams);
+        HtmlParserParams<TagNode> htmlHtmlParserParams = new HtmlParserParamsImpl<>(storage, rootPageUrl, TestFactory.allExtractors, 1);
+        htmlParser = new HtmlParser(htmlHtmlParserParams);
 
-        ParserParams<InputStream> skipParserParams =
-                new ParserParamsImpl<>(storage, rootPageUrl, null, 1);
+        SkipParserParams skipParserParams = new SkipParserParamsImpl(storage, 1);
         skipParser = new SkipParser(skipParserParams);
 
         allParsers = Arrays.asList(htmlParser, skipParser);
