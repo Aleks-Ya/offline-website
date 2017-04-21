@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.impl.packager;
 
 import lombok.SneakyThrows;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
@@ -19,6 +20,7 @@ import java.nio.file.Path;
 /**
  * @author Aleksey Yablokov
  */
+@ToString(of = {"priority", "outletDir"})
 @Slf4j
 public class CopyPackager implements Packager {
     private final Path outletDir;
@@ -37,6 +39,7 @@ public class CopyPackager implements Packager {
     @SneakyThrows
     public ResourceId<PackagedRes> pack(ResourceId<PackagingRes> packingResId) {
         PackagingRes packingRes = storage.getResource(packingResId);
+        log.debug("Pack resource (content type={}): {}", packingRes.getHttpInfo().getContentType(), packingRes);
         Path path = resolver.internetUrlToOfflinePath(outletDir, packingRes.getUrl());
         Files.createDirectories(path.getParent());
         try {

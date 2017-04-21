@@ -63,7 +63,8 @@ public class DownloadJob implements Job {
             }
         }
 
-        log.info("{} finished", getClass().getSimpleName());
+        log.info("{} finished. Run {} tasks. Completed {} tasks.",
+                getClass().getSimpleName(), taskRun, threadPool.getCompletedTaskCount());
     }
 
     private void submitTask(ResourceId<HeadingRes> hingResId) {

@@ -1,5 +1,6 @@
 package ru.yaal.offlinewebsite.impl.task;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageTaskParams;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
@@ -13,6 +14,7 @@ import java.util.List;
 /**
  * @author Aleksey Yablokov
  */
+@Slf4j
 public class PackageTask implements Task<PackagedRes> {
     private final List<Packager> packagers;
     private final ResourceId<PackagingRes> packagingResId;
@@ -20,7 +22,8 @@ public class PackageTask implements Task<PackagedRes> {
 
     public PackageTask(PackageTaskParams params) {
         packagers = params.getPackagers();
-        packagers.sort((p1, p2) -> Integer.valueOf(p1.getPriority()).compareTo(p2.getPriority()));
+        packagers.sort((p1, p2) -> Integer.valueOf(p2.getPriority()).compareTo(p1.getPriority()));
+        log.debug("Packagers: " + packagers);
         packagingResId = params.getResource();
         storage = params.getStorage();
     }

@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.impl.packager;
 
 import lombok.SneakyThrows;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
@@ -26,6 +27,7 @@ import java.util.regex.Matcher;
 /**
  * @author Aleksey Yablokov
  */
+@ToString(of = {"priority", "outletDir"})
 @Slf4j
 public class UuidLinkPackager implements Packager {
     private final Path outletDir;
@@ -43,9 +45,10 @@ public class UuidLinkPackager implements Packager {
     @Override
     @SneakyThrows
     public ResourceId<PackagedRes> pack(ResourceId<PackagingRes> packingResId) {
-        PackagingRes packagingRes = storage.getResource(packingResId);
-        String contentStr = IOUtils.toString(packagingRes.getContent(), Charset.defaultCharset());
-        for (UuidLink link : packagingRes.getLinks()) {
+        PackagingRes packingRes = storage.getResource(packingResId);
+        log.debug("Pack resource (content type={}): {}", packingRes.getHttpInfo().getContentType(), packingRes);
+        String contentStr = IOUtils.toString(packingRes.getContent(), Charset.defaultCharset());
+        for (UuidLink link : packingRes.getLinks()) {
             Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
             if (ResourceComparator.INSTANCE.isFirstGreaterOrEquals(res.getClass(), PackagingRes.class)) {
                 Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(link.getAbsolute()));
@@ -57,7 +60,7 @@ public class UuidLinkPackager implements Packager {
                 throw new IllegalStateException("Resource isn't downloaded: " + res);
             }
         }
-        Path path = resolver.internetUrlToOfflinePath(outletDir, packagingRes.getUrl());
+        Path path = resolver.internetUrlToOfflinePath(outletDir, packingRes.getUrl());
         Files.createDirectories(path.getParent());
         Files.createFile(path);
         IOUtils.write(contentStr, new FileOutputStream(path.toFile()), Charset.defaultCharset());
