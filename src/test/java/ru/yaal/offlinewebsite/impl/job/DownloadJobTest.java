@@ -5,7 +5,6 @@ import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
@@ -31,7 +30,7 @@ public class DownloadJobTest {
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, factory.getDownloader(),
-                factory.getStorage(), threadPool, factory.getHeadRequest(), factory.getAllParsers());
+                factory.getStorage(), threadPool, factory.getHeadRetriever(), factory.getAllParsers());
 
         Job job = new DownloadJob(downloadJobParams);
         job.process();

@@ -6,7 +6,7 @@ import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
-import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
+import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
@@ -40,7 +40,7 @@ public class UuidLinkPackager implements Packager {
     public ResourceId<PackagedRes> pack(ResourceId<PackagingRes> packingResId) {
         PackagingRes packagingRes = storage.getResource(packingResId);
         String contentStr = IOUtils.toString(packagingRes.getContent(), Charset.defaultCharset());
-        for (UuidAbsoluteLink link : packagingRes.getLinks()) {
+        for (UuidLink link : packagingRes.getLinks()) {
             Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
             if (res instanceof PackagedRes) {
                 Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new SiteUrlImpl(link.getAbsolute()));

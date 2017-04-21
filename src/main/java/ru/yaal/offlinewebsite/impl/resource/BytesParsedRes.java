@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
+import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -23,5 +23,5 @@ public class BytesParsedRes implements ParsedRes {
     private final SiteUrl url;
     private final InputStream parsedContent;
     private final HttpInfo httpInfo;
-    private final List<UuidAbsoluteLink> links;
+    private final List<UuidLink> links;
 }

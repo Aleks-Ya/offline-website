@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
-import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
+import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -40,7 +40,7 @@ public interface Storage {
 
     ResourceId<ParsingRes> createParsingRes(ResourceId<DownloadedRes> dedResId);
 
-    ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> parsingResId, InputStream content, List<UuidAbsoluteLink> links);
+    ResourceId<ParsedRes> createParsedRes(ResourceId<ParsingRes> parsingResId, InputStream content, List<UuidLink> links);
 
     ResourceId<PackagingRes> createPackagingRes(ResourceId<ParsedRes> pedResId);
 

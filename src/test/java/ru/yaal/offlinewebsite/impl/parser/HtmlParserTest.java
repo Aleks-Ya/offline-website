@@ -2,6 +2,7 @@ package ru.yaal.offlinewebsite.impl.parser;
 
 import org.apache.commons.io.IOUtils;
 import org.htmlcleaner.TagNode;
+import org.htmlcleaner.Utils;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
@@ -21,6 +22,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Aleksey Yablokov
@@ -40,6 +42,9 @@ public class HtmlParserTest {
 
         List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();
         assertThat(newResIds, hasSize(9));
+        newResIds.stream()
+                .map(newResId -> factory.getStorage().getResource(newResId).getUrl())
+                .forEach(siteUrl -> assertTrue("Not full URL: " + siteUrl, Utils.isFullUrl(siteUrl.getUrl())));
 
         ParsedRes pedRes = factory.getStorage().getResource(parsedResId);
         String cont = IOUtils.toString(pedRes.getParsedContent(), Charset.defaultCharset());

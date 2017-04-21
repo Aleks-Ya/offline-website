@@ -10,7 +10,7 @@ import ru.yaal.offlinewebsite.api.params.ParserParams;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
-import ru.yaal.offlinewebsite.api.parser.UuidAbsoluteLink;
+import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -20,7 +20,6 @@ import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +32,7 @@ import java.util.stream.Collectors;
 public class HtmlParser implements Parser {
     private final HtmlCleaner cleaner = new HtmlCleaner();
     private final Storage storage;
-    private final URL rootUrl;
+    private final SiteUrl siteUrl;
     private final List<UrlExtractor<TagNode>> extractors;
     private final int priority;
 
@@ -41,7 +40,7 @@ public class HtmlParser implements Parser {
     @SneakyThrows
     public HtmlParser(ParserParams<TagNode> params) {
         storage = params.getStorage();
-        rootUrl = new URL(params.getRootSiteUrl().getUrl());
+        siteUrl = params.getSiteUrl();
         extractors = params.getExtractors();
         priority = params.getPriority();
     }
@@ -53,11 +52,9 @@ public class HtmlParser implements Parser {
         InputStream is = pingRes.getDownloadedContent();
         String content = IOUtils.toString(is, Charset.defaultCharset());
         TagNode rootNode = cleaner.clean(content);
-        List<UuidAbsoluteLink> allLinks = extractors.stream()
-                .map(extractor -> extractor.extract(rootNode))
+        List<UuidLink> allLinks = extractors.stream()
+                .map(extractor -> extractor.extract(rootNode, siteUrl))
                 .flatMap(Collection::stream)
-                .map(link -> new UuidAbsoluteLinkImpl(link.getOriginal(), link.getUUID(),
-                        UrlHelper.newAbsoluteUrlStr(rootUrl, link.getOriginal())))
                 .map(link -> {
                     SiteUrl siteUrl = new SiteUrlImpl(link.getAbsolute());
                     try {
@@ -68,7 +65,7 @@ public class HtmlParser implements Parser {
                     return link;
                 })
                 .collect(Collectors.toList());
-        for (UuidAbsoluteLink link : allLinks) {
+        for (UuidLink link : allLinks) {
             content = content.replaceAll(link.getOriginal(), link.getUUID());
         }
         InputStream resultIs = new ByteArrayInputStream(content.getBytes());

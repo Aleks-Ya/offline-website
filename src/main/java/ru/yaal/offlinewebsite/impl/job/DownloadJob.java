@@ -37,7 +37,7 @@ public class DownloadJob implements Job {
         downloader = params.getDownloader();
         storage = params.getStorage();
         threadPool = params.getThreadPool();
-        headRetriever = params.getHeadRequest();
+        headRetriever = params.getHeadRetriever();
         parsers = params.getParsers();
     }
 

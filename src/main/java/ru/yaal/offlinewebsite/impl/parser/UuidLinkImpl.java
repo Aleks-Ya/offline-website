@@ -1,6 +1,7 @@
 package ru.yaal.offlinewebsite.impl.parser;
 
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
@@ -12,6 +13,10 @@ import ru.yaal.offlinewebsite.api.parser.UuidLink;
 @ToString
 @Getter
 public class UuidLinkImpl implements UuidLink {
-    private final String original;
+    @NonNull
     private final String UUID;
+    @NonNull
+    private final String original;
+    @NonNull
+    private final String absolute;
 }

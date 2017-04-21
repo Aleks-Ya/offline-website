@@ -20,7 +20,7 @@ public interface DownloadJobParams extends Params {
 
     ThreadPool getThreadPool();
 
-    HeadRetriever getHeadRequest();
+    HeadRetriever getHeadRetriever();
 
     List<Parser> getParsers();
 }
