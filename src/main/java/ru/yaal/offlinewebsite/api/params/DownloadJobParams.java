@@ -1,7 +1,7 @@
 package ru.yaal.offlinewebsite.api.params;
 
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
-import ru.yaal.offlinewebsite.api.http.HeadRequest;
+import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
@@ -20,7 +20,7 @@ public interface DownloadJobParams extends Params {
 
     ThreadPool getThreadPool();
 
-    HeadRequest getHeadRequest();
+    HeadRetriever getHeadRequest();
 
     List<Parser> getParsers();
 }

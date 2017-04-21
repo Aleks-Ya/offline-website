@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
-import ru.yaal.offlinewebsite.api.http.HeadRequest;
+import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
@@ -33,7 +33,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
-import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
+import ru.yaal.offlinewebsite.impl.http.HeadRetrieverImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.packager.CopyPackager;
 import ru.yaal.offlinewebsite.impl.packager.UuidLinkPackager;
@@ -79,7 +79,7 @@ public class TestFactory {
     private final Packager copyPackager;
     private final Packager uuidLinkPackager;
     private final BytesNetwork network;
-    private final HeadRequest headRequest;
+    private final HeadRetriever headRetriever;
     private final List<Parser> allParsers;
 
     public TestFactory(RootSiteUrl rootSiteUrl) {
@@ -98,7 +98,7 @@ public class TestFactory {
 
         network = new BytesNetwork();
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
-        headRequest = new HeadRequestImpl(headRequestParams);
+        headRetriever = new HeadRetrieverImpl(headRequestParams);
 
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
@@ -163,7 +163,7 @@ public class TestFactory {
 
     public Task createTask(RootSiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
         DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
-                onlySameDomain, headRequest, maxSize, Collections.singletonList(htmlParser));
+                onlySameDomain, headRetriever, maxSize, Collections.singletonList(htmlParser));
         return new DownloadTask(downloadTaskParams);
     }
 

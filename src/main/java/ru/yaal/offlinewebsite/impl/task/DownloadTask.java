@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
-import ru.yaal.offlinewebsite.api.http.HeadRequest;
+import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
@@ -31,7 +31,7 @@ public class DownloadTask implements Task {
     private final boolean onlySameDomain;
     private final Filter<HeadingRes> onlySameDomainFilter;
     private final Filter<HeadedRes> sizeFilter;
-    private final HeadRequest headRequest;
+    private final HeadRetriever headRetriever;
     private final long maxSize;
     private final List<Parser> parsers;
 
@@ -43,7 +43,7 @@ public class DownloadTask implements Task {
         maxSize = params.getMaxSize();
         onlySameDomainFilter = new SameDomainFilter(params.getRootUrl());
         sizeFilter = new SizeFilter(maxSize);
-        headRequest = params.getHeadRequest();
+        headRetriever = params.getHeadRetriever();
         parsers = params.getParsers();
     }
 
@@ -59,7 +59,7 @@ public class DownloadTask implements Task {
             }
         }
 
-        ResourceId<HeadedRes> hedResId = headRequest.requestHead(hingResId);
+        ResourceId<HeadedRes> hedResId = headRetriever.requestHead(hingResId);
         HeadedRes hedRes = storage.getResource(hedResId);
         if (maxSize > 0) {
             FilterDecision decision = sizeFilter.filter(hedRes);

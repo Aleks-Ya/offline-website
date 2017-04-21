@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
-import ru.yaal.offlinewebsite.api.http.HeadRequest;
+import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
@@ -24,7 +24,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
-import ru.yaal.offlinewebsite.impl.http.HeadRequestImpl;
+import ru.yaal.offlinewebsite.impl.http.HeadRetrieverImpl;
 import ru.yaal.offlinewebsite.impl.job.DownloadJob;
 import ru.yaal.offlinewebsite.impl.job.PackageJob;
 import ru.yaal.offlinewebsite.impl.packager.CopyPackager;
@@ -72,7 +72,7 @@ public class OfflineWebsite {
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         Downloader downloader = new DownloaderImpl(downloaderParams);
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
-        HeadRequest headRequest = new HeadRequestImpl(headRequestParams);
+        HeadRetriever headRetriever = new HeadRetrieverImpl(headRequestParams);
         List<UrlExtractor<TagNode>> extractors = Arrays.asList(
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("a", "href")),
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("link", "href")),
@@ -88,7 +88,7 @@ public class OfflineWebsite {
         Packager inputStreamPackager = new UuidLinkPackager(uuidLinkPackagerParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage,
-                threadPool, headRequest, Collections.singletonList(parser));
+                threadPool, headRetriever, Collections.singletonList(parser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 

@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.params;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
-import ru.yaal.offlinewebsite.api.http.HeadRequest;
+import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
 import ru.yaal.offlinewebsite.api.params.SiteUrl;
@@ -23,6 +23,6 @@ public class DownloadJobParamsImpl implements DownloadJobParams {
     private final Downloader downloader;
     private final Storage storage;
     private final ThreadPool threadPool;
-    private final HeadRequest headRequest;
+    private final HeadRetriever headRetriever;
     private final List<Parser> parsers;
 }
