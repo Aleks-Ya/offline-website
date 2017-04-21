@@ -2,10 +2,10 @@ package ru.yaal.offlinewebsite.impl.filter;
 
 import org.junit.Test;
 import ru.yaal.offlinewebsite.api.filter.Filter;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class SameDomainFilterTest {
     @Test
     public void isAccepted() {
-        RootSiteUrl rootUrl = new SiteUrlImpl("http://google.com/search");
+        RootPageUrl rootUrl = new PageUrlImpl("http://google.com/search");
         Filter<HeadingRes> filter = new SameDomainFilter(rootUrl);
         String accepted = "http://google.com/find/something";
         String notAccepted = "http://yandex.com/search";
@@ -27,7 +27,7 @@ public class SameDomainFilterTest {
     }
 
     private HeadingRes makeNewRes(String s1) {
-        return new HeadingResImpl(new ResourceIdImpl<>(s1), new SiteUrlImpl(s1));
+        return new HeadingResImpl(new ResourceIdImpl<>(s1), new PageUrlImpl(s1));
     }
 
 }

@@ -15,8 +15,8 @@ import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
 import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
@@ -82,8 +82,8 @@ public class TestFactory {
     private final HeadRetriever headRetriever;
     private final List<Parser> allParsers;
 
-    public TestFactory(RootSiteUrl rootSiteUrl) {
-        this(rootSiteUrl, makTempDir());
+    public TestFactory(RootPageUrl rootPageUrl) {
+        this(rootPageUrl, makTempDir());
     }
 
     @SneakyThrows
@@ -91,7 +91,7 @@ public class TestFactory {
         return Files.createTempDirectory(TestFactory.class.getSimpleName());
     }
 
-    public TestFactory(RootSiteUrl rootSiteUrl, Path outletDir) {
+    public TestFactory(RootPageUrl rootPageUrl, Path outletDir) {
         this.outletDir = outletDir;
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         storage = new SyncInMemoryStorageImpl(storageParams);
@@ -103,11 +103,11 @@ public class TestFactory {
         DownloaderParams downloaderParams = new DownloaderParamsImpl(storage, network);
         downloader = new DownloaderImpl(downloaderParams);
 
-        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootSiteUrl, TestFactory.allExtractors, 1);
+        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootPageUrl, TestFactory.allExtractors, 1);
         htmlParser = new HtmlParser(htmlParserParams);
 
         ParserParams<InputStream> skipParserParams =
-                new ParserParamsImpl<>(storage, rootSiteUrl, null, 1);
+                new ParserParamsImpl<>(storage, rootPageUrl, null, 1);
         skipParser = new SkipParser(skipParserParams);
 
         allParsers = Arrays.asList(htmlParser, skipParser);
@@ -119,50 +119,50 @@ public class TestFactory {
         uuidLinkPackager = new UuidLinkPackager(isPackagerParams);
     }
 
-    public ResourceId<NewRes> createNewRes(SiteUrl siteUrl) {
-        return storage.createNewResource(siteUrl);
+    public ResourceId<NewRes> createNewRes(PageUrl pageUrl) {
+        return storage.createNewResource(pageUrl);
     }
 
-    public ResourceId<HeadingRes> createHeadingRes(SiteUrl siteUrl, HttpInfo httpInfo) {
-        network.putHttpInfo(siteUrl, httpInfo);
-        return storage.createHeadingResource(createNewRes(siteUrl));
+    public ResourceId<HeadingRes> createHeadingRes(PageUrl pageUrl, HttpInfo httpInfo) {
+        network.putHttpInfo(pageUrl, httpInfo);
+        return storage.createHeadingResource(createNewRes(pageUrl));
     }
 
-    public ResourceId<HeadedRes> createHeadedRes(SiteUrl siteUrl, HttpInfo httpInfo) {
-        ResourceId<HeadingRes> hingResId = createHeadingRes(siteUrl, httpInfo);
+    public ResourceId<HeadedRes> createHeadedRes(PageUrl pageUrl, HttpInfo httpInfo) {
+        ResourceId<HeadingRes> hingResId = createHeadingRes(pageUrl, httpInfo);
         return storage.createHeadedResource(hingResId, httpInfo);
     }
 
-    public ResourceId<DownloadingRes> createDownloadingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        ResourceId<HeadedRes> headedRes = createHeadedRes(siteUrl, httpInfo);
-        network.putBytes(siteUrl, html);
+    public ResourceId<DownloadingRes> createDownloadingRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        ResourceId<HeadedRes> headedRes = createHeadedRes(pageUrl, httpInfo);
+        network.putBytes(pageUrl, html);
         return storage.createDownloadingResource(headedRes);
     }
 
-    public ResourceId<DownloadedRes> createDownloadedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        return downloader.download(createDownloadingRes(siteUrl, html, httpInfo));
+    public ResourceId<DownloadedRes> createDownloadedRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        return downloader.download(createDownloadingRes(pageUrl, html, httpInfo));
     }
 
-    public ResourceId<ParsingRes> createParsingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        ResourceId<DownloadedRes> dedResId = createDownloadedRes(siteUrl, html, httpInfo);
+    public ResourceId<ParsingRes> createParsingRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        ResourceId<DownloadedRes> dedResId = createDownloadedRes(pageUrl, html, httpInfo);
         return storage.createParsingRes(dedResId);
     }
 
-    public ResourceId<ParsedRes> createParsedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        return htmlParser.parse(createParsingRes(siteUrl, html, httpInfo));
+    public ResourceId<ParsedRes> createParsedRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        return htmlParser.parse(createParsingRes(pageUrl, html, httpInfo));
     }
 
-    public ResourceId<PackagingRes> createPackagingRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        ResourceId<ParsedRes> parsedResId = createParsedRes(siteUrl, html, httpInfo);
+    public ResourceId<PackagingRes> createPackagingRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        ResourceId<ParsedRes> parsedResId = createParsedRes(pageUrl, html, httpInfo);
         return storage.createPackagingRes(parsedResId);
     }
 
-    public ResourceId<PackagedRes> createPackagedRes(SiteUrl siteUrl, String html, HttpInfo httpInfo) {
-        return copyPackager.pack(createPackagingRes(siteUrl, html, httpInfo));
+    public ResourceId<PackagedRes> createPackagedRes(PageUrl pageUrl, String html, HttpInfo httpInfo) {
+        return copyPackager.pack(createPackagingRes(pageUrl, html, httpInfo));
     }
 
-    public Task createTask(RootSiteUrl rootSiteUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
-        DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootSiteUrl, hingResId, downloader, storage,
+    public Task createTask(RootPageUrl rootPageUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
+        DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootPageUrl, hingResId, downloader, storage,
                 onlySameDomain, headRetriever, maxSize, Collections.singletonList(htmlParser));
         return new DownloadTask(downloadTaskParams);
     }

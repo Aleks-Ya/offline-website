@@ -5,7 +5,7 @@ import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.task.Task;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -16,13 +16,13 @@ import static org.junit.Assert.assertThat;
 public class DownloadTaskTest {
     @Test
     public void call() throws Exception {
-        SiteUrlImpl rootSiteUrl = new SiteUrlImpl("http://ya.ru");
-        TestFactory factory = new TestFactory(rootSiteUrl);
-        ResourceId<HeadingRes> headingRes = factory.createHeadingRes(rootSiteUrl, TestFactory.httpInfoDefault);
+        PageUrlImpl rootPageUrl = new PageUrlImpl("http://ya.ru");
+        TestFactory factory = new TestFactory(rootPageUrl);
+        ResourceId<HeadingRes> headingRes = factory.createHeadingRes(rootPageUrl, TestFactory.httpInfoDefault);
         String html = "<html></html>";
-        factory.getNetwork().putBytes(rootSiteUrl, html);
-        factory.getNetwork().putHttpInfo(rootSiteUrl, TestFactory.httpInfoDefault);
-        Task task = factory.createTask(rootSiteUrl, headingRes, true, 1000000);
+        factory.getNetwork().putBytes(rootPageUrl, html);
+        factory.getNetwork().putHttpInfo(rootPageUrl, TestFactory.httpInfoDefault);
+        Task task = factory.createTask(rootPageUrl, headingRes, true, 1000000);
 
         task.call();
 

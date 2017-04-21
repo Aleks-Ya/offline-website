@@ -7,7 +7,7 @@ import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Slf4j
 public class DownloadJob implements Job {
-    private final RootSiteUrl rootUrl;
+    private final RootPageUrl rootUrl;
     private final Downloader downloader;
     private final Storage storage;
     private final ThreadPool threadPool;
@@ -33,7 +33,7 @@ public class DownloadJob implements Job {
     private long taskRun = 0;
 
     public DownloadJob(DownloadJobParams params) {
-        rootUrl = params.getRootSiteUrl();
+        rootUrl = params.getRootPageUrl();
         downloader = params.getDownloader();
         storage = params.getStorage();
         threadPool = params.getThreadPool();

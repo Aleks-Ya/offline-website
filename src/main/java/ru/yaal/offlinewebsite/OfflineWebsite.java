@@ -15,7 +15,7 @@ import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.parser.Parser;
@@ -36,7 +36,7 @@ import ru.yaal.offlinewebsite.impl.params.CopyPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.UuidLinkPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackageJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ParserParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.parser.HtmlParser;
@@ -62,7 +62,7 @@ public class OfflineWebsite {
 
     public static void download(URL url, Path outletDir) {
         log.info("Start downloading: " + url);
-        RootSiteUrl rootSiteUrl = new SiteUrlImpl(url.toString());
+        RootPageUrl rootPageUrl = new PageUrlImpl(url.toString());
         StorageParams storageParams = new StorageParamsImpl(new ResourceComparatorImpl());
         Storage storage = new SyncInMemoryStorageImpl(storageParams);
         Network network = new NetworkImpl();
@@ -77,7 +77,7 @@ public class OfflineWebsite {
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("a", "href")),
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("link", "href")),
                 new TagAttributeExtractor(new TagAttributeExtractor.Params("script", "href")));
-        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootSiteUrl, extractors, 1);
+        ParserParams<TagNode> htmlParserParams = new ParserParamsImpl<>(storage, rootPageUrl, extractors, 1);
         Parser parser = new HtmlParser(htmlParserParams);
 
         OfflinePathResolver offlinePathResolver = new OfflinePathResolverImpl();
@@ -87,7 +87,7 @@ public class OfflineWebsite {
         UuidLinkPackagerParams uuidLinkPackagerParams = new UuidLinkPackagerParamsImpl(outletDir, offlinePathResolver, storage);
         Packager inputStreamPackager = new UuidLinkPackager(uuidLinkPackagerParams);
 
-        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootSiteUrl, downloader, storage,
+        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, downloader, storage,
                 threadPool, headRetriever, Collections.singletonList(parser));
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();

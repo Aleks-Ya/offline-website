@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.system;
 
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 
@@ -17,14 +17,14 @@ public class NetworkImpl implements Network {
 
     @Override
     @SneakyThrows
-    public InputStream openUrl(SiteUrl siteUrl) {
-        return new URL(siteUrl.getUrl()).openStream();
+    public InputStream openUrl(PageUrl pageUrl) {
+        return new URL(pageUrl.getUrl()).openStream();
     }
 
     @Override
     @SneakyThrows
-    public HttpInfo requestHttpInfo(SiteUrl siteUrl) {
-        URL url = new URL(siteUrl.getUrl());
+    public HttpInfo requestHttpInfo(PageUrl pageUrl) {
+        URL url = new URL(pageUrl.getUrl());
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("HEAD");
         conn.connect();

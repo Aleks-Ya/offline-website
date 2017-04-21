@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
 
 import java.io.FileOutputStream;
@@ -43,7 +43,7 @@ public class UuidLinkPackager implements Packager {
         for (UuidLink link : packagingRes.getLinks()) {
             Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
             if (res instanceof PackagedRes) {
-                Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new SiteUrlImpl(link.getAbsolute()));
+                Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(link.getAbsolute()));
                 String uuid = link.getUUID();
                 String replacement = linkPath.toString();
                 log.debug("Replace uuid {} with link {}", uuid, replacement);

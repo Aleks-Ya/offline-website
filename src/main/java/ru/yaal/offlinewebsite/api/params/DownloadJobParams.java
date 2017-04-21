@@ -12,7 +12,7 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface DownloadJobParams extends Params {
-    RootSiteUrl getRootSiteUrl();
+    RootPageUrl getRootPageUrl();
 
     Downloader getDownloader();
 

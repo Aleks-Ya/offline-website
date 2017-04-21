@@ -11,7 +11,7 @@ import java.util.List;
 public interface ParserParams<C> extends Params {
     Storage getStorage();
 
-    SiteUrl getSiteUrl();
+    PageUrl getPageUrl();
 
     List<UrlExtractor<C>> getExtractors();
 

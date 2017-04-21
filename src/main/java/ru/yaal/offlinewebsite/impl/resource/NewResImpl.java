@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.resource;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -13,7 +13,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 @EqualsAndHashCode(callSuper = true)
 public class NewResImpl extends AbstractRes<NewRes> implements NewRes {
 
-    public NewResImpl(ResourceId<NewRes> id, SiteUrl url) {
+    public NewResImpl(ResourceId<NewRes> id, PageUrl url) {
         super(id, url);
     }
 }

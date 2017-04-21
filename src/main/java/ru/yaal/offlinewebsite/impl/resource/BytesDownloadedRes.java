@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.resource;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -19,7 +19,7 @@ public class BytesDownloadedRes extends AbstractRes<DownloadedRes> implements Do
     @Getter
     private final HttpInfo httpInfo;
 
-    public BytesDownloadedRes(ResourceId<DownloadedRes> id, SiteUrl url, byte[] bytes, HttpInfo httpInfo) {
+    public BytesDownloadedRes(ResourceId<DownloadedRes> id, PageUrl url, byte[] bytes, HttpInfo httpInfo) {
         super(id, url);
         this.bytes = bytes;
         this.httpInfo = httpInfo;

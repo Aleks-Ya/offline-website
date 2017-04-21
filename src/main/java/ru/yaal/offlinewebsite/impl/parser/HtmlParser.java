@@ -7,7 +7,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.ParserParams;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
@@ -16,7 +16,7 @@ import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.params.SiteUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class HtmlParser implements Parser {
     private final HtmlCleaner cleaner = new HtmlCleaner();
     private final Storage storage;
-    private final SiteUrl siteUrl;
+    private final PageUrl pageUrl;
     private final List<UrlExtractor<TagNode>> extractors;
     private final int priority;
 
@@ -40,7 +40,7 @@ public class HtmlParser implements Parser {
     @SneakyThrows
     public HtmlParser(ParserParams<TagNode> params) {
         storage = params.getStorage();
-        siteUrl = params.getSiteUrl();
+        pageUrl = params.getPageUrl();
         extractors = params.getExtractors();
         priority = params.getPriority();
     }
@@ -53,14 +53,14 @@ public class HtmlParser implements Parser {
         String content = IOUtils.toString(is, Charset.defaultCharset());
         TagNode rootNode = cleaner.clean(content);
         List<UuidLink> allLinks = extractors.stream()
-                .map(extractor -> extractor.extract(rootNode, siteUrl))
+                .map(extractor -> extractor.extract(rootNode, pageUrl))
                 .flatMap(Collection::stream)
                 .map(link -> {
-                    SiteUrl siteUrl = new SiteUrlImpl(link.getAbsolute());
+                    PageUrl pageUrl = new PageUrlImpl(link.getAbsolute());
                     try {
-                        storage.createNewResource(siteUrl);
+                        storage.createNewResource(pageUrl);
                     } catch (ResourceAlreadyExistsException e) {
-                        log.debug("Skipped already exists resource: " + siteUrl);
+                        log.debug("Skipped already exists resource: " + pageUrl);
                     }
                     return link;
                 })

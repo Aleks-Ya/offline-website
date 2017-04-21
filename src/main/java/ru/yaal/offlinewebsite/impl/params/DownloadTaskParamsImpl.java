@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class DownloadTaskParamsImpl implements DownloadTaskParams {
-    private final RootSiteUrl rootUrl;
+    private final RootPageUrl rootUrl;
     private final ResourceId<HeadingRes> hingResId;
     private final Downloader downloader;
     private final Storage storage;

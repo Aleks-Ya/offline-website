@@ -6,7 +6,7 @@ import lombok.ToString;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
-import ru.yaal.offlinewebsite.api.params.RootSiteUrl;
+import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Getter
 public class DownloadJobParamsImpl implements DownloadJobParams {
-    private final RootSiteUrl rootSiteUrl;
+    private final RootPageUrl rootPageUrl;
     private final Downloader downloader;
     private final Storage storage;
     private final ThreadPool threadPool;

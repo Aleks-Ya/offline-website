@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.api.resource;
 
-import ru.yaal.offlinewebsite.api.params.SiteUrl;
+import ru.yaal.offlinewebsite.api.params.PageUrl;
 
 /**
  * @author Aleksey Yablokov
@@ -8,5 +8,5 @@ import ru.yaal.offlinewebsite.api.params.SiteUrl;
 public interface Resource<R extends Resource<?>> {
     ResourceId<R> getId();
 
-    SiteUrl getUrl();
+    PageUrl getUrl();
 }
