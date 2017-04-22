@@ -31,6 +31,11 @@ public class UrlHelperTest {
                 "https://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html",
                 "../../../../../index-all.html"),
                 equalTo("https://logback.qos.ch/apidocs/index-all.html"));
+
+        assertThat(toAbsoluteUrlStr(
+                "https://logback.qos.ch/documentation.html",
+                "../css/screen.css"),
+                equalTo("https://logback.qos.ch/css/screen.css"));
     }
 
 }
