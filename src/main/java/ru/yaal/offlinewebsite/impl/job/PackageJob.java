@@ -2,6 +2,8 @@ package ru.yaal.offlinewebsite.impl.job;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
@@ -60,6 +62,10 @@ public class PackageJob implements Job {
                 log.error("Task failed", e);
             }
         }
+
+        Logger rejectedResLogger = LoggerFactory.getLogger("ru.yaal.offlinewebsite.REJECTED_RESOURCES");
+        rejectedResLogger.debug("Total rejected resources: " + storage.getRejectedResourceIds().size());
+
         log.info("{} finished", getClass().getSimpleName());
     }
 }

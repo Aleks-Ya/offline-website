@@ -51,4 +51,6 @@ public interface Storage {
     List<ResourceId<NewRes>> getNewResourceIds();
 
     List<ResourceId<ParsedRes>> getParsedResourceIds();
+
+    List<ResourceId<RejectedRes>> getRejectedResourceIds();
 }

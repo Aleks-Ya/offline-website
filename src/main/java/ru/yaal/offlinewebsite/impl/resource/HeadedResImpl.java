@@ -2,6 +2,8 @@ package ru.yaal.offlinewebsite.impl.resource;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -10,14 +12,12 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 /**
  * @author Aleksey Yablokov
  */
-@EqualsAndHashCode(callSuper = true)
+@ToString
+@RequiredArgsConstructor
+@EqualsAndHashCode
 @Getter
-public class HeadedResImpl extends AbstractRes<HeadedRes> implements HeadedRes {
-
+public class HeadedResImpl implements HeadedRes {
+    private final ResourceId<HeadedRes> id;
+    private final PageUrl url;
     private final HttpInfo httpInfo;
-
-    public HeadedResImpl(ResourceId<HeadedRes> id, PageUrl url, HttpInfo httpInfo) {
-        super(id, url);
-        this.httpInfo = httpInfo;
-    }
 }

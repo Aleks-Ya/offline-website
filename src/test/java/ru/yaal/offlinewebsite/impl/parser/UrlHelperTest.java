@@ -26,6 +26,11 @@ public class UrlHelperTest {
 
         assertThat(toAbsoluteUrlStr("https://logback.qos.ch/manual/index.html", "https://logback.qos.ch/manual/filters.html"),
                 equalTo("https://logback.qos.ch/manual/filters.html"));
+
+        assertThat(toAbsoluteUrlStr(
+                "https://logback.qos.ch/apidocs/ch/qos/logback/core/rolling/TimeBasedRollingPolicy.html",
+                "../../../../../index-all.html"),
+                equalTo("https://logback.qos.ch/apidocs/index-all.html"));
     }
 
 }

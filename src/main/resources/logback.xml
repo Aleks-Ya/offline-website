@@ -1,5 +1,16 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
+    <appender name="rejected_resources" class="ch.qos.logback.core.FileAppender">
+        <file>log/rejected_resources.log</file>
+        <append>false</append>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="debug_file" class="ch.qos.logback.core.FileAppender">
         <file>log/debug.log</file>
         <append>false</append>
@@ -34,6 +45,10 @@
             <pattern>%-5level %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="ru.yaal.offlinewebsite.REJECTED_RESOURCES" level="DEBUG" additivity="false">
+        <appender-ref ref="rejected_resources"/>
+    </logger>
 
     <logger name="ru.yaal.offlinewebsite" level="DEBUG" additivity="false">
         <appender-ref ref="stdout_short"/>

@@ -2,6 +2,8 @@ package ru.yaal.offlinewebsite.impl.storage;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
@@ -46,6 +48,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class SyncInMemoryStorageImpl implements Storage {
+    private static final Logger rejectedResLogger = LoggerFactory.getLogger("ru.yaal.offlinewebsite.REJECTED_RESOURCES");
     private final Map<ResourceId, Resource> data = new HashMap<>();
     private final Map<ResourceId<DownloadingRes>, ByteArrayOutputStream> dingRess = new HashMap<>();
 
@@ -174,8 +177,9 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId) {
         checkAlreadyExists(resId, RejectedRes.class);
-        ResourceId<RejectedRes> rejResId = new ResourceIdImpl<>(resId.getId());
         Resource res = data.get(resId);
+        rejectedResLogger.debug(res.toString());
+        ResourceId<RejectedRes> rejResId = new ResourceIdImpl<>(resId.getId());
         RejectedRes rejRes = new RejectedResImpl(rejResId, res.getUrl());
         data.remove(resId);
         data.put(rejResId, rejRes);
@@ -197,6 +201,15 @@ public class SyncInMemoryStorageImpl implements Storage {
         return data.values().stream()
                 .filter(res -> res instanceof ParsedRes)
                 .map(res -> (ParsedRes) res)
+                .map(Resource::getId)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ResourceId<RejectedRes>> getRejectedResourceIds() {
+        return data.values().stream()
+                .filter(res -> res instanceof RejectedRes)
+                .map(res -> (RejectedRes) res)
                 .map(Resource::getId)
                 .collect(Collectors.toList());
     }
