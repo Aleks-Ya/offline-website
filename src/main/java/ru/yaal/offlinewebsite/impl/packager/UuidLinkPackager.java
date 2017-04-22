@@ -11,6 +11,7 @@ import ru.yaal.offlinewebsite.api.params.UuidLinkPackagerParams;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
+import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
@@ -49,13 +50,19 @@ public class UuidLinkPackager implements Packager {
         log.debug("Pack resource (content type={}): {}", packingRes.getHttpInfo().getContentType(), packingRes);
         String contentStr = IOUtils.toString(packingRes.getContent(), Charset.defaultCharset());
         for (UuidLink link : packingRes.getLinks()) {
-            Resource res = storage.getResource(new ResourceIdImpl<>(link.getAbsolute()));
+            String absoluteLink = link.getAbsolute();
+            Resource res = storage.getResource(new ResourceIdImpl<>(absoluteLink));
             if (ResourceComparator.INSTANCE.isFirstGreaterOrEquals(res.getClass(), PackagingRes.class)) {
-                Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(link.getAbsolute()));
                 String uuid = link.getUUID();
-                String replacement = Matcher.quoteReplacement("file://" + linkPath.toString());
-                log.debug("Replace uuid {} with link {}", uuid, replacement);
-                contentStr = contentStr.replaceAll(uuid, replacement);
+                if (!(res instanceof RejectedRes)) {
+                    Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(absoluteLink));
+                    String replacement = Matcher.quoteReplacement("file://" + linkPath.toString());
+                    log.debug("Replace uuid {} with link {}", uuid, replacement);
+                    contentStr = contentStr.replaceAll(uuid, replacement);
+                } else {
+                    contentStr = contentStr.replaceAll(uuid, absoluteLink);
+                    log.debug("Stay absolute link {} to rejected resource: {}", absoluteLink, res);
+                }
             } else {
                 throw new IllegalStateException("Resource isn't downloaded: " + res);
             }
