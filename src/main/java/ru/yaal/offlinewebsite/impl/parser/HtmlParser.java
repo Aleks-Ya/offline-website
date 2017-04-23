@@ -7,7 +7,7 @@ import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
@@ -16,7 +16,7 @@ import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

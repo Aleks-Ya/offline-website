@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;

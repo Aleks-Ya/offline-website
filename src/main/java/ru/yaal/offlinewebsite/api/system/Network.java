@@ -1,11 +1,10 @@
 package ru.yaal.offlinewebsite.api.system;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 
 /**
  * @author Aleksey Yablokov

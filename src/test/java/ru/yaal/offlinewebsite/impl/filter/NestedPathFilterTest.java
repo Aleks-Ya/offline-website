@@ -4,11 +4,11 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
-import ru.yaal.offlinewebsite.api.params.Link;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.Link;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

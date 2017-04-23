@@ -2,9 +2,9 @@ package ru.yaal.offlinewebsite.impl.filter;
 
 import org.junit.Test;
 import ru.yaal.offlinewebsite.api.filter.Filter;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 

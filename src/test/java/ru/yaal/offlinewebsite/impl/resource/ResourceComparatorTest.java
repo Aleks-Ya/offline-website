@@ -1,10 +1,10 @@
 package ru.yaal.offlinewebsite.impl.resource;
 
 import org.junit.Test;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertFalse;

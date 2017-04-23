@@ -5,7 +5,7 @@ import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.task.Task;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;

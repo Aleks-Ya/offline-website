@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.api.parser;
 
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 
 import java.util.List;
 

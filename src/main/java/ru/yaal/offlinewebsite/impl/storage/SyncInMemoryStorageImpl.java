@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;

@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.impl.system;
 
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 

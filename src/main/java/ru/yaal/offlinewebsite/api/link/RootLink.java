@@ -1,4 +1,4 @@
-package ru.yaal.offlinewebsite.api.params;
+package ru.yaal.offlinewebsite.api.link;
 
 /**
  * @author Aleksey Yablokov

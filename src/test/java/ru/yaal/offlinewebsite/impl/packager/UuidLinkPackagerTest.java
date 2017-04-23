@@ -5,15 +5,15 @@ import org.junit.Ignore;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.packager.Packager;
-import ru.yaal.offlinewebsite.api.params.Link;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.Link;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.params.PackageTaskParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 import ru.yaal.offlinewebsite.impl.task.PackageTask;
 
 import java.io.IOException;

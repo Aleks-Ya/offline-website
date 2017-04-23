@@ -1,7 +1,7 @@
 package ru.yaal.offlinewebsite.impl.system;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 import ru.yaal.offlinewebsite.api.system.Network;
 
 import java.io.ByteArrayInputStream;

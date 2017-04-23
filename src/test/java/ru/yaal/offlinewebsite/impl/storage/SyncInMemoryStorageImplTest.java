@@ -5,7 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import ru.yaal.offlinewebsite.TestFactory;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -18,7 +18,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;

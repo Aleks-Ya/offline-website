@@ -7,7 +7,7 @@ import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;

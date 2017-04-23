@@ -15,7 +15,7 @@ import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 

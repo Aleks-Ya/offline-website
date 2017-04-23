@@ -6,14 +6,14 @@ import org.htmlcleaner.Utils;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

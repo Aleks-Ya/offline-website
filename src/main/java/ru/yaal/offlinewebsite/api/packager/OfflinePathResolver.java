@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.api.packager;
 
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 
 import java.nio.file.Path;
 

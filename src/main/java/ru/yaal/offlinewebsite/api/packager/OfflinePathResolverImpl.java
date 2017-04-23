@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.api.packager;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 
 import java.net.URL;
 import java.net.URLEncoder;

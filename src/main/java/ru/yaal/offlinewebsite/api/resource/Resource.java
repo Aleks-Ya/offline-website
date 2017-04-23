@@ -1,6 +1,6 @@
 package ru.yaal.offlinewebsite.api.resource;
 
-import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.link.Link;
 
 /**
  * @author Aleksey Yablokov

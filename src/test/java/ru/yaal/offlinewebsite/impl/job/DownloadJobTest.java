@@ -4,11 +4,11 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.LinkImpl;
+import ru.yaal.offlinewebsite.impl.link.LinkImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 

@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.filter;
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
-import ru.yaal.offlinewebsite.api.params.RootLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.impl.filter.decision.NegativeDecision;
 import ru.yaal.offlinewebsite.impl.filter.decision.PositiveDecision;
