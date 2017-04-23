@@ -41,11 +41,14 @@ public class PackageJob implements Job {
         List<ResourceId<ParsedRes>> parsedResIds = storage.getParsedResourceIds();
         log.info("Resources for packaging: " + parsedResIds.size());
 
-        List<Future<ResourceId<PackagedRes>>> futures = parsedResIds.stream()
+        List<PackageTask> tasks = parsedResIds.stream()
                 .map(storage::createPackagingRes)
                 .map(packagingResId -> new PackageTaskParamsImpl(
                         storage, packagers, new ResIdImpl<>(packagingResId.getId())))
                 .map(PackageTask::new)
+                .collect(Collectors.toList());
+
+        List<Future<ResourceId<PackagedRes>>> futures = tasks.stream()
                 .map(threadPool::submit)
                 .collect(Collectors.toList());
 
