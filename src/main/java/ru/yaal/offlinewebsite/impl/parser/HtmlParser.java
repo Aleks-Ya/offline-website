@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +67,8 @@ public class HtmlParser implements Parser {
                 })
                 .collect(Collectors.toList());
         for (UuidLink link : allLinks) {
-            content = content.replaceAll(link.getOriginal(), link.getUUID());
+            String regex = Pattern.quote(link.getOriginal());
+            content = content.replaceAll(regex, link.getUUID());
         }
         InputStream resultIs = new ByteArrayInputStream(content.getBytes());
         ResourceId<ParsedRes> pedResId = storage.createParsedRes(pingResId, resultIs, allLinks);
