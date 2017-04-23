@@ -12,7 +12,7 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.params.PackageTaskParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -31,7 +31,7 @@ public class PackageTaskTest {
         ResourceId<PackagingRes> packagingResId = factory.createPackagingRes(pageUrl, html, TestFactory.httpInfoDefault);
         Storage storage = factory.getStorage();
         PackageTaskParams params = new PackageTaskParamsImpl(storage, factory.getAllPackagers(),
-                new ResourceIdImpl<>(packagingResId.getId()));
+                new ResIdImpl<>(packagingResId.getId()));
         Task<PackagedRes> task = new PackageTask(params);
         ResourceId<PackagedRes> packagedResId = task.call();
 

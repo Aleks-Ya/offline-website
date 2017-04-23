@@ -2,8 +2,6 @@ package ru.yaal.offlinewebsite.impl.job;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.PackageJobParams;
@@ -13,7 +11,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.PackageTaskParamsImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 import ru.yaal.offlinewebsite.impl.task.PackageTask;
 
 import java.util.List;
@@ -46,7 +44,7 @@ public class PackageJob implements Job {
         List<Future<ResourceId<PackagedRes>>> futures = parsedResIds.stream()
                 .map(storage::createPackagingRes)
                 .map(packagingResId -> new PackageTaskParamsImpl(
-                        storage, packagers, new ResourceIdImpl<>(packagingResId.getId())))
+                        storage, packagers, new ResIdImpl<>(packagingResId.getId())))
                 .map(PackageTask::new)
                 .map(threadPool::submit)
                 .collect(Collectors.toList());
@@ -63,9 +61,8 @@ public class PackageJob implements Job {
             }
         }
 
-        Logger rejectedResLogger = LoggerFactory.getLogger("ru.yaal.offlinewebsite.REJECTED_RESOURCES");
-        rejectedResLogger.debug("Total rejected resources: " + storage.getRejectedResourceIds().size());
-
         log.info("{} finished", getClass().getSimpleName());
+
+        log.info("Statistics: " + storage.getStatistics());
     }
 }

@@ -17,7 +17,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
-import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
@@ -51,7 +51,7 @@ public class UuidLinkPackager implements Packager {
         String contentStr = IOUtils.toString(packingRes.getContent(), Charset.defaultCharset());
         for (UuidLink link : packingRes.getLinks()) {
             String absoluteLink = link.getAbsolute();
-            Resource res = storage.getResource(new ResourceIdImpl<>(absoluteLink));
+            Resource res = storage.getResource(new ResIdImpl<>(absoluteLink));
             if (ResourceComparator.INSTANCE.isFirstGreaterOrEquals(res.getClass(), PackagingRes.class)) {
                 String uuid = link.getUUID();
                 if (!(res instanceof RejectedRes)) {

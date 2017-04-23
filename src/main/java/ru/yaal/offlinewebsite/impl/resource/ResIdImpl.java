@@ -14,6 +14,6 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 @Getter
-public class ResourceIdImpl<R extends Resource> implements ResourceId<R> {
+public class ResIdImpl<R extends Resource> implements ResourceId<R> {
     private final String id;
 }

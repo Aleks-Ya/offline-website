@@ -3,11 +3,10 @@ package ru.yaal.offlinewebsite.impl.filter;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.api.filter.Filter;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
 import ru.yaal.offlinewebsite.impl.resource.HeadingResImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -27,7 +26,7 @@ public class SameDomainFilterTest {
     }
 
     private HeadingRes makeNewRes(String s1) {
-        return new HeadingResImpl(new ResourceIdImpl<>(s1), new PageUrlImpl(s1));
+        return new HeadingResImpl(new ResIdImpl<>(s1), new PageUrlImpl(s1));
     }
 
 }

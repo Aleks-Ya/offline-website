@@ -1,20 +1,44 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
-    <appender name="rejected_resources" class="ch.qos.logback.core.FileAppender">
-        <file>log/rejected_resources.log</file>
+    <property name="LOG_DIR" value="log"/>
+    <property name="RES_PATTERN" value="%msg%n"/>
+    <property name="THRESHOLD" value="ch.qos.logback.classic.filter.ThresholdFilter"/>
+
+    <appender name="new_res" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/new_resources.log</file>
         <append>false</append>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <filter class="${THRESHOLD}">
             <level>DEBUG</level>
         </filter>
         <encoder>
-            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
+            <pattern>${RES_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="packaged_res" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/packaged_resources.log</file>
+        <append>false</append>
+        <filter class="${THRESHOLD}">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>${RES_PATTERN}</pattern>
+        </encoder>
+    </appender>
+    <appender name="rejected_res" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/rejected_resources.log</file>
+        <append>false</append>
+        <filter class="${THRESHOLD}">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>${RES_PATTERN}</pattern>
         </encoder>
     </appender>
 
     <appender name="debug_file" class="ch.qos.logback.core.FileAppender">
-        <file>log/debug.log</file>
+        <file>${LOG_DIR}/debug.log</file>
         <append>false</append>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <filter class="${THRESHOLD}">
             <level>DEBUG</level>
         </filter>
         <encoder>
@@ -23,16 +47,15 @@
     </appender>
 
     <appender name="info_file" class="ch.qos.logback.core.FileAppender">
-        <file>log/info.log</file>
+        <file>${LOG_DIR}/info.log</file>
         <append>false</append>
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <filter class="${THRESHOLD}">
             <level>INFO</level>
         </filter>
         <encoder>
             <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
         </encoder>
     </appender>
-
 
     <appender name="stdout_long" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -46,8 +69,14 @@
         </encoder>
     </appender>
 
-    <logger name="ru.yaal.offlinewebsite.REJECTED_RESOURCES" level="DEBUG" additivity="false">
-        <appender-ref ref="rejected_resources"/>
+    <logger name="ru.yaal.offlinewebsite.NEW_RES" level="DEBUG" additivity="false">
+        <appender-ref ref="new_res"/>
+    </logger>
+    <logger name="ru.yaal.offlinewebsite.PACKAGED_RES" level="DEBUG" additivity="false">
+        <appender-ref ref="packaged_res"/>
+    </logger>
+    <logger name="ru.yaal.offlinewebsite.REJECTED_RES" level="DEBUG" additivity="false">
+        <appender-ref ref="rejected_res"/>
     </logger>
 
     <logger name="ru.yaal.offlinewebsite" level="DEBUG" additivity="false">

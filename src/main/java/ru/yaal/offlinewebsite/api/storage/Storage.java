@@ -15,6 +15,7 @@ import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
+import ru.yaal.offlinewebsite.api.statistics.Statistics;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -52,5 +53,8 @@ public interface Storage {
 
     List<ResourceId<ParsedRes>> getParsedResourceIds();
 
+    //TODO delete Storage#getRejectedResourceIds() if unused
     List<ResourceId<RejectedRes>> getRejectedResourceIds();
+
+    Statistics getStatistics();
 }

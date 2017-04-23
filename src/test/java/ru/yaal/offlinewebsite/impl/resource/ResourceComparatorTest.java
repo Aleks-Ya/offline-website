@@ -17,8 +17,8 @@ import static ru.yaal.offlinewebsite.impl.resource.ResourceComparator.INSTANCE;
 public class ResourceComparatorTest {
     private final static String urlStr = "a";
     private final PageUrl pageUrl = new PageUrlImpl(urlStr);
-    private final NewRes newRes = new NewResImpl(new ResourceIdImpl<>(urlStr), pageUrl);
-    private final HeadingRes headingRes = new HeadingResImpl(new ResourceIdImpl<>(urlStr), pageUrl);
+    private final NewRes newRes = new NewResImpl(new ResIdImpl<>(urlStr), pageUrl);
+    private final HeadingRes headingRes = new HeadingResImpl(new ResIdImpl<>(urlStr), pageUrl);
 
     @Test
     public void compare() {
