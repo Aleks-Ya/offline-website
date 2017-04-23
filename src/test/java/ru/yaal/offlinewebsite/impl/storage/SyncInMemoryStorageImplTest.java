@@ -95,7 +95,7 @@ public class SyncInMemoryStorageImplTest {
     @Test
     public void createRejectedResource() {
         ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
-        ResourceId<RejectedRes> rejRes = storage.createRejectedRes(newResId);
+        ResourceId<RejectedRes> rejRes = storage.createRejectedRes(newResId, new ParsingExceptionRejectCause(new RuntimeException()));
 
         assertThat(newResId, equalTo(rejRes));
         assertThat(storage.getResource(rejRes), instanceOf(RejectedRes.class));

@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
+import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
@@ -34,6 +36,9 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.task.Task;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
+import ru.yaal.offlinewebsite.impl.filter.NestedPathFilter;
+import ru.yaal.offlinewebsite.impl.filter.SameHostFilter;
+import ru.yaal.offlinewebsite.impl.filter.SizeFilter;
 import ru.yaal.offlinewebsite.impl.http.HeadRetrieverImpl;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
 import ru.yaal.offlinewebsite.impl.packager.CopyPackager;
@@ -71,6 +76,9 @@ public class TestFactory {
             new TagAttributeExtractor(new TagAttributeExtractor.Params("a", "href")),
             new TagAttributeExtractor(new TagAttributeExtractor.Params("link", "href")),
             new TagAttributeExtractor(new TagAttributeExtractor.Params("script", "href")));
+    public final List<HeadingResFilter> headingFilters;
+
+    public final List<HeadedResFilter> headedFilters;
     private final Path outletDir;
     private final Storage storage;
     private final Downloader downloader;
@@ -96,6 +104,13 @@ public class TestFactory {
         this.outletDir = outletDir;
         StorageParams storageParams = new StorageParamsImpl();
         storage = new SyncInMemoryStorageImpl(storageParams);
+
+        headingFilters = Arrays.asList(
+                new SameHostFilter(rootPageUrl, true),
+                new NestedPathFilter(rootPageUrl, true));
+
+        headedFilters = Collections.singletonList(
+                new SizeFilter(3_000_000, true));
 
         network = new BytesNetwork();
         HeadRequestParams headRequestParams = new HeadRequestParamsImpl(storage, network);
@@ -184,9 +199,9 @@ public class TestFactory {
         return copyPackager.pack(createPackagingRes(pageUrl, html, httpInfo));
     }
 
-    public Task createTask(RootPageUrl rootPageUrl, ResourceId<HeadingRes> hingResId, boolean onlySameDomain, long maxSize) {
+    public Task createTask(RootPageUrl rootPageUrl, ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootPageUrl, hingResId, downloader, storage,
-                onlySameDomain, headRetriever, maxSize, Collections.singletonList(htmlParser));
+                headRetriever, Collections.singletonList(htmlParser), headingFilters, headedFilters);
         return new DownloadTask(downloadTaskParams);
     }
 

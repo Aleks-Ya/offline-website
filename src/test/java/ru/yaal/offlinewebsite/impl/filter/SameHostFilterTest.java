@@ -14,11 +14,11 @@ import static org.junit.Assert.assertTrue;
 /**
  * @author Aleksey Yablokov
  */
-public class SameDomainFilterTest {
+public class SameHostFilterTest {
     @Test
     public void isAccepted() {
         RootPageUrl rootUrl = new PageUrlImpl("http://google.com/search");
-        Filter<HeadingRes> filter = new SameDomainFilter(rootUrl);
+        Filter<HeadingRes> filter = new SameHostFilter(rootUrl, true);
         String accepted = "http://google.com/find/something";
         String notAccepted = "http://yandex.com/search";
         assertTrue(filter.filter(makeNewRes(accepted)).isAccepted());

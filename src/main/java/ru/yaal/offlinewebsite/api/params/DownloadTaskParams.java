@@ -1,6 +1,8 @@
 package ru.yaal.offlinewebsite.api.params;
 
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
+import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
@@ -21,11 +23,11 @@ public interface DownloadTaskParams extends Params {
 
     Storage getStorage();
 
-    boolean isOnlySameDomain();
-
     HeadRetriever getHeadRetriever();
 
-    long getMaxSize();
-
     List<Parser> getParsers();
+
+    List<HeadingResFilter> getHeadingFilters();
+
+    List<HeadedResFilter> getHeadedFilters();
 }

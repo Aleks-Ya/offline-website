@@ -3,6 +3,8 @@ package ru.yaal.offlinewebsite.impl.job;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
+import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
@@ -35,6 +37,8 @@ public class DownloadJob implements Job {
     private final List<Parser> parsers;
     private long taskRun = 0;
     private final List<Future> futures = new ArrayList<>();
+    private final List<HeadingResFilter> headingFilters;
+    private final List<HeadedResFilter> headedFilters;
 
     public DownloadJob(DownloadJobParams params) {
         rootUrl = params.getRootPageUrl();
@@ -42,6 +46,8 @@ public class DownloadJob implements Job {
         storage = params.getStorage();
         threadPool = params.getThreadPool();
         headRetriever = params.getHeadRetriever();
+        headingFilters = params.getHeadingFilters();
+        headedFilters = params.getHeadedFilters();
         parsers = params.getParsers();
     }
 
@@ -82,7 +88,7 @@ public class DownloadJob implements Job {
 
     private void submitTask(ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams params = new DownloadTaskParamsImpl(rootUrl, hingResId, downloader, storage,
-                true, headRetriever, 1_000_000, parsers);
+                headRetriever, parsers, headingFilters, headedFilters);
         futures.add(threadPool.submit(new DownloadTask(params)));
         taskRun++;
     }

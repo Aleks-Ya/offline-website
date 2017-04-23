@@ -21,6 +21,7 @@ import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.statistics.Statistics;
+import ru.yaal.offlinewebsite.api.storage.RejectCause;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedRes;
@@ -33,8 +34,8 @@ import ru.yaal.offlinewebsite.impl.resource.PackagedResImpl;
 import ru.yaal.offlinewebsite.impl.resource.PackagingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.ParsingResImpl;
 import ru.yaal.offlinewebsite.impl.resource.RejectedResImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.impl.statistics.StatisticsImpl;
 
 import java.io.ByteArrayOutputStream;
@@ -184,14 +185,14 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId) {
+    public synchronized ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId, RejectCause cause) {
         checkAlreadyExists(resId, RejectedRes.class);
         Resource res = data.get(resId);
         ResourceId<RejectedRes> rejResId = new ResIdImpl<>(resId.getId());
-        RejectedRes rejRes = new RejectedResImpl(rejResId, res.getUrl());
+        RejectedRes rejRes = new RejectedResImpl(rejResId, res.getUrl(), cause);
         data.remove(resId);
         data.put(rejResId, rejRes);
-        log.debug("RejectedRes is created: " + rejRes.getId());
+        log.debug("RejectedRes is created: {}, {}", rejRes.getId(), cause);
         rejectedResLog.debug(rejRes.toString());
         statistics.incrementCratedRejectedRes();
         return rejResId;

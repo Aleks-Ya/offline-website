@@ -30,7 +30,8 @@ public class DownloadJobTest {
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
 
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, factory.getDownloader(),
-                factory.getStorage(), threadPool, factory.getHeadRetriever(), factory.getAllParsers());
+                factory.getStorage(), threadPool, factory.getHeadRetriever(), factory.getAllParsers(),
+                factory.getHeadingFilters(), factory.getHeadedFilters());
 
         Job job = new DownloadJob(downloadJobParams);
         job.process();

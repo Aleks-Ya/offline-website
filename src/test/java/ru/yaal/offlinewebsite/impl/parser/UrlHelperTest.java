@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static ru.yaal.offlinewebsite.impl.parser.UrlHelper.removeLastSegmentFromPath;
 import static ru.yaal.offlinewebsite.impl.parser.UrlHelper.toAbsoluteUrlStr;
 
 /**
@@ -38,4 +39,11 @@ public class UrlHelperTest {
                 equalTo("https://logback.qos.ch/css/screen.css"));
     }
 
+    @Test
+    public void testRemoveLastSegmentFromPath() {
+        assertThat(removeLastSegmentFromPath("/site/documentation.html"), equalTo("/site/"));
+        assertThat(removeLastSegmentFromPath("/"), equalTo("/"));
+        assertThat(removeLastSegmentFromPath("/path"), equalTo("/"));
+        assertThat(removeLastSegmentFromPath("/path/"), equalTo("/"));
+    }
 }

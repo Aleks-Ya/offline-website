@@ -47,7 +47,7 @@ public interface Storage {
 
     ResourceId<PackagedRes> createPackagedRes(ResourceId<PackagingRes> packagingResId, Path location);
 
-    ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId);
+    ResourceId<RejectedRes> createRejectedRes(ResourceId<?> resId, RejectCause cause);
 
     List<ResourceId<NewRes>> getNewResourceIds();
 

@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 /**
  * @author Aleksey Yablokov
  */
-class UrlHelper {
+public class UrlHelper {
     private UrlHelper() {
     }
 
     @SneakyThrows
-    static String toAbsoluteUrlStr(String pageUrl, String relativeUrlStr) {
+    public static String toAbsoluteUrlStr(String pageUrl, String relativeUrlStr) {
         URL rootUrl = new URL(pageUrl);
         URL url = new URL(rootUrl, relativeUrlStr);
         String newPath = removeDotSegments(url.getPath());
@@ -72,5 +72,23 @@ class UrlHelper {
         String urlStr = oldUrl.toString();
         String oldPath = oldUrl.getPath();
         return urlStr.replace(oldPath, newPath);
+    }
+
+    public static String removeLastSegmentFromPath(String path) {
+        if (path.isEmpty()) {
+            return "";
+        }
+        int slashInd = path.lastIndexOf("/");
+        if (slashInd == path.length() - 1) {
+            slashInd = path.lastIndexOf("/", slashInd - 1);
+        }
+        if (slashInd == -1) {
+            return "/";
+        }
+        String newPath = path.substring(0, slashInd);
+        if (!newPath.endsWith("/")) {
+            newPath += "/";
+        }
+        return newPath;
     }
 }

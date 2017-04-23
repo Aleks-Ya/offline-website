@@ -3,6 +3,8 @@ package ru.yaal.offlinewebsite;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlcleaner.TagNode;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
+import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
+import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
@@ -12,8 +14,8 @@ import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
 import ru.yaal.offlinewebsite.api.params.HeadRequestParams;
-import ru.yaal.offlinewebsite.api.params.PackageJobParams;
 import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
+import ru.yaal.offlinewebsite.api.params.PackageJobParams;
 import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 import ru.yaal.offlinewebsite.api.params.SkipParserParams;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
@@ -25,6 +27,9 @@ import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.api.system.Network;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.downloader.DownloaderImpl;
+import ru.yaal.offlinewebsite.impl.filter.NestedPathFilter;
+import ru.yaal.offlinewebsite.impl.filter.SameHostFilter;
+import ru.yaal.offlinewebsite.impl.filter.SizeFilter;
 import ru.yaal.offlinewebsite.impl.http.HeadRetrieverImpl;
 import ru.yaal.offlinewebsite.impl.job.DownloadJob;
 import ru.yaal.offlinewebsite.impl.job.PackageJob;
@@ -34,9 +39,9 @@ import ru.yaal.offlinewebsite.impl.params.CopyPackagerParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.DownloaderParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.HeadRequestParamsImpl;
+import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PackageJobParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
-import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.SkipParserParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
@@ -49,11 +54,11 @@ import ru.yaal.offlinewebsite.impl.system.NetworkImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -93,8 +98,18 @@ public class OfflineWebsite {
         Packager uuidLinkPackager = new UuidLinkPackager(uuidLinkPackagerParams);
         List<Packager> packagers = Arrays.asList(copyPackager, uuidLinkPackager);
 
+        List<HeadingResFilter> headingFilters = Arrays.asList(
+                new SameHostFilter(rootPageUrl, true),
+                new NestedPathFilter(rootPageUrl, true));
+
+        List<HeadedResFilter> headedFilters = Collections.singletonList(
+                new SizeFilter(3_000_000, true)
+        );
+
+        List<Parser> parsers = Arrays.asList(htmlParser, skipParser);
+
         DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, downloader, storage,
-                threadPool, headRetriever, Arrays.asList(htmlParser, skipParser));
+                threadPool, headRetriever, parsers, headingFilters, headedFilters);
         Job downloadJob = new DownloadJob(downloadJobParams);
         downloadJob.process();
 
