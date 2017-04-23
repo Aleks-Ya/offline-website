@@ -16,8 +16,8 @@ import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
-import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
+import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 
 import java.io.FileOutputStream;
 import java.nio.charset.Charset;
@@ -68,7 +68,10 @@ public class UuidLinkPackager implements Packager {
             }
         }
         Path path = resolver.internetUrlToOfflinePath(outletDir, packingRes.getUrl());
-        Files.createDirectories(path.getParent());
+        Path parentDir = path.getParent();
+        if (Files.notExists(parentDir)) {
+            Files.createDirectories(parentDir);
+        }
         Files.createFile(path);
         IOUtils.write(contentStr, new FileOutputStream(path.toFile()), Charset.defaultCharset());
         ResourceId<PackagedRes> packagedResId = storage.createPackagedRes(packingResId, path);
