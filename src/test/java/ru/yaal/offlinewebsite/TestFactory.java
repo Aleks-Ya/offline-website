@@ -199,7 +199,7 @@ public class TestFactory {
         return copyPackager.pack(createPackagingRes(pageUrl, html, httpInfo));
     }
 
-    public Task createTask(RootPageUrl rootPageUrl, ResourceId<HeadingRes> hingResId) {
+    public Task createDownloadTask(RootPageUrl rootPageUrl, ResourceId<HeadingRes> hingResId) {
         DownloadTaskParams downloadTaskParams = new DownloadTaskParamsImpl(rootPageUrl, hingResId, downloader, storage,
                 headRetriever, Collections.singletonList(htmlParser), headingFilters, headedFilters);
         return new DownloadTask(downloadTaskParams);

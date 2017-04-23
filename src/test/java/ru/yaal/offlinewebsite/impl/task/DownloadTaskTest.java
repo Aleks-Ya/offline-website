@@ -22,7 +22,7 @@ public class DownloadTaskTest {
         String html = "<html></html>";
         factory.getNetwork().putBytes(rootPageUrl, html);
         factory.getNetwork().putHttpInfo(rootPageUrl, TestFactory.httpInfoDefault);
-        Task task = factory.createTask(rootPageUrl, headingRes);
+        Task task = factory.createDownloadTask(rootPageUrl, headingRes);
 
         task.call();
 
