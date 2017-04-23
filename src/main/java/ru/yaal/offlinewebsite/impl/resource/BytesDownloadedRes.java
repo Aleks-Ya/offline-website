@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.Link;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -20,12 +20,12 @@ public class BytesDownloadedRes implements DownloadedRes {
     @Getter
     private final ResourceId<DownloadedRes> id;
     @Getter
-    private final PageUrl url;
+    private final Link url;
     private final byte[] bytes;
     @Getter
     private final HttpInfo httpInfo;
 
-    public BytesDownloadedRes(ResourceId<DownloadedRes> id, PageUrl url, byte[] bytes, HttpInfo httpInfo) {
+    public BytesDownloadedRes(ResourceId<DownloadedRes> id, Link url, byte[] bytes, HttpInfo httpInfo) {
         this.id = id;
         this.url = url;
         this.bytes = bytes;

@@ -4,11 +4,11 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.params.ThreadPoolParams;
 import ru.yaal.offlinewebsite.api.thread.ThreadPool;
 import ru.yaal.offlinewebsite.impl.params.DownloadJobParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 import ru.yaal.offlinewebsite.impl.params.ThreadPoolParamsImpl;
 import ru.yaal.offlinewebsite.impl.thread.ThreadPoolImpl;
 
@@ -23,13 +23,13 @@ public class DownloadJobTest {
     @Test
     public void process() {
         String rootSiteStr = "http://ya.ru";
-        RootPageUrl rootPageUrl = new PageUrlImpl(rootSiteStr);
-        TestFactory factory = new TestFactory(rootPageUrl);
+        RootLink rootLink = new LinkImpl(rootSiteStr);
+        TestFactory factory = new TestFactory(rootLink);
 
         ThreadPoolParams threadPoolParams = new ThreadPoolParamsImpl(3);
         ThreadPool threadPool = new ThreadPoolImpl(threadPoolParams);
 
-        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootPageUrl, factory.getDownloader(),
+        DownloadJobParams downloadJobParams = new DownloadJobParamsImpl(rootLink, factory.getDownloader(),
                 factory.getStorage(), threadPool, factory.getHeadRetriever(), factory.getAllParsers(),
                 factory.getHeadingFilters(), factory.getHeadedFilters());
 

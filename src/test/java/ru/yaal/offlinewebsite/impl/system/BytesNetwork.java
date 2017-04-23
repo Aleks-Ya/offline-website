@@ -1,7 +1,7 @@
 package ru.yaal.offlinewebsite.impl.system;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.Link;
 import ru.yaal.offlinewebsite.api.system.Network;
 
 import java.io.ByteArrayInputStream;
@@ -13,38 +13,38 @@ import java.util.Map;
  * @author Aleksey Yablokov
  */
 public class BytesNetwork implements Network {
-    private Map<PageUrl, byte[]> byteMap = new HashMap<>();
-    private Map<PageUrl, HttpInfo> httpInfoMap = new HashMap<>();
+    private Map<Link, byte[]> byteMap = new HashMap<>();
+    private Map<Link, HttpInfo> httpInfoMap = new HashMap<>();
 
     @Override
-    public InputStream openUrl(PageUrl pageUrl) {
-        byte[] bytes = byteMap.get(pageUrl);
+    public InputStream openUrl(Link link) {
+        byte[] bytes = byteMap.get(link);
         if (bytes != null) {
             return new ByteArrayInputStream(bytes);
         } else {
-            throw new IllegalArgumentException("No byes for " + pageUrl);
+            throw new IllegalArgumentException("No byes for " + link);
         }
     }
 
     @Override
-    public HttpInfo requestHttpInfo(PageUrl pageUrl) {
-        HttpInfo httpInfo = httpInfoMap.get(pageUrl);
+    public HttpInfo requestHttpInfo(Link link) {
+        HttpInfo httpInfo = httpInfoMap.get(link);
         if (httpInfo != null) {
             return httpInfo;
         } else {
-            throw new IllegalArgumentException("No HttpInfo for " + pageUrl);
+            throw new IllegalArgumentException("No HttpInfo for " + link);
         }
     }
 
-    public void putBytes(PageUrl pageUrl, byte[] bytes) {
-        byteMap.put(pageUrl, bytes);
+    public void putBytes(Link link, byte[] bytes) {
+        byteMap.put(link, bytes);
     }
 
-    public void putBytes(PageUrl pageUrl, String content) {
-        putBytes(pageUrl, content.getBytes());
+    public void putBytes(Link link, String content) {
+        putBytes(link, content.getBytes());
     }
 
-    public void putHttpInfo(PageUrl pageUrl, HttpInfo httpInfo) {
-        httpInfoMap.put(pageUrl, httpInfo);
+    public void putHttpInfo(Link link, HttpInfo httpInfo) {
+        httpInfoMap.put(link, httpInfo);
     }
 }

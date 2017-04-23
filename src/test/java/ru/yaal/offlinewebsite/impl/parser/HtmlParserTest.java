@@ -6,14 +6,14 @@ import org.htmlcleaner.Utils;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.ParsedRes;
 import ru.yaal.offlinewebsite.api.resource.ParsingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.impl.params.HtmlParserParamsImpl;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -32,11 +32,11 @@ public class HtmlParserTest {
     public void parse() throws IOException {
         String html = IOUtils.toString(getClass().getResourceAsStream("parser_test.html"), Charset.defaultCharset());
         String rootSiteStr = "https://logback.qos.ch";
-        RootPageUrl rootPageUrl = new PageUrlImpl(rootSiteStr);
-        TestFactory factory = new TestFactory(rootPageUrl);
-        ResourceId<ParsingRes> parsingResId = factory.createParsingRes(rootPageUrl, html, TestFactory.httpInfoDefault);
+        RootLink rootLink = new LinkImpl(rootSiteStr);
+        TestFactory factory = new TestFactory(rootLink);
+        ResourceId<ParsingRes> parsingResId = factory.createParsingRes(rootLink, html, TestFactory.httpInfoDefault);
 
-        HtmlParserParams<TagNode> params = new HtmlParserParamsImpl<>(factory.getStorage(), rootPageUrl, TestFactory.allExtractors, 1);
+        HtmlParserParams<TagNode> params = new HtmlParserParamsImpl<>(factory.getStorage(), rootLink, TestFactory.allExtractors, 1);
         Parser parser = new HtmlParser(params);
         ResourceId<ParsedRes> parsedResId = parser.parse(parsingResId);
 
@@ -44,7 +44,7 @@ public class HtmlParserTest {
         assertThat(newResIds, hasSize(9));
         newResIds.stream()
                 .map(newResId -> factory.getStorage().getResource(newResId).getUrl())
-                .forEach(pageUrl -> assertTrue("Not full URL: " + pageUrl, Utils.isFullUrl(pageUrl.getUrl())));
+                .forEach(pageUrl -> assertTrue("Not full URL: " + pageUrl, Utils.isFullUrl(pageUrl.getOrigin())));
 
         ParsedRes pedRes = factory.getStorage().getResource(parsedResId);
         String cont = IOUtils.toString(pedRes.getParsedContent(), Charset.defaultCharset());

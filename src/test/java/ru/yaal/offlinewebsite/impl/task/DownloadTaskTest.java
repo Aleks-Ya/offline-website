@@ -5,7 +5,7 @@ import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.task.Task;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 public class DownloadTaskTest {
     @Test
     public void call() throws Exception {
-        PageUrlImpl rootPageUrl = new PageUrlImpl("http://ya.ru");
+        LinkImpl rootPageUrl = new LinkImpl("http://ya.ru");
         TestFactory factory = new TestFactory(rootPageUrl);
         ResourceId<HeadingRes> headingRes = factory.createHeadingRes(rootPageUrl, TestFactory.httpInfoDefault);
         String html = "<html></html>";

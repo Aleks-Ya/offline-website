@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.filter;
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.impl.filter.decision.NegativeDecision;
 import ru.yaal.offlinewebsite.impl.filter.decision.PositiveDecision;
@@ -21,8 +21,8 @@ public class SameHostFilter implements HeadingResFilter {
 
     //TODO use SameHostFilterParams
     @SneakyThrows
-    public SameHostFilter(RootPageUrl rootPageUrl, boolean enabled) {
-        this.rootHost = new URL(rootPageUrl.getUrl()).getHost();
+    public SameHostFilter(RootLink rootLink, boolean enabled) {
+        this.rootHost = new URL(rootLink.getOrigin()).getHost();
         this.enabled = enabled;
     }
 
@@ -30,7 +30,7 @@ public class SameHostFilter implements HeadingResFilter {
     @SneakyThrows
     public FilterDecision filter(HeadingRes hingRes) {
         if (enabled) {
-            boolean accepted = new URL(hingRes.getUrl().getUrl()).getHost().equals(rootHost);
+            boolean accepted = new URL(hingRes.getUrl().getOrigin()).getHost().equals(rootHost);
             if (!accepted) {
                 return new NegativeDecision(FILTER_NAME,
                         "%s: Resource %s rejected", getClass().getSimpleName(), hingRes.getId());

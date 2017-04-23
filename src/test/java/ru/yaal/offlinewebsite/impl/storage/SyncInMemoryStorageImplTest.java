@@ -5,7 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import ru.yaal.offlinewebsite.TestFactory;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
@@ -18,7 +18,7 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 import ru.yaal.offlinewebsite.impl.http.HttpInfoImpl;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 import ru.yaal.offlinewebsite.impl.params.StorageParamsImpl;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -33,7 +33,7 @@ import static org.junit.Assert.assertTrue;
 public class SyncInMemoryStorageImplTest {
     private final Storage storage = new SyncInMemoryStorageImpl(new StorageParamsImpl());
     private final String urlStr = "http://google.com";
-    private final RootPageUrl rootPageUrl = new PageUrlImpl(urlStr);
+    private final RootLink rootLink = new LinkImpl(urlStr);
     private final HttpInfoImpl httpInfo
             = new HttpInfoImpl(200, 1000, 1, "text/html");
 
@@ -42,14 +42,14 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createNewResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         assertTrue(storage.hasResource(newResId));
         assertThat(newResId.getId(), equalTo(urlStr));
     }
 
     @Test
     public void createHeadingResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         assertThat(newResId, equalTo(hingResId));
         assertThat(storage.getResource(hingResId), instanceOf(HeadingRes.class));
@@ -58,7 +58,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createHeadedResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
 
@@ -69,7 +69,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createDownloadingResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
@@ -81,7 +81,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createDownloadedResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         ResourceId<HeadedRes> hedResId = storage.createHeadedResource(hingResId, httpInfo);
         ResourceId<DownloadingRes> dingResId = storage.createDownloadingResource(hedResId);
@@ -94,7 +94,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void createRejectedResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<RejectedRes> rejRes = storage.createRejectedRes(newResId, new ParsingExceptionRejectCause(new RuntimeException()));
 
         assertThat(newResId, equalTo(rejRes));
@@ -104,7 +104,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void getResource() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         Resource res = storage.getResource(newResId);
         assertNotNull(res);
         assertThat(res.getId().getId(), equalTo(urlStr));
@@ -112,14 +112,14 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsNew() {
-        storage.createNewResource(rootPageUrl);
+        storage.createNewResource(rootLink);
         exception.expect(ResourceAlreadyExistsException.class);
-        storage.createNewResource(rootPageUrl);
+        storage.createNewResource(rootLink);
     }
 
     @Test
     public void alreadyExistsHeading() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         storage.createHeadingResource(newResId);
         exception.expect(ResourceAlreadyExistsException.class);
         storage.createHeadingResource(newResId);
@@ -127,7 +127,7 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void alreadyExistsHeaded() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hedResId = storage.createHeadingResource(newResId);
         storage.createHeadedResource(hedResId, httpInfo);
         exception.expect(ResourceAlreadyExistsException.class);
@@ -153,14 +153,14 @@ public class SyncInMemoryStorageImplTest {
 
     @Test
     public void getPackagingResourceIds() {
-        TestFactory factory = new TestFactory(rootPageUrl);
+        TestFactory factory = new TestFactory(rootLink);
         ResourceId<PackagingRes> packagingResId =
-                factory.createPackagingRes(rootPageUrl, "<html></html>", TestFactory.httpInfoDefault);
+                factory.createPackagingRes(rootLink, "<html></html>", TestFactory.httpInfoDefault);
         assertThat(factory.getStorage().getResource(packagingResId), Matchers.instanceOf(PackagingRes.class));
     }
 
     private ResourceId<HeadedRes> makeHeadedResId() {
-        ResourceId<NewRes> newResId = storage.createNewResource(rootPageUrl);
+        ResourceId<NewRes> newResId = storage.createNewResource(rootLink);
         ResourceId<HeadingRes> hingResId = storage.createHeadingResource(newResId);
         return storage.createHeadedResource(hingResId, httpInfo);
     }

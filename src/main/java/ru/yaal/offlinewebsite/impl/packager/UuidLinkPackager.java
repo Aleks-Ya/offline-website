@@ -15,7 +15,7 @@ import ru.yaal.offlinewebsite.api.resource.RejectedRes;
 import ru.yaal.offlinewebsite.api.resource.Resource;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 import ru.yaal.offlinewebsite.api.storage.Storage;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResIdImpl;
 import ru.yaal.offlinewebsite.impl.resource.ResourceComparator;
 
@@ -55,7 +55,7 @@ public class UuidLinkPackager implements Packager {
             if (ResourceComparator.INSTANCE.isFirstGreaterOrEquals(res.getClass(), PackagingRes.class)) {
                 String uuid = link.getUUID();
                 if (!(res instanceof RejectedRes)) {
-                    Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new PageUrlImpl(absoluteLink));
+                    Path linkPath = resolver.internetUrlToOfflinePath(outletDir, new LinkImpl(absoluteLink));
                     String replacement = Matcher.quoteReplacement("file://" + linkPath.toString());
                     log.debug("Replace uuid {} with link {}", uuid, replacement);
                     contentStr = contentStr.replaceAll(uuid, replacement);

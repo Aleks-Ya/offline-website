@@ -4,11 +4,11 @@ import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.Link;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.LinkImpl;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -46,11 +46,11 @@ public class NestedPathFilterTest {
     }
 
     private static FilterDecision getFilterDecision(String rootPageStr, String pageStr) {
-        RootPageUrl rootPageUrl = new PageUrlImpl(rootPageStr);
-        TestFactory factory = new TestFactory(rootPageUrl);
-        HeadingResFilter filter = new NestedPathFilter(rootPageUrl, true);
-        PageUrl pageUrl = new PageUrlImpl(pageStr);
-        ResourceId<HeadingRes> headingResId = factory.createHeadingRes(pageUrl, TestFactory.httpInfoDefault);
+        RootLink rootLink = new LinkImpl(rootPageStr);
+        TestFactory factory = new TestFactory(rootLink);
+        HeadingResFilter filter = new NestedPathFilter(rootLink, true);
+        Link link = new LinkImpl(pageStr);
+        ResourceId<HeadingRes> headingResId = factory.createHeadingRes(link, TestFactory.httpInfoDefault);
         HeadingRes headingRes = factory.getStorage().getResource(headingResId);
         return filter.filter(headingRes);
     }

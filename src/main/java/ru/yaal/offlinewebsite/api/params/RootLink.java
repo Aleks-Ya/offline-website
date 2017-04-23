@@ -3,6 +3,5 @@ package ru.yaal.offlinewebsite.api.params;
 /**
  * @author Aleksey Yablokov
  */
-public interface PageUrl {
-    String getUrl();
+public interface RootLink extends Link {
 }

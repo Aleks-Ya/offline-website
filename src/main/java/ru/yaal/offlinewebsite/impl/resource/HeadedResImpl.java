@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.Link;
 import ru.yaal.offlinewebsite.api.resource.HeadedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -18,6 +18,6 @@ import ru.yaal.offlinewebsite.api.resource.ResourceId;
 @Getter
 public class HeadedResImpl implements HeadedRes {
     private final ResourceId<HeadedRes> id;
-    private final PageUrl url;
+    private final Link url;
     private final HttpInfo httpInfo;
 }

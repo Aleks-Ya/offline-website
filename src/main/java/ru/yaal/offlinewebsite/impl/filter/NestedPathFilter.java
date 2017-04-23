@@ -3,7 +3,7 @@ package ru.yaal.offlinewebsite.impl.filter;
 import lombok.SneakyThrows;
 import ru.yaal.offlinewebsite.api.filter.FilterDecision;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootLink;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.impl.filter.decision.NegativeDecision;
 import ru.yaal.offlinewebsite.impl.filter.decision.PositiveDecision;
@@ -23,9 +23,9 @@ public class NestedPathFilter implements HeadingResFilter {
 
     //TODO use NestedPathFilterParams
     @SneakyThrows
-    public NestedPathFilter(RootPageUrl rootPageUrl, boolean enabled) {
-        sameHostFilter = new SameHostFilter(rootPageUrl, enabled);
-        rootPath = UrlHelper.removeLastSegmentFromPath(new URL(rootPageUrl.getUrl()).getPath());
+    public NestedPathFilter(RootLink rootLink, boolean enabled) {
+        sameHostFilter = new SameHostFilter(rootLink, enabled);
+        rootPath = UrlHelper.removeLastSegmentFromPath(new URL(rootLink.getOrigin()).getPath());
         this.enabled = enabled;
     }
 
@@ -37,7 +37,7 @@ public class NestedPathFilter implements HeadingResFilter {
             if (sameHostDecision instanceof NegativeDecision) {
                 return sameHostDecision;
             }
-            String pagePath = new URL(hingRes.getUrl().getUrl()).getPath();
+            String pagePath = new URL(hingRes.getUrl().getOrigin()).getPath();
             boolean accepted = isStartWith(rootPath, pagePath);
             if (!accepted) {
                 return new NegativeDecision(FILTER_NAME, "Resource %s rejected, his path has to start with %s",
