@@ -15,8 +15,8 @@ public class UrlHelper {
     }
 
     @SneakyThrows
-    public static String toAbsoluteUrlStr(String pageUrl, String relativeUrlStr) {
-        URL rootUrl = new URL(pageUrl);
+    public static String toAbsoluteUrlStr(String resUrlStr, String relativeUrlStr) {
+        URL rootUrl = new URL(resUrlStr);
         URL url = new URL(rootUrl, relativeUrlStr);
         String newPath = removeDotSegments(url.getPath());
         return replacePath(url, newPath);

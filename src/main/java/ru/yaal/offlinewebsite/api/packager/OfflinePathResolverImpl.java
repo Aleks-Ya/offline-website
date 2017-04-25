@@ -2,7 +2,7 @@ package ru.yaal.offlinewebsite.api.packager;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 
 import java.net.URL;
 import java.net.URLEncoder;
@@ -17,8 +17,8 @@ import java.nio.file.Paths;
 public class OfflinePathResolverImpl implements OfflinePathResolver {
     @Override
     @SneakyThrows
-    public Path internetUrlToOfflinePath(Path outletDir, PageUrl pageUrl) {
-        URL url = new URL(pageUrl.getUrl());
+    public Path internetUrlToOfflinePath(Path outletDir, ResUrl resUrl) {
+        URL url = new URL(resUrl.getUrl());
 
         StringBuilder hostPortProtocol = new StringBuilder();
         hostPortProtocol.append(url.getHost());

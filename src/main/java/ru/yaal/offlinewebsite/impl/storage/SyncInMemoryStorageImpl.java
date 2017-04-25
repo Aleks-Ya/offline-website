@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
@@ -72,7 +72,7 @@ public class SyncInMemoryStorageImpl implements Storage {
     }
 
     @Override
-    public synchronized ResourceId<NewRes> createNewResource(PageUrl url) {
+    public synchronized ResourceId<NewRes> createNewResource(ResUrl url) {
         ResourceId<NewRes> newResId = new ResIdImpl<>(url.getUrl());
         if (hasResource(newResId)) {
             throw new ResourceAlreadyExistsException(newResId);

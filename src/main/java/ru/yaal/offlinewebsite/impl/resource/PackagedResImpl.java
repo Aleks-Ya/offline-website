@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
 
@@ -19,6 +19,6 @@ import java.nio.file.Path;
 @Getter
 public class PackagedResImpl implements PackagedRes {
     private final ResourceId<PackagedRes> id;
-    private final PageUrl url;
+    private final ResUrl url;
     private final Path location;
 }

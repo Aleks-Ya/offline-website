@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.htmlcleaner.TagNode;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 
@@ -28,12 +28,12 @@ public class TagAttributeExtractor implements UrlExtractor<TagNode> {
     }
 
     @Override
-    public List<UuidLink> extract(TagNode content, PageUrl pageUrl) {
+    public List<UuidLink> extract(TagNode content, ResUrl resUrl) {
         return content.getElementListByName(tag, true).stream()
                 .map(node -> node.getAttributeByName(attribute))
                 .filter(href -> href != null && !href.isEmpty())
                 .map(href -> new UuidLinkImpl(UUID.randomUUID().toString(), href,
-                        UrlHelper.toAbsoluteUrlStr(pageUrl.getUrl(), href)))
+                        UrlHelper.toAbsoluteUrlStr(resUrl.getUrl(), href)))
                 .collect(Collectors.toList());
     }
 

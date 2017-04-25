@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import ru.yaal.offlinewebsite.api.downloader.Downloader;
 import ru.yaal.offlinewebsite.api.params.DownloaderParams;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -35,7 +35,7 @@ public class DownloaderImpl implements Downloader {
     @SneakyThrows
     public ResourceId<DownloadedRes> download(ResourceId<DownloadingRes> didResId) {
         DownloadingRes res = storage.getResource(didResId);
-        PageUrl url = res.getUrl();
+        ResUrl url = res.getUrl();
         InputStream is = network.openUrl(url);
         OutputStream os = res.getOutputStream();
         log.debug("Downloading: " + res.getId());

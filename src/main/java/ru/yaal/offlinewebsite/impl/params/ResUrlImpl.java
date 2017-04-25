@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootResUrl;
 
 /**
  * @author Aleksey Yablokov
@@ -13,6 +13,6 @@ import ru.yaal.offlinewebsite.api.params.RootPageUrl;
 @ToString
 @RequiredArgsConstructor
 @Getter
-public class PageUrlImpl implements RootPageUrl {
+public class ResUrlImpl implements RootResUrl {
     private final String url;
 }

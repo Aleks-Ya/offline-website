@@ -9,7 +9,7 @@ import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootResUrl;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
@@ -29,7 +29,7 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 public class DownloadJob implements Job {
-    private final RootPageUrl rootUrl;
+    private final RootResUrl rootUrl;
     private final Downloader downloader;
     private final Storage storage;
     private final ThreadPool threadPool;
@@ -41,7 +41,7 @@ public class DownloadJob implements Job {
     private final List<HeadedResFilter> headedFilters;
 
     public DownloadJob(DownloadJobParams params) {
-        rootUrl = params.getRootPageUrl();
+        rootUrl = params.getRootResUrl();
         downloader = params.getDownloader();
         storage = params.getStorage();
         threadPool = params.getThreadPool();

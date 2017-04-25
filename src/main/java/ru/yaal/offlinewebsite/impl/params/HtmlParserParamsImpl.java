@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.params.HtmlParserParams;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.parser.UrlExtractor;
 import ru.yaal.offlinewebsite.api.storage.Storage;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 public class HtmlParserParamsImpl<C> implements HtmlParserParams<C> {
     private final Storage storage;
-    private final PageUrl pageUrl;
+    private final ResUrl resUrl;
     private final List<UrlExtractor<C>> extractors;
     private final int priority;
 }

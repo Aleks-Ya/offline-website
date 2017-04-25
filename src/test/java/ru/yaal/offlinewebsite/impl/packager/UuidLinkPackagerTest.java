@@ -4,12 +4,12 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.packager.Packager;
-import ru.yaal.offlinewebsite.api.params.RootPageUrl;
+import ru.yaal.offlinewebsite.api.params.RootResUrl;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
 import ru.yaal.offlinewebsite.api.resource.PackagedRes;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.ResUrlImpl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -27,11 +27,11 @@ public class UuidLinkPackagerTest {
     @Test
     public void pack() throws IOException {
         String rootUrlStr = "http://ya.ru/site";
-        RootPageUrl rootPageUrl = new PageUrlImpl(rootUrlStr);
+        RootResUrl rootResUrl = new ResUrlImpl(rootUrlStr);
 
-        TestFactory factory = new TestFactory(rootPageUrl);
+        TestFactory factory = new TestFactory(rootResUrl);
         String rootHtml = "<html><body><a href='nested_page.html'>Janino</a></body></html>";
-        ResourceId<PackagingRes> rootPackagingResId = factory.createPackagingRes(rootPageUrl, rootHtml, TestFactory.httpInfoDefault);
+        ResourceId<PackagingRes> rootPackagingResId = factory.createPackagingRes(rootResUrl, rootHtml, TestFactory.httpInfoDefault);
 
         List<ResourceId<NewRes>> newResIds = factory.getStorage().getNewResourceIds();
         assertThat(newResIds, Matchers.iterableWithSize(1));

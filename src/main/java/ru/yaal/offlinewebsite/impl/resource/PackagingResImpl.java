@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.PackagingRes;
 import ru.yaal.offlinewebsite.api.resource.ResourceId;
@@ -22,7 +22,7 @@ import java.util.List;
 @Getter
 public class PackagingResImpl implements PackagingRes {
     private final ResourceId<PackagingRes> id;
-    private final PageUrl url;
+    private final ResUrl url;
     private final InputStream content;
     private final HttpInfo httpInfo;
     private final List<UuidLink> links;

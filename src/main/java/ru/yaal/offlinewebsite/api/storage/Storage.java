@@ -1,7 +1,7 @@
 package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
@@ -29,7 +29,7 @@ public interface Storage {
 
     <R extends Resource> R getResource(ResourceId<R> resId);
 
-    ResourceId<NewRes> createNewResource(PageUrl url);
+    ResourceId<NewRes> createNewResource(ResUrl url);
 
     ResourceId<HeadingRes> createHeadingResource(ResourceId<NewRes> newResId);
 

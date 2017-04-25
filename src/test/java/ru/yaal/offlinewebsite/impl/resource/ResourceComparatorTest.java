@@ -1,10 +1,10 @@
 package ru.yaal.offlinewebsite.impl.resource;
 
 import org.junit.Test;
-import ru.yaal.offlinewebsite.api.params.PageUrl;
+import ru.yaal.offlinewebsite.api.params.ResUrl;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
-import ru.yaal.offlinewebsite.impl.params.PageUrlImpl;
+import ru.yaal.offlinewebsite.impl.params.ResUrlImpl;
 
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertFalse;
@@ -16,9 +16,9 @@ import static ru.yaal.offlinewebsite.impl.resource.ResourceComparator.INSTANCE;
  */
 public class ResourceComparatorTest {
     private final static String urlStr = "a";
-    private final PageUrl pageUrl = new PageUrlImpl(urlStr);
-    private final NewRes newRes = new NewResImpl(new ResIdImpl<>(urlStr), pageUrl);
-    private final HeadingRes headingRes = new HeadingResImpl(new ResIdImpl<>(urlStr), pageUrl);
+    private final ResUrl resUrl = new ResUrlImpl(urlStr);
+    private final NewRes newRes = new NewResImpl(new ResIdImpl<>(urlStr), resUrl);
+    private final HeadingRes headingRes = new HeadingResImpl(new ResIdImpl<>(urlStr), resUrl);
 
     @Test
     public void compare() {
