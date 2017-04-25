@@ -8,7 +8,7 @@ import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
 import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
-import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
+import ru.yaal.offlinewebsite.impl.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;

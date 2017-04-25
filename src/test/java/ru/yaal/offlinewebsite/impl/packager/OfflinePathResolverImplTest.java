@@ -1,7 +1,9 @@
-package ru.yaal.offlinewebsite.api.packager;
+package ru.yaal.offlinewebsite.impl.packager;
 
 import org.junit.Test;
+import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.params.ResUrl;
+import ru.yaal.offlinewebsite.impl.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.impl.params.ResUrlImpl;
 
 import java.nio.file.Path;

@@ -9,7 +9,7 @@ import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
-import ru.yaal.offlinewebsite.api.packager.OfflinePathResolverImpl;
+import ru.yaal.offlinewebsite.impl.packager.OfflinePathResolverImpl;
 import ru.yaal.offlinewebsite.api.packager.Packager;
 import ru.yaal.offlinewebsite.api.params.CopyPackagerParams;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;

@@ -1,7 +1,8 @@
-package ru.yaal.offlinewebsite.api.packager;
+package ru.yaal.offlinewebsite.impl.packager;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import ru.yaal.offlinewebsite.api.packager.OfflinePathResolver;
 import ru.yaal.offlinewebsite.api.params.ResUrl;
 
 import java.net.URL;
