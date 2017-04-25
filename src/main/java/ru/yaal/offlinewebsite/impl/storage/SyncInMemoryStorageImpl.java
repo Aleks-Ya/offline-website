@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.link.Link;
+import ru.yaal.offlinewebsite.api.link.ResLink;
 import ru.yaal.offlinewebsite.api.params.StorageParams;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
@@ -24,6 +25,7 @@ import ru.yaal.offlinewebsite.api.statistics.Statistics;
 import ru.yaal.offlinewebsite.api.storage.RejectCause;
 import ru.yaal.offlinewebsite.api.storage.ResourceAlreadyExistsException;
 import ru.yaal.offlinewebsite.api.storage.Storage;
+import ru.yaal.offlinewebsite.impl.link.ResLinkImpl;
 import ru.yaal.offlinewebsite.impl.resource.BytesDownloadedRes;
 import ru.yaal.offlinewebsite.impl.resource.BytesParsedRes;
 import ru.yaal.offlinewebsite.impl.resource.DownloadingResImpl;
@@ -41,6 +43,7 @@ import ru.yaal.offlinewebsite.impl.statistics.StatisticsImpl;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +60,8 @@ public class SyncInMemoryStorageImpl implements Storage {
     private final Map<ResourceId, Resource> data = new HashMap<>();
     private final Map<ResourceId<DownloadingRes>, ByteArrayOutputStream> dingRess = new HashMap<>();
     private final StatisticsImpl statistics = new StatisticsImpl();
+    private final List<Link> links = new ArrayList<>();
+    private final Map<ResLink, ResourceId> linkToRes = new HashMap<>();
 
     public SyncInMemoryStorageImpl(StorageParams params) {
     }
@@ -64,6 +69,17 @@ public class SyncInMemoryStorageImpl implements Storage {
     @Override
     public synchronized <R extends Resource> R getResource(ResourceId<R> resId) {
         return (R) data.get(resId);
+    }
+
+    @Override
+    public <R extends Resource> ResLink<R> createResLink(Link link) {
+        ResourceId<R> resId = linkToRes.get(link);
+        if (resId != null) {
+            ResLinkImpl<R> resLink = new ResLinkImpl<>(resId, link.getOrigin());
+
+            return resLink;
+        }
+        return null;
     }
 
     @Override

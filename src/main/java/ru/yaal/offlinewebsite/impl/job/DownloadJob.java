@@ -7,9 +7,10 @@ import ru.yaal.offlinewebsite.api.filter.HeadedResFilter;
 import ru.yaal.offlinewebsite.api.filter.HeadingResFilter;
 import ru.yaal.offlinewebsite.api.http.HeadRetriever;
 import ru.yaal.offlinewebsite.api.job.Job;
+import ru.yaal.offlinewebsite.api.link.ResLink;
+import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.params.DownloadJobParams;
 import ru.yaal.offlinewebsite.api.params.DownloadTaskParams;
-import ru.yaal.offlinewebsite.api.link.RootLink;
 import ru.yaal.offlinewebsite.api.parser.Parser;
 import ru.yaal.offlinewebsite.api.resource.HeadingRes;
 import ru.yaal.offlinewebsite.api.resource.NewRes;
@@ -29,7 +30,7 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 public class DownloadJob implements Job {
-    private final RootLink rootUrl;
+    private final RootLink rootLink;
     private final Downloader downloader;
     private final Storage storage;
     private final ThreadPool threadPool;
@@ -41,7 +42,7 @@ public class DownloadJob implements Job {
     private final List<HeadedResFilter> headedFilters;
 
     public DownloadJob(DownloadJobParams params) {
-        rootUrl = params.getRootLink();
+        rootLink = params.getRootLink();
         downloader = params.getDownloader();
         storage = params.getStorage();
         threadPool = params.getThreadPool();
@@ -55,8 +56,10 @@ public class DownloadJob implements Job {
     @SneakyThrows
     public void process() {
         log.info("{} started", getClass().getSimpleName());
-        log.info("Root page: " + rootUrl);
-        ResourceId<NewRes> rootNewResId = storage.createNewResource(rootUrl);
+        log.info("Root link: " + rootLink);
+
+        ResLink rootResLink = storage.createResLink(rootLink);
+        ResourceId<NewRes> rootNewResId = rootResLink.getResourceId();
         ResourceId<HeadingRes> rootHingResId = storage.createHeadingResource(rootNewResId);
         submitTask(rootHingResId);
 
@@ -87,7 +90,7 @@ public class DownloadJob implements Job {
     }
 
     private void submitTask(ResourceId<HeadingRes> hingResId) {
-        DownloadTaskParams params = new DownloadTaskParamsImpl(rootUrl, hingResId, downloader, storage,
+        DownloadTaskParams params = new DownloadTaskParamsImpl(rootLink, hingResId, downloader, storage,
                 headRetriever, parsers, headingFilters, headedFilters);
         futures.add(threadPool.submit(new DownloadTask(params)));
         taskRun++;

@@ -2,6 +2,7 @@ package ru.yaal.offlinewebsite.api.storage;
 
 import ru.yaal.offlinewebsite.api.http.HttpInfo;
 import ru.yaal.offlinewebsite.api.link.Link;
+import ru.yaal.offlinewebsite.api.link.ResLink;
 import ru.yaal.offlinewebsite.api.parser.UuidLink;
 import ru.yaal.offlinewebsite.api.resource.DownloadedRes;
 import ru.yaal.offlinewebsite.api.resource.DownloadingRes;
@@ -25,6 +26,10 @@ import java.util.List;
  * @author Aleksey Yablokov
  */
 public interface Storage {
+    Link createLink();
+
+    <R extends Resource> ResLink<R> createResLink(Link link);
+
     <R extends Resource> boolean hasResource(ResourceId<R> resId);
 
     <R extends Resource> R getResource(ResourceId<R> resId);
