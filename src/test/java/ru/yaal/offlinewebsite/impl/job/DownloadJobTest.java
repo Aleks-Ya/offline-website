@@ -1,5 +1,6 @@
 package ru.yaal.offlinewebsite.impl.job;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import ru.yaal.offlinewebsite.TestFactory;
 import ru.yaal.offlinewebsite.api.job.Job;
@@ -21,6 +22,7 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class DownloadJobTest {
     @Test
+    @Ignore("Do it without Internet connection")
     public void process() {
         String rootSiteStr = "http://ya.ru";
         RootResUrl rootResUrl = new ResUrlImpl(rootSiteStr);
