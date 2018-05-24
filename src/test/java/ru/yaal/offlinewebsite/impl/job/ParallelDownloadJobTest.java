@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  * @author Aleksey Yablokov
  */
-public class DownloadJobTest {
+public class ParallelDownloadJobTest {
     @Test
     @Ignore("Do it without Internet connection")
     public void process() {
@@ -35,7 +35,7 @@ public class DownloadJobTest {
                 factory.getStorage(), threadPool, factory.getHeadRetriever(), factory.getAllParsers(),
                 factory.getHeadingFilters(), factory.getHeadedFilters());
 
-        Job job = new DownloadJob(downloadJobParams);
+        Job job = new ParallelDownloadJob(downloadJobParams);
         job.process();
 
         assertThat(threadPool.getCompletedTaskCount(), equalTo(1L));

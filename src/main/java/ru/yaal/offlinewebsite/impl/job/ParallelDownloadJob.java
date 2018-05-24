@@ -28,27 +28,13 @@ import java.util.concurrent.Future;
  * @author Aleksey Yablokov
  */
 @Slf4j
-public class DownloadJob implements Job {
-    private final RootResUrl rootUrl;
-    private final Downloader downloader;
-    private final Storage storage;
+public class ParallelDownloadJob extends SequenceDownloadJob {
     private final ThreadPool threadPool;
-    private final HeadRetriever headRetriever;
-    private final List<Parser> parsers;
-    private long taskRun = 0;
     private final List<Future> futures = new ArrayList<>();
-    private final List<HeadingResFilter> headingFilters;
-    private final List<HeadedResFilter> headedFilters;
 
-    public DownloadJob(DownloadJobParams params) {
-        rootUrl = params.getRootResUrl();
-        downloader = params.getDownloader();
-        storage = params.getStorage();
+    public ParallelDownloadJob(DownloadJobParams params) {
+        super(params);
         threadPool = params.getThreadPool();
-        headRetriever = params.getHeadRetriever();
-        headingFilters = params.getHeadingFilters();
-        headedFilters = params.getHeadedFilters();
-        parsers = params.getParsers();
     }
 
     @Override
