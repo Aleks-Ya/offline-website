@@ -1,4 +1,5 @@
 *.vpp.bak_*
+*.vpp.vbak
 target
 *.iml
 .idea
